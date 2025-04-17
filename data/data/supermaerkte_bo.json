@@ -1,17 +1,60 @@
-[
-  {
-    "name": "Rewe Bochum Querenburg",
-    "lat": 51.4475,
-    "lon": 7.2632
-  },
-  {
-    "name": "Lidl Wattenscheid",
-    "lat": 51.4819,
-    "lon": 7.1571
-  },
-  {
-    "name": "Aldi Süd Hofstede",
-    "lat": 51.5091,
-    "lon": 7.1907
-  }
-]
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Rewe Bochum Querenburg",
+        "brand": "Rewe"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [7.2632, 51.4475]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Edeka Bochum Innenstadt",
+        "brand": "Edeka"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [7.2125, 51.4825]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Lidl Bochum Wattenscheid",
+        "brand": "Lidl"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [7.2636, 51.4783]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Aldi Bochum Bochum-Dahlhausen",
+        "brand": "Aldi"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [7.2613, 51.4402]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Penny Bochum",
+        "brand": "Penny"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [7.2134, 51.4920]
+      }
+    }
+  ]
+}
