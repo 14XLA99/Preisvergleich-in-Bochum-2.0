@@ -1,0 +1,53 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "name": "Mitte" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[7.2162, 51.4818], [7.2262, 51.4818], [7.2262, 51.4918], [7.2162, 51.4918], [7.2162, 51.4818]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Nord" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[7.2162, 51.4918], [7.2262, 51.4918], [7.2262, 51.5018], [7.2162, 51.5018], [7.2162, 51.4918]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Ost" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[7.2262, 51.4818], [7.2362, 51.4818], [7.2362, 51.4918], [7.2262, 51.4918], [7.2262, 51.4818]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Süd" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[7.2162, 51.4718], [7.2262, 51.4718], [7.2262, 51.4818], [7.2162, 51.4818], [7.2162, 51.4718]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Südwest" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[7.2062, 51.4718], [7.2162, 51.4718], [7.2162, 51.4818], [7.2062, 51.4818], [7.2062, 51.4718]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Wattenscheid" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[7.2062, 51.4818], [7.2162, 51.4818], [7.2162, 51.4918], [7.2062, 51.4918], [7.2062, 51.4818]]]
+      }
+    }
+  ]
+}
