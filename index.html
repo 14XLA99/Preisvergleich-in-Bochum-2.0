@@ -1,29 +1,41 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Preisvergleich in Bochum</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet-choropleth@0.0.1/choropleth.js"></script>
+  <link rel="stylesheet" href="style.css" />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
-  <h1>Preisvergleich in Bochum</h1>
+  <h1>🛒 Preisvergleich in Bochum</h1>
   <div id="map"></div>
-  <div id="form-container">
-    <h2>Preise eintragen</h2>
-    <form id="price-form">
-      <label for="supermarket">Supermarkt:</label>
-      <input type="text" id="supermarket" required>
-      <label for="product">Produkt:</label>
-      <input type="text" id="product" required>
-      <label for="price">Preis:</label>
-      <input type="number" id="price" required>
-      <button type="submit">Eintragen</button>
-    </form>
+
+  <div id="formModal" class="modal hidden">
+    <div class="modal-content">
+      <span id="closeBtn">&times;</span>
+      <h2 id="form-title">Preise eintragen</h2>
+      <form id="priceForm">
+        <div class="form-group">
+          <label>Brot (€): <input type="number" step="0.01" name="Brot" required /></label>
+          <label>Milch (€): <input type="number" step="0.01" name="Milch" required /></label>
+          <label>Äpfel (€): <input type="number" step="0.01" name="Äpfel" required /></label>
+          <label>Butter (€): <input type="number" step="0.01" name="Butter" required /></label>
+          <label>Nudeln (€): <input type="number" step="0.01" name="Nudeln" required /></label>
+          <label>Foto (optional): <input type="file" name="bild" /></label>
+        </div>
+        <button type="submit">Eintragen</button>
+      </form>
+    </div>
   </div>
-  <script src="script.js"></script>
+
+  <!-- Skripte laden -->
+  <script src="main.js"></script>
+  <script src="map-bezirke.js"></script>        <!-- Bezirke von Bochum -->
+  <script src="map-supermaerkte.js"></script>   <!-- Externe Supermärkte -->
 </body>
 </html>
