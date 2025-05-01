@@ -1,9 +1,10 @@
 // Grundkarte zentriert auf Bochum
 const map = L.map("map").setView([51.4818, 7.2162], 12);
 
-// Kartenhintergrund
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  attribution: "&copy; OpenStreetMap",
+L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+  attribution: '&copy; <a href="https://carto.com/">CARTO</a>, &copy; OpenStreetMap',
+  subdomains: "abcd",
+  maxZoom: 19,
 }).addTo(map);
 
 // Stadtbezirke laden
