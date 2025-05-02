@@ -1,10 +1,12 @@
-// Grundkarte zentriert auf Bochum
+// Map zentrieren 
 const map = L.map("map", {
-  maxBounds: L.latLngBounds([51.42, 7.05], [51.56, 7.35]), // Begrenzung auf Bochum
-  minZoom: 11,
+  maxBounds: L.latLngBounds([51.42, 7.05], [51.56, 7.35]),
+  maxBoundsViscosity: 1.0, // Hält Karte innerhalb, aber ohne Rückschnappen
 }).setView([51.4818, 7.2162], 12);
 
-L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+
+//Hintergrund Map
+L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png", {
   attribution: '&copy; <a href="https://carto.com/">CARTO</a>, &copy; OpenStreetMap',
   subdomains: "abcd",
   maxZoom: 19,
@@ -32,14 +34,16 @@ fetch("bochum_bezirke.geojson")
         };
       },
       onEachFeature: (feature, layer) => {
+        const bezirkName = feature.properties.BEZIRK_NAME || "Unbenannt";
+
         // Popup
-        layer.bindPopup(`<strong>${feature.properties.name}</strong>`);
+        layer.bindPopup(`<strong>${bezirkName}</strong>`);
 
         // Label zentriert im Bezirk
         const center = layer.getBounds().getCenter();
         const label = L.divIcon({
           className: "bezirk-label",
-          html: `<div>${feature.properties.name}</div>`,
+          html: `<div>${bezirkName}</div>`,
           iconSize: [100, 20],
           iconAnchor: [50, 10],
         });
