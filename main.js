@@ -34,7 +34,7 @@ fetch("bochum_bezirke.geojson")
         };
       },
       onEachFeature: (feature, layer) => {
-const bezirkName = feature.properties.Bezeichn00 || "Unbenannt";
+const bezirkName = feature.properties.Bezeichnun || "Unbenannt";
 
         // Popup
         layer.bindPopup(`<strong>${bezirkName}</strong>`);
