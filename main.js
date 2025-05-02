@@ -1,5 +1,8 @@
 // Grundkarte zentriert auf Bochum
-const map = L.map("map").setView([51.4818, 7.2162], 12);
+const map = L.map("map", {
+  maxBounds: L.latLngBounds([51.42, 7.05], [51.56, 7.35]), // Begrenzung auf Bochum
+  minZoom: 11,
+}).setView([51.4818, 7.2162], 12);
 
 L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
   attribution: '&copy; <a href="https://carto.com/">CARTO</a>, &copy; OpenStreetMap',
@@ -7,19 +10,40 @@ L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r
   maxZoom: 19,
 }).addTo(map);
 
+// Farbpalette für Bezirke
+const bezirksFarben = [
+  "#cce5ff", "#d4f4dd", "#fff3bf", "#ffdede", "#f5e0ff", "#e3f2fd"
+];
+
 // Stadtbezirke laden
 fetch("bochum_bezirke.geojson")
   .then((res) => res.json())
   .then((data) => {
+    let farbIndex = 0;
     L.geoJSON(data, {
-      style: () => ({
-        color: "#00458a",
-        weight: 2,
-        fillColor: "#cce5ff",
-        fillOpacity: 0.25,
-      }),
+      style: (feature) => {
+        const farbe = bezirksFarben[farbIndex % bezirksFarben.length];
+        farbIndex++;
+        return {
+          color: "#888",
+          weight: 1,
+          fillColor: farbe,
+          fillOpacity: 0.4,
+        };
+      },
       onEachFeature: (feature, layer) => {
+        // Popup
         layer.bindPopup(`<strong>${feature.properties.name}</strong>`);
+
+        // Label zentriert im Bezirk
+        const center = layer.getBounds().getCenter();
+        const label = L.divIcon({
+          className: "bezirk-label",
+          html: `<div>${feature.properties.name}</div>`,
+          iconSize: [100, 20],
+          iconAnchor: [50, 10],
+        });
+        L.marker(center, { icon: label, interactive: false }).addTo(map);
       },
     }).addTo(map);
   });
