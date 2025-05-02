@@ -57,3 +57,13 @@ h1 {
   display: block;
   margin: 0.5rem 0;
 }
+
+.bezirk-label {
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  color: #444;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
