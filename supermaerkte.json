@@ -1,10 +1,23 @@
 [
   {
-    "name": "Rewe Bochum Innenstadt",
-    "coords": [51.4765, 7.2165]
+    "name": "EDEKA Driller Bochum, Castroper Straße",
+    "coords": [51.491500060320874, 7.243451928260085]
   },
   {
-    "name": "Aldi Süd Wattenscheid",
-    "coords": [51.4812, 7.1398]
+    "name": "ALDI Bochum-Querenburg, Markstraße",
+    "coords": [51.453954640333684, 7.247884782228865]
+  },
+  {
+    "name": "Kaufland Bochum-Wattenscheid, Alter Markt",
+    "coords": [51.48158381101198, 7.130271139901687]
+  },
+  {
+    "name": "Kaufland Bochum-Langendreer, Ümminger Straße",
+    "coords": [51.469838722614696, 7.293968133810787]
+  },
+  {
+    "name": "Netto Marken-Discount Bochum, Herner Straße",
+    "coords": [51.51332613368576, 7.21178629757473]
   }
 ]
+
