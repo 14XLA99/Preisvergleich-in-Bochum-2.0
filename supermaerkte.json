@@ -18,6 +18,305 @@
   {
     "name": "Netto Marken-Discount Bochum, Herner Straße",
     "coords": [51.51332613368576, 7.21178629757473]
-  }
+  },
+  {
+    "name": "ALDI Bochum-Dahlhausen, Dr.C.-Otto-Straße",
+    "coords": [51.42955407197658, 7.137342245989761]
+  },
+  {
+    "name": "Penny Markt Bochum-Hiltrop, Wiescherstraße",
+    "coords": [51.515766542885245, 7.257246815891912]
+  },
+  {
+    "name": "EDEKA Mader Bochum, Wasserstraße",
+    "coords": [51.46400712198588, 7.2370509055134775]
+  },
+  {
+    "name": "REWE Bochum, Nörenbergstraße",
+    "coords": [51.49197931296453, 7.305008974289657]
+  },
+  {
+    "name": "REWE Bochum, Hattinger Straße",
+    "coords": [51.46233950537871, 7.203820616616776]
+  },
+  {
+    "name": "Kaufland Bochum-Wattenscheid, Ottostraße",
+    "coords": [51.47225647244444, 7.1196812417518744]
+  },
+  {
+    "name": "ALDI Bochum-Langendreer, Unter Straße",
+    "coords": [51.47353424395204, 7.317872482229749]
+  },
+  {
+    "name": "ALDI Bochum-Höntrop, Höntroper Straße",
+    "coords": [51.45945322810038, 7.157632746169381]
+  },
+  {
+    "name": "Lidl Bochum-Langendreer, Ümminger Straße",
+    "coords": [51.47697361662983, 7.30105708222991]
+  },
+  {
+    "name": "ALDI Bochum-Mitte, Blumenstraße",
+    "coords": [51.48409725426936, 7.225220351543858]
+  },
+  {
+    "name": "Penny Markt Bochum-Höntrop, Ginsterweg",
+    "coords": [51.454633682070494, 7.148135753393125]
+  },
+  {
+    "name": "Globus Bochum-Riemke, Riemker Straße",
+    "coords": [51.508137913739915, 7.193420455246089]
+  },
+  {
+    "name": "EDEKA M & H Bochum-Wiemelhausen, Brenscheder Straße",
+    "coords": [51.45063332295118, 7.2309381399003145]
+  },
+  {
+    "name": "Penny Markt Bochum, Alleestraße",
+    "coords": [51.47964896898365, 7.206676012916365]
+  },
+  {
+    "name": "REWE Bochum-Ehrenfeld, Königsallee",
+    "coords": [51.47104018465704, 7.216962028259181]
+  },
+  {
+    "name": "EDEKA Center Burkowski Bochum, Alleestraße",
+    "coords": [51.48159284845633, 7.209556690171068]
+  },
+  {
+    "name": "EDEKA Foodservice Bochum, Speicherstraße",
+    "coords": [51.49834075622298, 7.20391080127518]
+  },
+  {
+    "name": "REWE Bochum-Innenstadt, Kortumstraße",
+    "coords": [51.48243008617802, 7.217686855244958]
+  },
+  {
+    "name": "REWE Bochum, Am Thie",
+    "coords": [51.45764451800997, 7.174575714765981]
+  },
+  {
+    "name": "REWE Bochum, Hochstraße",
+    "coords": [51.48034152500561, 7.140389012916425]
+  },
+  {
+    "name": "REWE Bochum, Wattenscheider Hellweg
+",
+    "coords": [51.46004460515246, 7.1430833822291815
+]
+  },
+  {
+    "name": "EDEKA Mavrici Bochum, Hattinger Straße",
+    "coords": [51.4429844631398, 7.193855316330505
+]
+  },
+  {
+    "name": "EDEKA Mehr Bochum, Zechenstraße",
+    "coords": [51.49035519713163, 7.207968341752659]
+  },
+  {
+    "name": "REWE Bochum, Wittener Straße",
+    "coords": [51.4719346651052, 7.250639562491889]
+  },
+  {
+    "name": "REWE Bochum, Hiltroper Straße",
+    "coords": [51.51246867349712, 7.257392780101878]
+  },
+  {
+    "name": "REWE Bochum, Westenfelder Straße",
+    "coords": [51.46512823932227, 7.149999005306025]
+  },
+  {
+    "name": "REWE Bochum, Lothringer Straße",
+    "coords": [51.51962596688602, 7.280757578149296]
+  },
+  {
+    "name": "Kaufland Bochum-Hofstede, Speicherstraße",
+    "coords": [51.50058586261251, 7.204857885932151]
+  },
+  {
+    "name": "ALDI Bochum-Wattenscheid, Dickebankstraße",
+    "coords": [51.48126881623479, 7.159110285931232]
+  },
+  {
+    "name": "Netto Marken-Discount Bochum, Dorstener Straße",
+    "coords": [51.49407681158182, 7.190727267613988]
+  },
+  {
+    "name": "Netto Marken-Discount Bochum, Lothringer Straße",
+    "coords": [51.52021985852122, 7.281955551545532]
+  },
+  {
+    "name": "Netto Marken-Discount Bochum, Stensstraße",
+    "coords": [51.46222326376143, 7.20318388593034]
+  },
+  {
+    "name": "Netto Marken-Discount Bochum, Wasserstraße",
+    "coords": [51.46947738864235, 7.244127758945492]
+  },
+  {
+    "name": "Netto Marken-Discount Bochum, Günnigfelder Straße",
+    "coords": [51.493804835157974, 7.144605800985196]
+  },
+  {
+    "name": "Netto Marken-Discount Bochum, Hattinger Straße",
+    "coords": [51.429158011511966, 7.165761836198229]
+  },
+  {
+    "name": "ALDI Bochum-Wattenscheid, Hansastraße",
+    "coords": [51.48371295625282, 7.147860282230219]
+  },
+  {
+    "name": "ALDI Bochum-Günnigfeld, Günnigfelder Straße",
+    "coords": [51.49587186941756, 7.145805155245555]
+  },
+  {
+    "name": "ALDI Bochum-Wattenscheid, Krayer Straße",
+    "coords": [51.48332291449902, 7.107079983422261]
+  },
+  {
+    "name": "ALDI Bochum-Werne, Werner Hellweg",
+    "coords": [51.49310920442601, 7.309414355245383]
+  },
+  {
+    "name": "ALDI Bochum, Amtmann-Ibing-Straße",
+    "coords": [51.51836000500778, 7.2810026515454584]
+  },
+  {
+    "name": "ALDI Bochum, Riemker Straße",
+    "coords": [51.50603000378235, 7.194554468252995]
+  },
+  {
+    "name": "ALDI Bochum-Grumme, Castroper Straße",
+    "coords": [51.491224598601235, 7.243317039902148]
+  },
+  {
+    "name": "ALDI Bochum-Weitmar, An der Landwehr",
+    "coords": [51.46669613060043, 7.204034548091569]
+  },
+  {
+    "name": "REWE Bochum, Querenburger Höhe",
+    "coords": [51.44835420632602, 7.257735841041357]
+  },
+  {
+    "name": "Netto Marken-Discount Bochum, Markstraße",
+    "coords": [51.44176391104331, 7.213256000848813]
+  },
+  {
+    "name": "Lidl Bochum-Mitte, Konrad-Adenauer-Platz",
+    "coords": [51.476095437066284, 7.2145414858299235]
+  },
+  {
+    "name": "Lidl Bochum-Wattenscheid, Heidestraße",
+    "coords": [51.48000397158459, 7.165724165656697]
+  },
+  {
+    "name": "Lidl Bochum-Gerthe, Amtmann-Ibing-Straße",
+    "coords": [51.51840764636127, 7.282155200158607]
+  },
+  {
+    "name": "Lidl Bochum - Linden, Welper Straße",
+    "coords": [51.42846227446694, 7.170117451806969]
+  },
+  {
+    "name": "Lidl Bochum-Grumme, Vierhausstraße",
+    "coords": [51.49897967366879, 7.222615647455203]
+  },
+  {
+    "name": "Lidl Bochum-Hofstede, Poststraße",
+    "coords": [51.50296463255708, 7.203745266220245]
+  },
+  {
+    "name": "Lidl Bochum-Hamme, Freudenbergstraße",
+    "coords": [51.49679160315434, 7.190312692022295]
+  },
+  {
+    "name": "Lidl Bochum-Wattenscheid, Lyrenstraße",
+    "coords": [51.482396549122114, 7.128501841752327]
+  },
+  {
+    "name": "Lidl Bochum-Laer, Sudbeckenpfad",
+    "coords": [51.47551940335481, 7.271759511065633]
+  },
+  {
+    "name": "Lidl Bochum-Dahlhausen, Dr.-C.-Otto-Straße",
+    "coords": [51.427195225158144, 7.141273945392116]
+  },
+  {
+    "name": "ALDI Bochum-Somborn, Lütgendortmunder Hellweg",
+    "coords": [51.49490714880941, 7.334502044803997]
+  },
+  {
+    "name": "Lidl Bochum-Günnigfeld, Günnigfelder Straße",
+    "coords": [51.49367975755937, 7.1436130860897675]
+  },
+  {
+    "name": "Netto Marken-Discount Bochum, Hasenwinkler Straße",
+    "coords": [51.43964137510987, 7.158317043600938]
+  },
+  {
+    "name": "Netto Marken-Discount Bochum, Alte Bahnhofstraße",
+    "coords": [51.47052384650782, 7.31704918573393]
+  },
+  {
+    "name": "ALDI Bochum-Weitmar, Markstraße",
+    "coords": [51.44136501552486, 7.212585125683469]
+  },
+  {
+    "name": "Netto Marken-Discount Bochum, Alte Bahnhofstraße",
+    "coords": [51.477645880691014, 7.302503385931076]
+  },
+  {
+    "name": "Lidl Bochum-Stahlhausen, Kohlenstraße",
+    "coords": [51.475242341898586, 7.192903433811019]
+  },
+  {
+    "name": "REWE Bochum-Linden, Hattinger Straße",
+    "coords": [51.42780005046178, 7.163533281741493]
+  },
+  {
+    "name": "REWE Bochum, Castroper Hellweg",
+    "coords": [51.49747259669318, 7.258077049409127]
+  },
+  {
+    "name": "Netto City Bochum, Brenscheder Straße",
+    "coords": [51.452030718909114, 7.231232968079096]
+  },
+  {
+    "name": "REWE Bochum-Weitmar, Karl-Friedrich-Straße",
+    "coords": [51.44034123126837, 7.211647142531921]
+  },
+  {
+    "name": "Penny Markt Bochum-Harpen, Harpener Hellweg",
+    "coords": [51.50030169561176, 7.280242022971593]
+  },
+  {
+    "name": "REWE Bochum-Innenstadt, Kortumstraße",
+    "coords": [51.477213960674995, 7.216476771370883]
+  },
+  {
+    "name": "REWE Bochum-Wiemelhausen, Brenscheder Straße",
+    "coords": [51.4516614543095, 7.231275365857577]
+  },
+  {
+    "name": "Lidl Bochum, Wiescherstraße",
+    "coords": [51.51623635320144, 7.257325125419571]
+  },
+  {
+    "name": "Penny Markt Bochum-Innenstadt, Castroper Straße",
+    "coords": [51.49262234573396, 7.251452661711999]
+  },
+  {
+    "name": "Penny Markt Bochum, Herner Straße",
+    "coords": [51.49227683558669, 7.212894779839644]
+  },
+  {
+    "name": "ALDI Bochum-Altenbochum, Lindengraben",
+    "coords": [51.473045912060805, 7.244169082229737]
+  },
+  {
+    "name": "REWE Bochum, Viktoriastraße",
+    "coords": [51.48020210647773, 7.215643776290933]
+  },
 ]
 
