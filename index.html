@@ -1,26 +1,16 @@
-// Marker aus externer Datei laden (z. B. supermaerkte.json)
-fetch("supermaerkte.json")
-  .then((res) => res.json())
-  .then((daten) => {
-    const markerCluster = L.markerClusterGroup();
+<!-- Leaflet.markercluster CSS -->
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+/>
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+/>
 
-    daten.forEach((markt) => {
-      const marker = L.marker(markt.coords);
-      marker.bindPopup(setPopupContent(markt.name));
+<!-- Leaflet.markercluster JS -->
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
-      marker.on("click", () => {
-        currentSupermarkt = markt.name;
-        currentMarker = marker;
-        form.reset();
-        formTitle.textContent = `Preise bei ${markt.name}`;
-        modal.classList.remove("hidden");
-      });
-
-      markerCluster.addLayer(marker);
-    });
-
-    map.addLayer(markerCluster);
-  });
 <!DOCTYPE html>
 <html lang="de">
 <head>
