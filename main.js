@@ -82,8 +82,10 @@ const setPopupContent = (name) => {
 fetch("supermaerkte.json")
   .then((res) => res.json())
   .then((daten) => {
+    const markerCluster = L.markerClusterGroup();
+
     daten.forEach((markt) => {
-      const marker = L.marker(markt.coords).addTo(map);
+      const marker = L.marker(markt.coords);
       marker.bindPopup(setPopupContent(markt.name));
 
       marker.on("click", () => {
@@ -93,7 +95,11 @@ fetch("supermaerkte.json")
         formTitle.textContent = `Preise bei ${markt.name}`;
         modal.classList.remove("hidden");
       });
+
+      markerCluster.addLayer(marker);
     });
+
+    map.addLayer(markerCluster);
   });
 
 // Formular absenden
