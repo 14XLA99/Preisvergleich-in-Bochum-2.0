@@ -78,15 +78,17 @@ const setPopupContent = (name) => {
   return `${name}<br><em>Klick für Preiseingabe</em>`;
 };
 
+// Cluster vorbereiten
+const markerCluster = L.markerClusterGroup();
+map.addLayer(markerCluster);
+
 // Marker aus externer Datei laden (z. B. supermaerkte.json)
 fetch("supermaerkte.json")
   .then((res) => res.json())
   .then((daten) => {
-    const markerCluster = L.markerClusterGroup();
-
     daten.forEach((markt) => {
       const marker = L.marker(markt.coords);
-      marker.bindPopup(setPopupContent(markt.name));
+      marker.bindPopup(markt.name);
 
       marker.on("click", () => {
         currentSupermarkt = markt.name;
@@ -96,7 +98,7 @@ fetch("supermaerkte.json")
         modal.classList.remove("hidden");
       });
 
-      markerCluster.addLayer(marker);
+     markerCluster.addLayer(marker); // NICHT addTo(map)
     });
 
     map.addLayer(markerCluster);
