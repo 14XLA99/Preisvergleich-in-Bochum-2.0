@@ -78,55 +78,53 @@ const setPopupContent = (name) => {
   return `${name}<br><em>Klick für Preiseingabe</em>`;
 };
 
-// Marker aus externer Datei laden (z. B. supermaerkte.json)
+// Marker aus externer Datei laden
 fetch("supermaerkte.json")
   .then((res) => res.json())
   .then((daten) => {
     daten.forEach((markt) => {
       const marker = L.marker(markt.coords).addTo(map);
-      marker.bindPopup(setPopupContent(markt.name));
 
       marker.on("click", () => {
-  currentSupermarkt = markt.name;
-  currentMarker = marker;
+        currentSupermarkt = markt.name;
+        currentMarker = marker;
 
-  const preise = preisDaten[currentSupermarkt];
-  if (preise) {
-    const inhalt = `
-      <b>${markt.name}</b><br>
-      ${Object.entries(preise)
-        .map(([produkt, preis]) => `${produkt}: ${formatPreis(preis)}`)
-        .join("<br>")}<br><br>
-      <button id="bearbeitenBtn">Preise bearbeiten</button>
-    `;
-    marker.bindPopup(inhalt).openPopup();
+        const preise = preisDaten[currentSupermarkt];
+        if (preise) {
+          const inhalt = `
+            <b>${markt.name}</b><br>
+            ${Object.entries(preise)
+              .map(([produkt, preis]) => `${produkt}: ${formatPreis(preis)}`)
+              .join("<br>")}<br><br>
+            <button id="bearbeitenBtn">Preise bearbeiten</button>
+          `;
+          marker.bindPopup(inhalt).openPopup();
 
-    // Button muss nach Popup-Erstellung erreichbar sein
-    setTimeout(() => {
-      const bearbeitenBtn = document.getElementById("bearbeitenBtn");
-      if (bearbeitenBtn) {
-        bearbeitenBtn.addEventListener("click", () => {
+          setTimeout(() => {
+            const bearbeitenBtn = document.getElementById("bearbeitenBtn");
+            if (bearbeitenBtn) {
+              bearbeitenBtn.addEventListener("click", () => {
+                form.reset();
+                formTitle.textContent = `Preise bei ${markt.name}`;
+
+                ["Brot", "Milch", "Äpfel", "Butter", "Nudeln"].forEach((produkt) => {
+                  if (preise[produkt] != null) {
+                    form.elements[produkt].value = preise[produkt];
+                  }
+                });
+
+                modal.classList.remove("hidden");
+              });
+            }
+          }, 100);
+        } else {
           form.reset();
           formTitle.textContent = `Preise bei ${markt.name}`;
-
-          // Vorbefüllen falls vorhanden
-          ["Brot", "Milch", "Äpfel", "Butter", "Nudeln"].forEach((produkt) => {
-            if (preise[produkt] != null) {
-              form.elements[produkt].value = preise[produkt];
-            }
-          });
-
           modal.classList.remove("hidden");
-        });
-      }
-    }, 100); // Kleines Delay, damit der Button sicher im DOM ist
-  } else {
-    // Kein Preis vorhanden → direkt Formular anzeigen
-    form.reset();
-    formTitle.textContent = `Preise bei ${markt.name}`;
-    modal.classList.remove("hidden");
-  }
-});
+        }
+      });
+    });
+  });
 
 // Formular absenden
 form.addEventListener("submit", (e) => {
