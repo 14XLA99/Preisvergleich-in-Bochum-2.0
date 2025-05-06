@@ -108,8 +108,8 @@ fetch("supermaerkte.json")
           `;
         }
 
-        // Wichtig: Popup schließen, um es neu zu erzeugen
-        marker.closePopup();
+        // ⛏️ Wichtig: Vorheriges Popup entfernen
+        marker.unbindPopup();
         marker.bindPopup(inhalt).openPopup();
 
         // Listener nach kurzer Verzögerung setzen
@@ -135,6 +135,7 @@ fetch("supermaerkte.json")
       });
     });
   });
+
 
 
 // Formular absenden
