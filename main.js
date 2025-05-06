@@ -90,41 +90,52 @@ fetch("supermaerkte.json")
         currentMarker = marker;
 
         const preise = preisDaten[currentSupermarkt];
+        let inhalt = "";
+
         if (preise) {
-          const inhalt = `
+          inhalt = `
             <b>${markt.name}</b><br>
             ${Object.entries(preise)
               .map(([produkt, preis]) => `${produkt}: ${formatPreis(preis)}`)
               .join("<br>")}<br><br>
-            <button id="bearbeitenBtn">Preise bearbeiten</button>
+            <button id="bearbeitenBtn">🖊️ Preise bearbeiten</button>
           `;
-          marker.bindPopup(inhalt).openPopup();
+        } else {
+          inhalt = `
+            <b>${markt.name}</b><br>
+            Noch keine Preise vorhanden<br><br>
+            <button id="bearbeitenBtn">➕ Preise eingeben</button>
+          `;
+        }
 
-          setTimeout(() => {
-            const bearbeitenBtn = document.getElementById("bearbeitenBtn");
-            if (bearbeitenBtn) {
-              bearbeitenBtn.addEventListener("click", () => {
-                form.reset();
-                formTitle.textContent = `Preise bei ${markt.name}`;
+        // Wichtig: Popup schließen, um es neu zu erzeugen
+        marker.closePopup();
+        marker.bindPopup(inhalt).openPopup();
 
+        // Listener nach kurzer Verzögerung setzen
+        setTimeout(() => {
+          const bearbeitenBtn = document.getElementById("bearbeitenBtn");
+          if (bearbeitenBtn) {
+            bearbeitenBtn.addEventListener("click", () => {
+              form.reset();
+              formTitle.textContent = `Preise bei ${markt.name}`;
+
+              if (preise) {
                 ["Brot", "Milch", "Äpfel", "Butter", "Nudeln"].forEach((produkt) => {
                   if (preise[produkt] != null) {
                     form.elements[produkt].value = preise[produkt];
                   }
                 });
+              }
 
-                modal.classList.remove("hidden");
-              });
-            }
-          }, 100);
-        } else {
-          form.reset();
-          formTitle.textContent = `Preise bei ${markt.name}`;
-          modal.classList.remove("hidden");
-        }
+              modal.classList.remove("hidden");
+            });
+          }
+        }, 100);
       });
     });
   });
+
 
 // Formular absenden
 form.addEventListener("submit", (e) => {
