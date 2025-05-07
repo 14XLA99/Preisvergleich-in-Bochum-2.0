@@ -1,8 +1,8 @@
 // Map zentrieren 
 const map = L.map("map", {
-  maxBounds: L.latLngBounds([51.42, 7.05], [51.56, 7.35]),
+  maxBounds: L.latLngBounds([51.35, 7.05], [51.56, 7.35]),
   maxBoundsViscosity: 1.0, // Hält Karte innerhalb, aber ohne Rückschnappen
-}).setView([51.4818, 7.2162], 12);
+}).setView([51.4718, 7.2162], 12);
 
 
 //Hintergrund Map
