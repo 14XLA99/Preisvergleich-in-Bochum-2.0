@@ -167,13 +167,19 @@ form.addEventListener("submit", (e) => {
     eintraege[produkt] = isNaN(wert) ? null : wert;
   });
 
+  // Preise speichern
   preisDaten[currentSupermarkt] = eintraege;
   localStorage.setItem("preise", JSON.stringify(preisDaten));
 
+  // Marker-Popup aktualisieren
   if (currentMarker) {
     currentMarker.setPopupContent(setPopupContent(currentSupermarkt));
+
+    // Marker-Icon auf grau setzen (zeigt: Preise vorhanden)
+    currentMarker.setIcon(greyIcon);
   }
 
+  // Formular schließen
   modal.classList.add("hidden");
 });
 
