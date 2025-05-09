@@ -78,7 +78,8 @@ const setPopupContent = (name) => {
   return `${name}<br><em>Klick für Preiseingabe</em>`;
 };
 
-// Marker aus externer Datei laden
+const popup = L.popup(); // Zentral definiertes Popup
+// Marker aus externer Datei
 fetch("supermaerkte.json")
   .then((res) => res.json())
   .then((daten) => {
@@ -86,56 +87,45 @@ fetch("supermaerkte.json")
       const marker = L.marker(markt.coords).addTo(map);
 
       marker.on("click", () => {
-  // ❗ Modal zuerst schließen (falls es noch offen ist)
-  modal.classList.add("hidden");
+        // Modal immer schließen bei Markerwechsel
+        modal.classList.add("hidden");
 
-  currentSupermarkt = markt.name;
-  currentMarker = marker;
+        currentSupermarkt = markt.name;
+        currentMarker = marker;
+        const preise = preisDaten[currentSupermarkt];
 
-  const preise = preisDaten[currentSupermarkt];
-  let inhalt = "";
+        let content = `
+          <b>${markt.name}</b><br>
+          ${preise ? Object.entries(preise).map(([produkt, preis]) => `${produkt}: ${formatPreis(preis)}`).join("<br>") : "Noch keine Preise vorhanden"}
+          <br><br>
+          <button id="bearbeitenBtn">Preise ${preise ? "bearbeiten" : "eingeben"}</button>
+        `;
 
-  if (preise) {
-    inhalt = `
-      <b>${markt.name}</b><br>
-      ${Object.entries(preise)
-        .map(([produkt, preis]) => `${produkt}: ${formatPreis(preis)}`)
-        .join("<br>")}<br><br>
-      <button id="bearbeitenBtn">🖊️ Preise bearbeiten</button>
-    `;
-  } else {
-    inhalt = `
-      <b>${markt.name}</b><br>
-      Noch keine Preise vorhanden<br><br>
-      <button id="bearbeitenBtn">➕ Preise eingeben</button>
-    `;
-  }
+        popup
+          .setLatLng(markt.coords)
+          .setContent(content)
+          .openOn(map); // Popup wird neu gerendert
 
-  // Popup neu setzen
-  marker.unbindPopup();
-  marker.bindPopup(inhalt).openPopup();
-
-  setTimeout(() => {
-    const bearbeitenBtn = document.getElementById("bearbeitenBtn");
-    if (bearbeitenBtn) {
-      bearbeitenBtn.addEventListener("click", () => {
-        form.reset();
-        formTitle.textContent = `Preise bei ${markt.name}`;
-
-        if (preise) {
-          ["Brot", "Milch", "Äpfel", "Butter", "Nudeln"].forEach((produkt) => {
-            if (preise[produkt] != null) {
-              form.elements[produkt].value = preise[produkt];
-            }
-          });
-        }
-
-        modal.classList.remove("hidden");
+        // Warten bis Popup im DOM ist, dann Button hinzufügen
+        setTimeout(() => {
+          const bearbeitenBtn = document.getElementById("bearbeitenBtn");
+          if (bearbeitenBtn) {
+            bearbeitenBtn.addEventListener("click", () => {
+              form.reset();
+              formTitle.textContent = `Preise bei ${markt.name}`;
+              if (preise) {
+                ["Brot", "Milch", "Äpfel", "Butter", "Nudeln"].forEach((produkt) => {
+                  if (preise[produkt] != null) {
+                    form.elements[produkt].value = preise[produkt];
+                  }
+                });
+              }
+              modal.classList.remove("hidden");
+            });
+          }
+        }, 100);
       });
-    }
-  }, 100);
-});
-  });
+    });
   });
 
 
