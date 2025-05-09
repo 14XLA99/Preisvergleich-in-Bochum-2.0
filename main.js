@@ -78,7 +78,7 @@ const setPopupContent = (name) => {
   return `${name}<br><em>Klick für Preiseingabe</em>`;
 };
 
-//Farblich Marker ändern
+// Farblich Marker ändern
 const normalIcon = L.icon({
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
   iconSize: [25, 41],
@@ -98,39 +98,41 @@ const greyIcon = L.icon({
 });
 
 const popup = L.popup(); // Zentral definiertes Popup
+
 // Marker aus externer Datei
 fetch("supermaerkte.json")
   .then((res) => res.json())
   .then((daten) => {
     daten.forEach((markt) => {
-      const marker = L.marker(markt.coords).addTo(map);
+      const hatPreise = preisDaten[markt.name]; // Prüfen ob schon Preise existieren
 
-      const hatPreise = preisDaten[markt.name];
-const marker = L.marker(markt.coords, {
-  icon: hatPreise ? greyIcon : normalIcon,
-}).addTo(map);
-      
+      // Marker mit passender Farbe erzeugen
+      const marker = L.marker(markt.coords, {
+        icon: hatPreise ? greyIcon : normalIcon,
+      }).addTo(map);
+
       marker.on("click", () => {
-        // Modal immer schließen bei Markerwechsel
-        modal.classList.add("hidden");
+        modal.classList.add("hidden"); // Modal schließen bei Wechsel
 
         currentSupermarkt = markt.name;
         currentMarker = marker;
         const preise = preisDaten[currentSupermarkt];
 
+        // Popup-Inhalt generieren
         let content = `
           <b>${markt.name}</b><br>
-          ${preise ? Object.entries(preise).map(([produkt, preis]) => `${produkt}: ${formatPreis(preis)}`).join("<br>") : "Noch keine Preise vorhanden"}
+          ${preise
+            ? Object.entries(preise)
+                .map(([produkt, preis]) => `${produkt}: ${formatPreis(preis)}`)
+                .join("<br>")
+            : "Noch keine Preise vorhanden"}
           <br><br>
           <button id="bearbeitenBtn">Preise ${preise ? "bearbeiten" : "eingeben"}</button>
         `;
 
-        popup
-          .setLatLng(markt.coords)
-          .setContent(content)
-          .openOn(map); // Popup wird neu gerendert
+        popup.setLatLng(markt.coords).setContent(content).openOn(map);
 
-        // Warten bis Popup im DOM ist, dann Button hinzufügen
+        // Button-Listener nachträglich setzen
         setTimeout(() => {
           const bearbeitenBtn = document.getElementById("bearbeitenBtn");
           if (bearbeitenBtn) {
@@ -151,6 +153,7 @@ const marker = L.marker(markt.coords, {
       });
     });
   });
+
 
 
 // Formular absenden
