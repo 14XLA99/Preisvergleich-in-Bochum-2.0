@@ -135,7 +135,8 @@ fetch("supermaerkte.json")
     }
   }, 100);
 });
-
+  });
+  });
 
 
 // Formular absenden
