@@ -78,6 +78,25 @@ const setPopupContent = (name) => {
   return `${name}<br><em>Klick für Preiseingabe</em>`;
 };
 
+/Farblich Marker ändern
+const normalIcon = L.icon({
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+  shadowSize: [41, 41],
+});
+
+const greyIcon = L.icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+  shadowSize: [41, 41],
+});
+
 const popup = L.popup(); // Zentral definiertes Popup
 // Marker aus externer Datei
 fetch("supermaerkte.json")
@@ -86,6 +105,11 @@ fetch("supermaerkte.json")
     daten.forEach((markt) => {
       const marker = L.marker(markt.coords).addTo(map);
 
+      const hatPreise = preisDaten[markt.name];
+const marker = L.marker(markt.coords, {
+  icon: hatPreise ? greyIcon : normalIcon,
+}).addTo(map);
+      
       marker.on("click", () => {
         // Modal immer schließen bei Markerwechsel
         modal.classList.add("hidden");
