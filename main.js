@@ -78,7 +78,7 @@ const setPopupContent = (name) => {
   return `${name}<br><em>Klick für Preiseingabe</em>`;
 };
 
-/Farblich Marker ändern
+//Farblich Marker ändern
 const normalIcon = L.icon({
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
   iconSize: [25, 41],
