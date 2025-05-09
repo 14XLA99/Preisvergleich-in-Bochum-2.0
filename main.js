@@ -86,55 +86,55 @@ fetch("supermaerkte.json")
       const marker = L.marker(markt.coords).addTo(map);
 
       marker.on("click", () => {
-        currentSupermarkt = markt.name;
-        currentMarker = marker;
+  // ❗ Modal zuerst schließen (falls es noch offen ist)
+  modal.classList.add("hidden");
 
-        const preise = preisDaten[currentSupermarkt];
-        let inhalt = "";
+  currentSupermarkt = markt.name;
+  currentMarker = marker;
+
+  const preise = preisDaten[currentSupermarkt];
+  let inhalt = "";
+
+  if (preise) {
+    inhalt = `
+      <b>${markt.name}</b><br>
+      ${Object.entries(preise)
+        .map(([produkt, preis]) => `${produkt}: ${formatPreis(preis)}`)
+        .join("<br>")}<br><br>
+      <button id="bearbeitenBtn">🖊️ Preise bearbeiten</button>
+    `;
+  } else {
+    inhalt = `
+      <b>${markt.name}</b><br>
+      Noch keine Preise vorhanden<br><br>
+      <button id="bearbeitenBtn">➕ Preise eingeben</button>
+    `;
+  }
+
+  // Popup neu setzen
+  marker.unbindPopup();
+  marker.bindPopup(inhalt).openPopup();
+
+  setTimeout(() => {
+    const bearbeitenBtn = document.getElementById("bearbeitenBtn");
+    if (bearbeitenBtn) {
+      bearbeitenBtn.addEventListener("click", () => {
+        form.reset();
+        formTitle.textContent = `Preise bei ${markt.name}`;
 
         if (preise) {
-          inhalt = `
-            <b>${markt.name}</b><br>
-            ${Object.entries(preise)
-              .map(([produkt, preis]) => `${produkt}: ${formatPreis(preis)}`)
-              .join("<br>")}<br><br>
-            <button id="bearbeitenBtn">🖊️ Preise bearbeiten</button>
-          `;
-        } else {
-          inhalt = `
-            <b>${markt.name}</b><br>
-            Noch keine Preise vorhanden<br><br>
-            <button id="bearbeitenBtn">➕ Preise eingeben</button>
-          `;
+          ["Brot", "Milch", "Äpfel", "Butter", "Nudeln"].forEach((produkt) => {
+            if (preise[produkt] != null) {
+              form.elements[produkt].value = preise[produkt];
+            }
+          });
         }
 
-        // ⛏️ Wichtig: Vorheriges Popup entfernen
-        marker.unbindPopup();
-        marker.bindPopup(inhalt).openPopup();
-
-        // Listener nach kurzer Verzögerung setzen
-        setTimeout(() => {
-          const bearbeitenBtn = document.getElementById("bearbeitenBtn");
-          if (bearbeitenBtn) {
-            bearbeitenBtn.addEventListener("click", () => {
-              form.reset();
-              formTitle.textContent = `Preise bei ${markt.name}`;
-
-              if (preise) {
-                ["Brot", "Milch", "Äpfel", "Butter", "Nudeln"].forEach((produkt) => {
-                  if (preise[produkt] != null) {
-                    form.elements[produkt].value = preise[produkt];
-                  }
-                });
-              }
-
-              modal.classList.remove("hidden");
-            });
-          }
-        }, 100);
+        modal.classList.remove("hidden");
       });
-    });
-  });
+    }
+  }, 100);
+});
 
 
 
