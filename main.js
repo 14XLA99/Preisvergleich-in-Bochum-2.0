@@ -19,7 +19,7 @@ const bezirksFarben = [
 
 // 🔥 Firebase SDK importieren
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // 🔥 Firebase konfigurieren und initialisieren
 const firebaseConfig = {
@@ -82,9 +82,6 @@ const bezirkName = feature.properties.Bezeichnun || "Unbenannt";
       },
     }).addTo(map);
   });
-
-// Firestone laden
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 const db = getFirestore();
 
