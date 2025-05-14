@@ -147,6 +147,7 @@ const greyIcon = L.icon({
 const popup = L.popup(); // Zentral definiertes Popup
 
 // Marker aus externer Datei
+function ladeSupermarktMarker() {
 fetch("supermaerkte.json")
   .then((res) => res.json())
   .then((daten) => {
@@ -238,3 +239,5 @@ form.addEventListener("submit", (e) => {
 closeBtn.onclick = () => modal.classList.add("hidden");
 // Modal schließen
 closeBtn.onclick = () => modal.classList.add("hidden");
+
+ladePreiseAusFirestore();
