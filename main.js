@@ -17,6 +17,37 @@ const bezirksFarben = [
   "#cce5ff", "#d4f4dd", "#fff3bf", "#ffdede", "#f5e0ff", "#e3f2fd"
 ];
 
+// 🔥 Firebase SDK importieren
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+// 🔥 Firebase konfigurieren und initialisieren
+const firebaseConfig = {
+  apiKey: "AIzaSyDlcUk04W7QOAjxA3PZPR2g-0pLW8Lt0I4",
+  authDomain: "preisvergleich-bochum.firebaseapp.com",
+  projectId: "preisvergleich-bochum",
+  storageBucket: "preisvergleich-bochum.appspot.com",
+  messagingSenderId: "702849481407",
+  appId: "1:702849481407:web:5d704ee1082202d161640a"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Neue Funktion: Preis in Firestore speichern
+async function speicherePreisInFirestore(markt, eintraege) {
+  try {
+    await addDoc(collection(db, "preise"), {
+      markt: markt,
+      preise: eintraege,
+      zeitstempel: serverTimestamp()
+    });
+    console.log("✅ Preis in Firestore gespeichert");
+  } catch (error) {
+    console.error("❌ Fehler beim Speichern in Firestore:", error);
+  }
+}
+
 // Stadtbezirke laden
 fetch("bochum_bezirke.geojson")
   .then((res) => res.json())
@@ -167,9 +198,13 @@ form.addEventListener("submit", (e) => {
     eintraege[produkt] = isNaN(wert) ? null : wert;
   });
 
-  // Preise speichern
+    // Preise lokal speichern (wie gehabt)
   preisDaten[currentSupermarkt] = eintraege;
   localStorage.setItem("preise", JSON.stringify(preisDaten));
+
+  // 🔥 Zusätzlich: Preise in Firebase Firestore speichern
+  speicherePreisInFirestore(currentSupermarkt, eintraege);
+
 
   // Marker-Popup aktualisieren
   if (currentMarker) {
