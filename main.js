@@ -83,8 +83,6 @@ const bezirkName = feature.properties.Bezeichnun || "Unbenannt";
     }).addTo(map);
   });
 
-const db = getFirestore();
-
 // Neue Preis-Daten (werden befüllt)
 const preisDaten = {};
 
