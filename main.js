@@ -83,8 +83,24 @@ const bezirkName = feature.properties.Bezeichnun || "Unbenannt";
     }).addTo(map);
   });
 
-// Preis-Daten aus localStorage
-const preisDaten = JSON.parse(localStorage.getItem("preise") || "{}");
+// Firestone laden
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+const db = getFirestore();
+
+// Neue Preis-Daten (werden befüllt)
+const preisDaten = {};
+
+async function ladePreiseAusFirestore() {
+  const snapshot = await getDocs(collection(db, "preise"));
+  snapshot.forEach((doc) => {
+    preisDaten[doc.id] = doc.data(); // Supermarkt-Name als Key
+  });
+
+  // Jetzt Supermärkte laden, nachdem Daten da sind
+  ladeSupermarktMarker();
+}
+
 
 // DOM-Elemente
 const modal = document.getElementById("formModal");
