@@ -49,7 +49,7 @@ async function speicherePreisInFirestore(markt, eintraege) {
 }
 
 // Stadtbezirke laden
-fetch("bochum_bezirke.geojson")
+fetch("/bochum_bezirke.geojson")
   .then((res) => res.json())
   .then((data) => {
     let farbIndex = 0;
@@ -143,7 +143,7 @@ const popup = L.popup(); // Zentral definiertes Popup
 
 // Marker aus externer Datei
 function ladeSupermarktMarker() {
-fetch("supermaerkte.json")
+fetch("/supermaerkte.json")
   .then((res) => res.json())
   .then((daten) => {
     daten.forEach((markt) => {
