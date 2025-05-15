@@ -1,5 +1,5 @@
 // Lädt und zeigt die Bezirksgrenzen von Bochum auf der Karte
-fetch("bezirke_bo.json")
+fetch("/bezirke_bo.json")
   .then((res) => res.json())
   .then((geojson) => {
     L.geoJSON(geojson, {
