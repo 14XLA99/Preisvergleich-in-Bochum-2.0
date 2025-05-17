@@ -1,27 +1,33 @@
 // Map zentrieren 
 const map = L.map("map", {
   maxBounds: L.latLngBounds([51.35, 7.05], [51.56, 7.35]),
-  maxBoundsViscosity: 1.0, // Hält Karte innerhalb, aber ohne Rückschnappen
+  maxBoundsViscosity: 1.0,
 }).setView([51.4718, 7.2162], 12);
 
-
-//Hintergrund Map
+// Hintergrund-Karte
 L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png", {
   attribution: '&copy; <a href="https://carto.com/">CARTO</a>, &copy; OpenStreetMap',
   subdomains: "abcd",
   maxZoom: 19,
 }).addTo(map);
 
-// Farbpalette für Bezirke
-const bezirksFarben = [
-  "#cce5ff", "#d4f4dd", "#fff3bf", "#ffdede", "#f5e0ff", "#e3f2fd"
-];
+// Farben für Bezirke
+const bezirksFarben = ["#cce5ff", "#d4f4dd", "#fff3bf", "#ffdede", "#f5e0ff", "#e3f2fd"];
 
-// 🔥 Firebase SDK importieren
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+// 🔥 Firebase-Importe
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  doc,
+  setDoc,
+  getDocs,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-// 🔥 Firebase konfigurieren und initialisieren
+// 🔥 Firebase-Konfiguration
 const firebaseConfig = {
   apiKey: "AIzaSyDlcUk04W7QOAjxA3PZPR2g-0pLW8Lt0I4",
   authDomain: "preisvergleich-bochum.firebaseapp.com",
@@ -34,27 +40,28 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Neue Funktion: Preis in Firestore speichern
+// Preise speichern – mit Überschreiben!
 async function speicherePreisInFirestore(markt, eintraege) {
   try {
-    await addDoc(collection(db, "preise"), {
-      markt: markt,
+    const marktId = markt.toLowerCase().replace(/[^a-z0-9]/g, "-");
+    await setDoc(doc(db, "preise", marktId), {
+      markt,
       preise: eintraege,
       zeitstempel: serverTimestamp()
     });
     console.log("✅ Preis in Firestore gespeichert");
   } catch (error) {
-    console.error("❌ Fehler beim Speichern in Firestore:", error);
+    console.error("❌ Fehler beim Speichern:", error);
   }
 }
 
-// Stadtbezirke laden
+// Bezirke laden
 fetch("/bochum_bezirke.geojson")
   .then((res) => res.json())
   .then((data) => {
     let farbIndex = 0;
     L.geoJSON(data, {
-      style: (feature) => {
+      style: () => {
         const farbe = bezirksFarben[farbIndex % bezirksFarben.length];
         farbIndex++;
         return {
@@ -65,12 +72,8 @@ fetch("/bochum_bezirke.geojson")
         };
       },
       onEachFeature: (feature, layer) => {
-const bezirkName = feature.properties.Bezeichnun || "Unbenannt";
-
-        // Popup
+        const bezirkName = feature.properties.Bezeichnun || "Unbenannt";
         layer.bindPopup(`<strong>${bezirkName}</strong>`);
-
-        // Label zentriert im Bezirk
         const center = layer.getBounds().getCenter();
         const label = L.divIcon({
           className: "bezirk-label",
@@ -78,49 +81,30 @@ const bezirkName = feature.properties.Bezeichnun || "Unbenannt";
           iconSize: [100, 20],
           iconAnchor: [50, 10],
         });
-        L.marker(center, { icon: label, interactive: false }).addTo(map);
+        L.marker(center, {
+          icon: label,
+          interactive: false
+        }).addTo(map);
       },
     }).addTo(map);
   });
 
-// Neue Preis-Daten (werden befüllt)
+// Lokale Preisdaten
 const preisDaten = {};
 
+// Preise aus Firestore laden
 async function ladePreiseAusFirestore() {
   const snapshot = await getDocs(collection(db, "preise"));
   snapshot.forEach((doc) => {
-    preisDaten[doc.id] = doc.data(); // Supermarkt-Name als Key
+    const daten = doc.data();
+    if (daten.markt && daten.preise) {
+      preisDaten[daten.markt] = daten.preise;
+    }
   });
-
-  // Jetzt Supermärkte laden, nachdem Daten da sind
   ladeSupermarktMarker();
 }
 
-
-// DOM-Elemente
-const modal = document.getElementById("formModal");
-const form = document.getElementById("priceForm");
-const formTitle = document.getElementById("form-title");
-const closeBtn = document.getElementById("closeBtn");
-
-let currentMarker = null;
-let currentSupermarkt = "";
-
-// Preis formatieren
-const formatPreis = (val) => (val != null ? `${val.toFixed(2)} €` : "-");
-
-// Popup-Inhalt generieren
-const setPopupContent = (name) => {
-  const preise = preisDaten[name];
-  if (preise) {
-    return `<b>${name}</b><br>${Object.entries(preise)
-      .map(([prod, preis]) => `${prod}: ${formatPreis(preis)}`)
-      .join("<br>")}<br><em>Klick für Bearbeiten</em>`;
-  }
-  return `${name}<br><em>Klick für Preiseingabe</em>`;
-};
-
-// Farblich Marker ändern
+// Marker-Stile
 const normalIcon = L.icon({
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
   iconSize: [25, 41],
@@ -139,67 +123,71 @@ const greyIcon = L.icon({
   shadowSize: [41, 41],
 });
 
-const popup = L.popup(); // Zentral definiertes Popup
+const popup = L.popup();
+let currentMarker = null;
+let currentSupermarkt = "";
 
-// Marker aus externer Datei
+// Popup-Generator
+const formatPreis = (val) => val != null ? `${val.toFixed(2)} €` : "-";
+
+// Marker laden
 function ladeSupermarktMarker() {
-fetch("/supermaerkte.json")
-  .then((res) => res.json())
-  .then((daten) => {
-    daten.forEach((markt) => {
-      const hatPreise = preisDaten[markt.name]; // Prüfen ob schon Preise existieren
+  fetch("/supermaerkte.json")
+    .then((res) => res.json())
+    .then((daten) => {
+      daten.forEach((markt) => {
+        const hatPreise = preisDaten[markt.name];
+        const marker = L.marker(markt.coords, {
+          icon: hatPreise ? greyIcon : normalIcon,
+        }).addTo(map);
 
-      // Marker mit passender Farbe erzeugen
-      const marker = L.marker(markt.coords, {
-        icon: hatPreise ? greyIcon : normalIcon,
-      }).addTo(map);
+        marker.on("click", () => {
+          modal.classList.add("hidden");
 
-      marker.on("click", () => {
-        modal.classList.add("hidden"); // Modal schließen bei Wechsel
+          currentSupermarkt = markt.name;
+          currentMarker = marker;
+          const preise = preisDaten[currentSupermarkt];
 
-        currentSupermarkt = markt.name;
-        currentMarker = marker;
-        const preise = preisDaten[currentSupermarkt];
+          const content = `
+            <b>${markt.name}</b><br>
+            ${preise
+              ? Object.entries(preise).map(([produkt, preis]) => `${produkt}: ${formatPreis(preis)}`).join("<br>")
+              : "Noch keine Preise vorhanden"}
+            <br><br>
+            <button id="bearbeitenBtn">Preise ${preise ? "bearbeiten" : "eingeben"}</button>
+          `;
 
-        // Popup-Inhalt generieren
-        let content = `
-          <b>${markt.name}</b><br>
-          ${preise
-            ? Object.entries(preise)
-                .map(([produkt, preis]) => `${produkt}: ${formatPreis(preis)}`)
-                .join("<br>")
-            : "Noch keine Preise vorhanden"}
-          <br><br>
-          <button id="bearbeitenBtn">Preise ${preise ? "bearbeiten" : "eingeben"}</button>
-        `;
+          popup.setLatLng(markt.coords).setContent(content).openOn(map);
 
-        popup.setLatLng(markt.coords).setContent(content).openOn(map);
-
-        // Button-Listener nachträglich setzen
-        setTimeout(() => {
-          const bearbeitenBtn = document.getElementById("bearbeitenBtn");
-          if (bearbeitenBtn) {
-            bearbeitenBtn.addEventListener("click", () => {
-              form.reset();
-              formTitle.textContent = `Preise bei ${markt.name}`;
-              if (preise) {
-                ["Brot", "Milch", "Äpfel", "Butter", "Nudeln"].forEach((produkt) => {
-                  if (preise[produkt] != null) {
-                    form.elements[produkt].value = preise[produkt];
-                  }
-                });
-              }
-              modal.classList.remove("hidden");
-            });
-          }
-        }, 100);
+          setTimeout(() => {
+            const btn = document.getElementById("bearbeitenBtn");
+            if (btn) {
+              btn.addEventListener("click", () => {
+                form.reset();
+                formTitle.textContent = `Preise bei ${markt.name}`;
+                if (preise) {
+                  ["Brot", "Milch", "Äpfel", "Butter", "Nudeln"].forEach((produkt) => {
+                    if (preise[produkt] != null) {
+                      form.elements[produkt].value = preise[produkt];
+                    }
+                  });
+                }
+                modal.classList.remove("hidden");
+              });
+            }
+          }, 100);
+        });
       });
     });
-  });
 }
 
+// Formularelemente
+const modal = document.getElementById("formModal");
+const form = document.getElementById("priceForm");
+const formTitle = document.getElementById("form-title");
+const closeBtn = document.getElementById("closeBtn");
 
-// Formular absenden
+// Formular abschicken
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   const formData = new FormData(form);
@@ -210,29 +198,26 @@ form.addEventListener("submit", (e) => {
     eintraege[produkt] = isNaN(wert) ? null : wert;
   });
 
-    // Preise lokal speichern (wie gehabt)
   preisDaten[currentSupermarkt] = eintraege;
   localStorage.setItem("preise", JSON.stringify(preisDaten));
-
-  // 🔥 Zusätzlich: Preise in Firebase Firestore speichern
   speicherePreisInFirestore(currentSupermarkt, eintraege);
 
-
-  // Marker-Popup aktualisieren
   if (currentMarker) {
-    currentMarker.setPopupContent(setPopupContent(currentSupermarkt));
-
-    // Marker-Icon auf grau setzen (zeigt: Preise vorhanden)
+    currentMarker.setPopupContent(`${setPopupContent(currentSupermarkt)}`);
     currentMarker.setIcon(greyIcon);
   }
 
-  // Formular schließen
   modal.classList.add("hidden");
 });
 
-// Modal schließen
 closeBtn.onclick = () => modal.classList.add("hidden");
-// Modal schließen
-closeBtn.onclick = () => modal.classList.add("hidden");
+
+const setPopupContent = (name) => {
+  const preise = preisDaten[name];
+  if (preise) {
+    return `<b>${name}</b><br>${Object.entries(preise).map(([prod, preis]) => `${prod}: ${formatPreis(preis)}`).join("<br>")}<br><em>Klick für Bearbeiten</em>`;
+  }
+  return `${name}<br><em>Klick für Preiseingabe</em>`;
+};
 
 ladePreiseAusFirestore();
