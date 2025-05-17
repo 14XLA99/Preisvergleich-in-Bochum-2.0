@@ -15,7 +15,16 @@ L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png
 const bezirksFarben = ["#cce5ff", "#d4f4dd", "#fff3bf", "#ffdede", "#f5e0ff", "#e3f2fd"];
 
 // 🔥 Firebase-Importe
-import { getFirestore, collection, doc, setDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { 
+  getFirestore, 
+  collection, 
+  doc,       // NEU: Für setDoc
+  setDoc,    // NEU: Für direktes Überschreiben
+  getDocs, 
+  serverTimestamp 
+} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
 
 // 🔥 Firebase-Konfiguration
 const firebaseConfig = {
