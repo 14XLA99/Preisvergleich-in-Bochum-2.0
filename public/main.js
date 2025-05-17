@@ -15,17 +15,7 @@ L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png
 const bezirksFarben = ["#cce5ff", "#d4f4dd", "#fff3bf", "#ffdede", "#f5e0ff", "#e3f2fd"];
 
 // 🔥 Firebase-Importe
-import {
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  doc,
-  setDoc,
-  getDocs,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getFirestore, collection, doc, setDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // 🔥 Firebase-Konfiguration
 const firebaseConfig = {
@@ -43,15 +33,15 @@ const db = getFirestore(app);
 // Preise speichern – mit Überschreiben!
 async function speicherePreisInFirestore(markt, eintraege) {
   try {
-    const marktId = markt.toLowerCase().replace(/[^a-z0-9]/g, "-");
+    const marktId = markt.replace(/\W+/g, "_"); // Sonderzeichen entfernen → gültige ID
     await setDoc(doc(db, "preise", marktId), {
-      markt,
+      markt: markt,
       preise: eintraege,
       zeitstempel: serverTimestamp()
     });
-    console.log("✅ Preis in Firestore gespeichert");
+    console.log("✅ Preis in Firestore gespeichert (überschrieben)");
   } catch (error) {
-    console.error("❌ Fehler beim Speichern:", error);
+    console.error("❌ Fehler beim Speichern in Firestore:", error);
   }
 }
 
