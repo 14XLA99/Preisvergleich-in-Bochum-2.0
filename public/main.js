@@ -201,10 +201,17 @@ form.addEventListener("submit", (e) => {
   localStorage.setItem("preise", JSON.stringify(preisDaten));
   speicherePreisInFirestore(currentSupermarkt, eintraege);
 
-  if (currentMarker) {
-    currentMarker.setPopupContent(`${setPopupContent(currentSupermarkt)}`);
-    currentMarker.setIcon(greyIcon);
-  }
+// Marker-Popup aktualisieren
+if (currentMarker) {
+  currentMarker.setIcon(greyIcon);
+
+  // Popup neu setzen und anzeigen
+  popup
+    .setLatLng(currentMarker.getLatLng())
+    .setContent(setPopupContent(currentSupermarkt))
+    .openOn(map);
+}
+
 
   modal.classList.add("hidden");
 });
