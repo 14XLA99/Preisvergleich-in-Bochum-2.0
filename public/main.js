@@ -197,31 +197,41 @@ form.addEventListener("submit", (e) => {
     eintraege[produkt] = isNaN(wert) ? null : wert;
   });
 
-  preisDaten[currentSupermarkt] = eintraege;
+ // Einheitlich speichern
+  preisDaten[currentSupermarkt] = {
+    preise: eintraege,
+    zeitstempel: new Date(), // Optional
+  };
+
+  // Lokal speichern
   localStorage.setItem("preise", JSON.stringify(preisDaten));
+
+  // Cloud speichern
   speicherePreisInFirestore(currentSupermarkt, eintraege);
 
-// Marker-Popup aktualisieren
-if (currentMarker) {
-  currentMarker.setIcon(greyIcon);
+  // Marker aktualisieren
+  if (currentMarker) {
+    currentMarker.setIcon(greyIcon);
 
-  // Popup neu setzen und anzeigen
-  popup
-    .setLatLng(currentMarker.getLatLng())
-    .setContent(setPopupContent(currentSupermarkt))
-    .openOn(map);
-}
-
+    popup
+      .setLatLng(currentMarker.getLatLng())
+      .setContent(setPopupContent(currentSupermarkt))
+      .openOn(map);
+  }
 
   modal.classList.add("hidden");
 });
 
+// Modal schließen
 closeBtn.onclick = () => modal.classList.add("hidden");
 
+// Popup-Inhalt setzen
 const setPopupContent = (name) => {
-  const preise = preisDaten[name];
-  if (preise) {
-    return `<b>${name}</b><br>${Object.entries(preise).map(([prod, preis]) => `${prod}: ${formatPreis(preis)}`).join("<br>")}<br><em>Klick für Bearbeiten</em>`;
+  const daten = preisDaten[name];
+  if (daten && daten.preise) {
+    return `<b>${name}</b><br>${Object.entries(daten.preise)
+      .map(([prod, preis]) => `${prod}: ${formatPreis(preis)}`)
+      .join("<br>")}<br><br><button id="bearbeitenBtn">Preise bearbeiten</button>`;
   }
   return `${name}<br><em>Klick für Preiseingabe</em>`;
 };
