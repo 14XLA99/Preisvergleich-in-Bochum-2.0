@@ -232,7 +232,7 @@ form.addEventListener("submit", (e) => {
       .setContent(setPopupContent(currentSupermarkt))
       .openOn(map);
 
-    // ⬅️ Wichtig: Listener erneut setzen
+    //Listener erneut setzen
     setTimeout(() => {
       const bearbeitenBtn = document.getElementById("bearbeitenBtn");
       if (bearbeitenBtn) {
