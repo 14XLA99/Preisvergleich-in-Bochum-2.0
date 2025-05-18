@@ -205,10 +205,20 @@ form.addEventListener("submit", (e) => {
   const formData = new FormData(form);
   const eintraege = {};
 
+  let fehltEtwas = false;
+
   ["Brot", "Milch", "Äpfel", "Butter", "Nudeln"].forEach((produkt) => {
     const wert = parseFloat(formData.get(produkt));
+    if (isNaN(wert)) {
+      fehltEtwas = true;
+    }
     eintraege[produkt] = isNaN(wert) ? null : wert;
   });
+
+  if (fehltEtwas) {
+    alert("❗Bitte trage für alle Produkte einen Preis ein, bevor du speicherst.");
+    return; // Abbrechen
+  }
 
 // Einheitlich speichern
   preisDaten[currentSupermarkt] = {
