@@ -147,16 +147,29 @@ function ladeSupermarktMarker() {
           currentMarker = marker;
           const preise = preisDaten[currentSupermarkt];
 
-          const content = `
-            <b>${markt.name}</b><br>
-            ${preise
-              ? Object.entries(preise).map(([produkt, preis]) => `${produkt}: ${formatPreis(preis)}`).join("<br>")
-              : "Noch keine Preise vorhanden"}
-            <br><br>
-            <button id="bearbeitenBtn">Preise ${preise ? "bearbeiten" : "eingeben"}</button>
-          `;
+          popup
+  .setLatLng(markt.coords)
+  .setContent(setPopupContent(markt.name))
+  .openOn(map);
 
-          popup.setLatLng(markt.coords).setContent(content).openOn(map);
+setTimeout(() => {
+  const btn = document.getElementById("bearbeitenBtn");
+  if (btn) {
+    btn.addEventListener("click", () => {
+      form.reset();
+      formTitle.textContent = `Preise bei ${markt.name}`;
+      const daten = preisDaten[markt.name];
+      if (daten && daten.preise) {
+        ["Brot", "Milch", "Äpfel", "Butter", "Nudeln"].forEach((produkt) => {
+          if (daten.preise[produkt] != null) {
+            form.elements[produkt].value = daten.preise[produkt];
+          }
+        });
+      }
+      modal.classList.remove("hidden");
+    });
+  }
+}, 100);
 
           setTimeout(() => {
             const btn = document.getElementById("bearbeitenBtn");
