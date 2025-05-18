@@ -283,3 +283,8 @@ const setPopupContent = (name) => {
 };
 
 ladePreiseAusFirestore();
+
+window.addEventListener("pageshow", () => {
+  map.invalidateSize();
+});
+
