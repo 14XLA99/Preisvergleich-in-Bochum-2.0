@@ -262,12 +262,14 @@ closeBtn.onclick = () => modal.classList.add("hidden");
 // Popup-Inhalt erzeugen
 const setPopupContent = (name) => {
   const daten = preisDaten[name];
-  if (daten && daten.preise) {
-    return `<b>${name}</b><br>${Object.entries(daten.preise)
+  const preise = daten?.preise || daten; // unterstützt alte und neue Struktur
+
+  if (preise && typeof preise === "object") {
+    return `<b>${name}</b><br>${Object.entries(preise)
       .map(([prod, preis]) => `${prod}: ${formatPreis(preis)}`)
       .join("<br>")}<br><br><button id="bearbeitenBtn">Preise bearbeiten</button>`;
   }
-  return `${name}<br><em>Klick für Preiseingabe</em>`;
+  return `${name}<br><br><button id="bearbeitenBtn">Preise eingeben</button>`;
 };
 
 ladePreiseAusFirestore();
