@@ -284,14 +284,20 @@ const setPopupContent = (name) => {
 
 ladePreiseAusFirestore();
 
-// Keine Schlieren, neu laden
+
+//Schlieren/Visuelle fehler entfernen 
+// Wenn Seite aus dem Cache zurückkehrt (z. B. durch "Zurück"-Button oder App-Wechsel)
 window.addEventListener("pageshow", () => {
-  map.invalidateSize();
+  setTimeout(() => {
+    map.invalidateSize();
+  }, 100); // gibt dem Browser etwas Zeit zur vollständigen Wiederherstellung
 });
 
+// Zusätzlich: wenn die Seite aus dem „Hintergrund“ wieder sichtbar wird
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) {
-    map.invalidateSize();
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 100); // auch hier kleine Verzögerung zur Sicherheit
   }
 });
-
