@@ -197,10 +197,10 @@ form.addEventListener("submit", (e) => {
     eintraege[produkt] = isNaN(wert) ? null : wert;
   });
 
- // Einheitlich speichern
+// Einheitlich speichern
   preisDaten[currentSupermarkt] = {
     preise: eintraege,
-    zeitstempel: new Date(), // Optional
+    zeitstempel: new Date(),
   };
 
   // Lokal speichern
@@ -213,10 +213,31 @@ form.addEventListener("submit", (e) => {
   if (currentMarker) {
     currentMarker.setIcon(greyIcon);
 
+    // Popup aktualisieren und erneut öffnen
     popup
       .setLatLng(currentMarker.getLatLng())
       .setContent(setPopupContent(currentSupermarkt))
       .openOn(map);
+
+    // ⬅️ Wichtig: Listener erneut setzen
+    setTimeout(() => {
+      const bearbeitenBtn = document.getElementById("bearbeitenBtn");
+      if (bearbeitenBtn) {
+        bearbeitenBtn.addEventListener("click", () => {
+          form.reset();
+          formTitle.textContent = `Preise bei ${currentSupermarkt}`;
+          const daten = preisDaten[currentSupermarkt];
+          if (daten && daten.preise) {
+            ["Brot", "Milch", "Äpfel", "Butter", "Nudeln"].forEach((produkt) => {
+              if (daten.preise[produkt] != null) {
+                form.elements[produkt].value = daten.preise[produkt];
+              }
+            });
+          }
+          modal.classList.remove("hidden");
+        });
+      }
+    }, 100);
   }
 
   modal.classList.add("hidden");
@@ -225,7 +246,7 @@ form.addEventListener("submit", (e) => {
 // Modal schließen
 closeBtn.onclick = () => modal.classList.add("hidden");
 
-// Popup-Inhalt setzen
+// Popup-Inhalt erzeugen
 const setPopupContent = (name) => {
   const daten = preisDaten[name];
   if (daten && daten.preise) {
