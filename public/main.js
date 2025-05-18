@@ -284,7 +284,14 @@ const setPopupContent = (name) => {
 
 ladePreiseAusFirestore();
 
+// Keine Schlieren, neu laden
 window.addEventListener("pageshow", () => {
   map.invalidateSize();
+});
+
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) {
+    map.invalidateSize();
+  }
 });
 
