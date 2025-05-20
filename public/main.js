@@ -208,7 +208,7 @@ const formTitle = document.getElementById("form-title");
 const closeBtn = document.getElementById("closeBtn");
 
 // Formular abschicken
-form.addEventListener("submit", (e) => {
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const formData = new FormData(form);
   const eintraege = {};
