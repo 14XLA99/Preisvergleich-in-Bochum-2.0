@@ -53,7 +53,7 @@ async function speicherePreisInFirestore(markt, eintraege) {
     await setDoc(doc(db, "preise", marktId), {
       markt: markt,
       preise: eintraege,
-      zeitstempel: serverTimestamp()
+      zeitstempel: serverTimestamp(),
       bild: bildURL || null
     });
     console.log("✅ Preis in Firestore gespeichert (überschrieben)");
