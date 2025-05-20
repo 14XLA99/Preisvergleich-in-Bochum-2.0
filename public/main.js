@@ -47,7 +47,7 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 
 // Preise speichern – mit Überschreiben!
-async function speicherePreisInFirestore(markt, eintraege) {
+async function speicherePreisInFirestore(markt, eintraege, bildURL = null) {
   try {
     const marktId = markt.replace(/\W+/g, "_"); // Sonderzeichen entfernen → gültige ID
     await setDoc(doc(db, "preise", marktId), {
