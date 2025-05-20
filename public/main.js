@@ -286,18 +286,36 @@ ladePreiseAusFirestore();
 
 
 //Schlieren/Visuelle fehler entfernen 
-// Wenn Seite aus dem Cache zurückkehrt (z. B. durch "Zurück"-Button oder App-Wechsel)
+// Hilfsfunktion zur vollständigen Aktualisierung
+function refreshMap() {
+  map.invalidateSize();
+
+  // Trigger einen Redraw aller Layer (inkl. Marker)
+  map.eachLayer((layer) => {
+    if (layer._icon || layer._path) {
+      if (layer._icon && layer._icon.style) {
+        // Neuzeichnung erzwingen für Marker-Icons
+        layer._icon.style.display = 'none';
+        void layer._icon.offsetHeight; // Trigger Reflow
+        layer._icon.style.display = '';
+      }
+      if (layer._path && layer.redraw) {
+        // Falls SVG oder Vector Layer, neu rendern
+        layer.redraw();
+      }
+    }
+  });
+}
+
+// pageshow: beim Wiederbetreten
 window.addEventListener("pageshow", () => {
-  setTimeout(() => {
-    map.invalidateSize();
-  }, 100); // gibt dem Browser etwas Zeit zur vollständigen Wiederherstellung
+  setTimeout(refreshMap, 100);
 });
 
-// Zusätzlich: wenn die Seite aus dem „Hintergrund“ wieder sichtbar wird
+// wenn Sichtbarkeit wiederhergestellt wird
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) {
-    setTimeout(() => {
-      map.invalidateSize();
-    }, 100); // auch hier kleine Verzögerung zur Sicherheit
+    setTimeout(refreshMap, 100);
   }
 });
+
