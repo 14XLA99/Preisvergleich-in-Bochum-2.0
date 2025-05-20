@@ -25,6 +25,12 @@ import {
   serverTimestamp 
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+import { 
+  getStorage, 
+  ref, 
+  uploadBytes, 
+  getDownloadURL 
+} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
 // 🔥 Firebase-Konfiguration
 const firebaseConfig = {
@@ -38,6 +44,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
 // Preise speichern – mit Überschreiben!
 async function speicherePreisInFirestore(markt, eintraege) {
@@ -47,6 +54,7 @@ async function speicherePreisInFirestore(markt, eintraege) {
       markt: markt,
       preise: eintraege,
       zeitstempel: serverTimestamp()
+      bild: bildURL || null
     });
     console.log("✅ Preis in Firestore gespeichert (überschrieben)");
   } catch (error) {
@@ -220,10 +228,25 @@ form.addEventListener("submit", (e) => {
     return; // Abbrechen
   }
 
+  // Bild
+  const bildDatei = form.elements["bild"].files[0];
+let bildURL = null;
+
+if (bildDatei) {
+  const bildRef = ref(storage, `bilder/${currentSupermarkt}_${Date.now()}.jpg`);
+  try {
+    await uploadBytes(bildRef, bildDatei);
+    bildURL = await getDownloadURL(bildRef);
+  } catch (err) {
+    console.error("❌ Fehler beim Hochladen des Bildes:", err);
+  }
+}
+
 // Einheitlich speichern
   preisDaten[currentSupermarkt] = {
     preise: eintraege,
     zeitstempel: new Date(),
+    bild: bildURL || null
   };
 
   // Lokal speichern
