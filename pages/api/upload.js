@@ -1,6 +1,6 @@
-import type { NextApiRequest, NextApiResponse } from "next";
 import { bucket } from "./firebaseAdmin";
 import { v4 as uuidv4 } from "uuid";
+import * as busboy from "busboy";
 
 export const config = {
   api: {
@@ -8,9 +8,7 @@ export const config = {
   },
 };
 
-import * as busboy from "busboy";
-
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
