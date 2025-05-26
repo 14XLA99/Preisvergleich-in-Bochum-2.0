@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: "10mb", // erlaubt größere Bilder
+      sizeLimit: "10mb",
     },
   },
 };
@@ -15,19 +15,19 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { file, filename } = req.body;
+    const { imageBase64, fileName } = req.body;
 
-    if (!file || !filename) {
-      return res.status(400).json({ message: "Missing file or filename" });
+    if (!imageBase64 || !fileName) {
+      return res.status(400).json({ message: "Missing imageBase64 or fileName" });
     }
 
-    const buffer = Buffer.from(file, "base64");
-    const blob = bucket.file(`bilder/${filename}`);
+    const buffer = Buffer.from(imageBase64, "base64");
+    const file = bucket.file(`bilder/${fileName}`);
     const uuid = uuidv4();
 
-    await blob.save(buffer, {
+    await file.save(buffer, {
       metadata: {
-        contentType: "image/jpeg", // passe an, falls PNG
+        contentType: "image/jpeg",
         metadata: {
           firebaseStorageDownloadTokens: uuid,
         },
@@ -35,7 +35,7 @@ export default async function handler(req, res) {
     });
 
     const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(
-      blob.name
+      file.name
     )}?alt=media&token=${uuid}`;
 
     res.status(200).json({ url: publicUrl });
@@ -44,4 +44,3 @@ export default async function handler(req, res) {
     res.status(500).json({ message: "Upload failed", error });
   }
 }
-
