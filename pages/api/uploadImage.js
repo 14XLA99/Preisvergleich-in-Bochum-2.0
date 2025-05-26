@@ -1,4 +1,4 @@
-import { bucket } from "@/pages/api/firebaseAdmin";
+import { bucket } from "./firebaseAdmin";
 import { v4 as uuidv4 } from "uuid";
 
 export const config = {
@@ -42,3 +42,4 @@ export default async function handler(req, res) {
     res.status(500).json({ error: "Fehler beim Bild-Upload" });
   }
 }
+
