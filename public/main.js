@@ -311,29 +311,30 @@ if (bildDatei) {
       .setContent(setPopupContent(currentSupermarkt))
       .openOn(map);
 
-    //Listener erneut setzen
-    setTimeout(() => {
-      const bearbeitenBtn = document.getElementById("bearbeitenBtn");
-      if (bearbeitenBtn) {
-        bearbeitenBtn.addEventListener("click", () => {
-          form.reset();
-          formTitle.textContent = `Preise bei ${currentSupermarkt}`;
-          const daten = preisDaten[currentSupermarkt];
-          if (daten && daten.preise) {
-            ["Brot", "Milch", "Äpfel", "Butter", "Nudeln"].forEach((produkt) => {
-              if (daten.preise[produkt] != null) {
-                form.elements[produkt].value = daten.preise[produkt];
-              }
-            });
+  // Listener erneut setzen
+setTimeout(() => {
+  const bearbeitenBtn = document.getElementById("bearbeitenBtn");
+  if (bearbeitenBtn) {
+    bearbeitenBtn.addEventListener("click", () => {
+      form.reset();
+      formTitle.textContent = `Preise bei ${currentSupermarkt}`;
+      const daten = preisDaten[currentSupermarkt];
+      if (daten && daten.preise) {
+        ["Brot", "Milch", "Äpfel", "Butter", "Nudeln"].forEach((produkt) => {
+          if (daten.preise[produkt] != null) {
+            form.elements[produkt].value = daten.preise[produkt];
           }
-          modal.classList.remove("hidden");
         });
       }
-    }, 100);
+      modal.classList.remove("hidden");
+    });
   }
+}, 100); // korrekt geschlossen
 
-  modal.classList.add("hidden");
+modal.classList.add("hidden"); // ✅ gehört außerhalb vom setTimeout
+
 });
+
 
 function fileToBase64(file) {
   return new Promise((resolve, reject) => {
