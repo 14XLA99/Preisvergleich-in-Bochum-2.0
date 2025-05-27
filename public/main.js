@@ -25,6 +25,22 @@ import {
   serverTimestamp 
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+import {
+  getAuth,
+  signInAnonymously,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+const auth = getAuth(app);
+
+signInAnonymously(auth)
+  .then(() => {
+    console.log("✅ Anonym angemeldet");
+  })
+  .catch((error) => {
+    console.error("❌ Fehler bei anonymer Anmeldung:", error);
+  });
+
 import { 
   getStorage, 
   ref, 
