@@ -333,7 +333,7 @@ setTimeout(() => {
 
 modal.classList.add("hidden"); // ✅ gehört außerhalb vom setTimeout
 
-});
+};
 
 
 function fileToBase64(file) {
