@@ -229,18 +229,32 @@ form.addEventListener("submit", async (e) => {
   }
 
   // Bild
-  const bildDatei = form.elements["bild"].files[0];
+const bildDatei = form.elements["bild"].files[0];
 let bildURL = null;
 
 if (bildDatei) {
-  const bildRef = ref(storage, `bilder/${currentSupermarkt}_${Date.now()}.jpg`);
+  const base64Image = await fileToBase64(bildDatei);
+  const fileName = `${currentSupermarkt}_${Date.now()}.jpg`;
+
   try {
-    await uploadBytes(bildRef, bildDatei);
-    bildURL = await getDownloadURL(bildRef);
+    const res = await fetch("/api/upload-image", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        imageBase64: base64Image,
+        fileName: fileName,
+      }),
+    });
+
+    const result = await res.json();
+    bildURL = result.url;
   } catch (err) {
     console.error("❌ Fehler beim Hochladen des Bildes:", err);
   }
 }
+
 
 // Einheitlich speichern
   preisDaten[currentSupermarkt] = {
@@ -288,6 +302,18 @@ if (bildDatei) {
 
   modal.classList.add("hidden");
 });
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64 = reader.result.split(",")[1];
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
 // Modal schließen
 closeBtn.onclick = () => modal.classList.add("hidden");
