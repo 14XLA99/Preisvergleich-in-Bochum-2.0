@@ -16,13 +16,13 @@ const bezirksFarben = ["#cce5ff", "#d4f4dd", "#fff3bf", "#ffdede", "#f5e0ff", "#
 
 // 🔥 Firebase-Importe
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { 
-  getFirestore, 
-  collection, 
-  doc,       // NEU: Für setDoc
-  setDoc,    // NEU: Für direktes Überschreiben
-  getDocs, 
-  serverTimestamp 
+import {
+  getFirestore,
+  collection,
+  doc,
+  setDoc,
+  getDocs,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 import {
@@ -31,21 +31,11 @@ import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
-const auth = getAuth(app);
-
-signInAnonymously(auth)
-  .then(() => {
-    console.log("✅ Anonym angemeldet");
-  })
-  .catch((error) => {
-    console.error("❌ Fehler bei anonymer Anmeldung:", error);
-  });
-
-import { 
-  getStorage, 
-  ref, 
-  uploadBytes, 
-  getDownloadURL 
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
 // 🔥 Firebase-Konfiguration
@@ -61,11 +51,20 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
+const auth = getAuth(app);
 
-// Preise speichern – mit Überschreiben!
+signInAnonymously(auth)
+  .then(() => {
+    console.log("✅ Anonym angemeldet");
+  })
+  .catch((error) => {
+    console.error("❌ Fehler bei anonymer Anmeldung:", error);
+  });
+
+// Preise speichern
 async function speicherePreisInFirestore(markt, eintraege, bildURL = null) {
   try {
-    const marktId = markt.replace(/\W+/g, "_"); // Sonderzeichen entfernen → gültige ID
+    const marktId = markt.replace(/\W+/g, "_");
     await setDoc(doc(db, "preise", marktId), {
       markt: markt,
       preise: eintraege,
@@ -112,10 +111,8 @@ fetch("/bochum_bezirke.geojson")
     }).addTo(map);
   });
 
-// Lokale Preisdaten
 const preisDaten = {};
 
-// Preise aus Firestore laden
 async function ladePreiseAusFirestore() {
   const snapshot = await getDocs(collection(db, "preise"));
   snapshot.forEach((doc) => {
@@ -127,7 +124,6 @@ async function ladePreiseAusFirestore() {
   ladeSupermarktMarker();
 }
 
-// Marker-Stile
 const normalIcon = L.icon({
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
   iconSize: [25, 41],
@@ -150,10 +146,8 @@ const popup = L.popup();
 let currentMarker = null;
 let currentSupermarkt = "";
 
-// Popup-Generator
 const formatPreis = (val) => val != null ? `${val.toFixed(2)} €` : "-";
 
-// Marker laden
 function ladeSupermarktMarker() {
   fetch("/supermaerkte.json")
     .then((res) => res.json())
@@ -172,28 +166,9 @@ function ladeSupermarktMarker() {
           const preise = preisDaten[currentSupermarkt];
 
           popup
-  .setLatLng(markt.coords)
-  .setContent(setPopupContent(markt.name))
-  .openOn(map);
-
-setTimeout(() => {
-  const btn = document.getElementById("bearbeitenBtn");
-  if (btn) {
-    btn.addEventListener("click", () => {
-      form.reset();
-      formTitle.textContent = `Preise bei ${markt.name}`;
-      const daten = preisDaten[markt.name];
-      if (daten && daten.preise) {
-        ["Brot", "Milch", "Äpfel", "Butter", "Nudeln"].forEach((produkt) => {
-          if (daten.preise[produkt] != null) {
-            form.elements[produkt].value = daten.preise[produkt];
-          }
-        });
-      }
-      modal.classList.remove("hidden");
-    });
-  }
-}, 100);
+            .setLatLng(markt.coords)
+            .setContent(setPopupContent(markt.name))
+            .openOn(map);
 
           setTimeout(() => {
             const btn = document.getElementById("bearbeitenBtn");
@@ -217,124 +192,102 @@ setTimeout(() => {
     });
 }
 
-// Formularelemente
 const modal = document.getElementById("formModal");
 const form = document.getElementById("priceForm");
 const formTitle = document.getElementById("form-title");
 const closeBtn = document.getElementById("closeBtn");
 
-// Formular abschicken
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const formData = new FormData(form);
   const eintraege = {};
-
   let fehltEtwas = false;
 
   ["Brot", "Milch", "Äpfel", "Butter", "Nudeln"].forEach((produkt) => {
     const wert = parseFloat(formData.get(produkt));
-    if (isNaN(wert)) {
-      fehltEtwas = true;
-    }
+    if (isNaN(wert)) fehltEtwas = true;
     eintraege[produkt] = isNaN(wert) ? null : wert;
   });
 
   if (fehltEtwas) {
     alert("❗Bitte trage für alle Produkte einen Preis ein, bevor du speicherst.");
-    return; // Abbrechen
+    return;
   }
 
-  // Bild
-const bildDatei = form.elements["bild"].files[0];
-let bildURL = null;
+  const bildDatei = form.elements["bild"].files[0];
+  let bildURL = null;
 
-if (bildDatei) {
- const bildDatei = form.elements["bild"].files[0];
-let bildURL = null;
+  if (bildDatei) {
+    const base64Image = await fileToBase64(bildDatei);
+    const fileName = `${currentSupermarkt}_${Date.now()}.jpg`;
 
-if (bildDatei) {
-  const base64Image = await fileToBase64(bildDatei);
-  const fileName = `${currentSupermarkt}_${Date.now()}.jpg`;
+    try {
+      const res = await fetch("/api/upload-image", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          imageBase64: base64Image,
+          fileName: fileName,
+        }),
+      });
 
-  try {
-    const res = await fetch("/api/upload-image", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-        // "Authorization": "deinSicheresPasswort123" // (optional, wenn aktiviert)
-      },
-      body: JSON.stringify({
-        imageBase64: base64Image,
-        fileName: fileName,
-      }),
-    });
-
-    const result = await res.json();
-    if (res.ok) {
-      bildURL = result.url;
-    } else {
-      console.warn("⚠️ Fehler beim Hochladen des Bildes:", result.message);
+      const result = await res.json();
+      if (res.ok) {
+        bildURL = result.url;
+      } else {
+        console.warn("⚠️ Fehler beim Hochladen des Bildes:", result.message);
+      }
+    } catch (err) {
+      console.error("❌ Upload fehlgeschlagen:", err);
     }
-  } catch (err) {
-    console.error("❌ Upload fehlgeschlagen:", err);
   }
-}
 
-
-// Einheitlich speichern
   preisDaten[currentSupermarkt] = {
     preise: eintraege,
     zeitstempel: new Date(),
     bild: bildURL || null
   };
 
-  // Lokal speichern
   localStorage.setItem("preise", JSON.stringify(preisDaten));
-
-  // Cloud speichern
   speicherePreisInFirestore(currentSupermarkt, eintraege, bildURL);
 
-  // Überprüfung der Bild Speicherung 
   if (bildURL) {
-  console.log("📷 Bild erfolgreich hochgeladen:", bildURL);
-} else {
-  console.warn("⚠️ Kein Bild-URL erhalten – Upload fehlgeschlagen?");
-}
+    console.log("📷 Bild erfolgreich hochgeladen:", bildURL);
+  } else {
+    console.warn("⚠️ Kein Bild-URL erhalten – Upload fehlgeschlagen?");
+  }
 
-  // Marker aktualisieren
   if (currentMarker) {
     currentMarker.setIcon(greyIcon);
-
-    // Popup aktualisieren und erneut öffnen
     popup
       .setLatLng(currentMarker.getLatLng())
       .setContent(setPopupContent(currentSupermarkt))
       .openOn(map);
 
-  // Listener erneut setzen
-setTimeout(() => {
-  const bearbeitenBtn = document.getElementById("bearbeitenBtn");
-  if (bearbeitenBtn) {
-    bearbeitenBtn.addEventListener("click", () => {
-      form.reset();
-      formTitle.textContent = `Preise bei ${currentSupermarkt}`;
-      const daten = preisDaten[currentSupermarkt];
-      if (daten && daten.preise) {
-        ["Brot", "Milch", "Äpfel", "Butter", "Nudeln"].forEach((produkt) => {
-          if (daten.preise[produkt] != null) {
-            form.elements[produkt].value = daten.preise[produkt];
+    setTimeout(() => {
+      const bearbeitenBtn = document.getElementById("bearbeitenBtn");
+      if (bearbeitenBtn) {
+        bearbeitenBtn.addEventListener("click", () => {
+          form.reset();
+          formTitle.textContent = `Preise bei ${currentSupermarkt}`;
+          const daten = preisDaten[currentSupermarkt];
+          if (daten && daten.preise) {
+            ["Brot", "Milch", "Äpfel", "Butter", "Nudeln"].forEach((produkt) => {
+              if (daten.preise[produkt] != null) {
+                form.elements[produkt].value = daten.preise[produkt];
+              }
+            });
           }
+          modal.classList.remove("hidden");
         });
       }
-      modal.classList.remove("hidden");
-    });
+    }, 100);
   }
-}, 100); // korrekt geschlossen
 
-modal.classList.add("hidden"); // ✅ gehört außerhalb vom setTimeout
-
-};
-
+  modal.classList.add("hidden");
+});
 
 function fileToBase64(file) {
   return new Promise((resolve, reject) => {
@@ -348,18 +301,16 @@ function fileToBase64(file) {
   });
 }
 
-// Modal schließen
 closeBtn.onclick = () => modal.classList.add("hidden");
 
-// Popup-Inhalt erzeugen
 const setPopupContent = (name) => {
   const daten = preisDaten[name];
-  const preise = daten?.preise || daten; // unterstützt alte und neue Struktur
-   const bildURL = daten?.bild;
+  const preise = daten?.preise || daten;
+  const bildURL = daten?.bild;
 
   let content = `<b>${name}</b><br>`;
   if (preise && typeof preise === "object") {
-     content += Object.entries(preise)
+    content += Object.entries(preise)
       .map(([prod, preis]) => `${prod}: ${formatPreis(preis)}`)
       .join("<br>");
   }
@@ -374,35 +325,26 @@ const setPopupContent = (name) => {
 
 ladePreiseAusFirestore();
 
-
-//Schlieren/Visuelle fehler entfernen 
-// Hilfsfunktion zur vollständigen Aktualisierung
 function refreshMap() {
   map.invalidateSize();
-
-  // Trigger einen Redraw aller Layer (inkl. Marker)
   map.eachLayer((layer) => {
     if (layer._icon || layer._path) {
       if (layer._icon && layer._icon.style) {
-        // Neuzeichnung erzwingen für Marker-Icons
         layer._icon.style.display = 'none';
-        void layer._icon.offsetHeight; // Trigger Reflow
+        void layer._icon.offsetHeight;
         layer._icon.style.display = '';
       }
       if (layer._path && layer.redraw) {
-        // Falls SVG oder Vector Layer, neu rendern
         layer.redraw();
       }
     }
   });
 }
 
-// pageshow: beim Wiederbetreten
 window.addEventListener("pageshow", () => {
   setTimeout(refreshMap, 100);
 });
 
-// wenn Sichtbarkeit wiederhergestellt wird
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) {
     setTimeout(refreshMap, 100);
