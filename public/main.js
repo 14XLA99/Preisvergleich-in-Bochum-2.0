@@ -267,7 +267,14 @@ if (bildDatei) {
   localStorage.setItem("preise", JSON.stringify(preisDaten));
 
   // Cloud speichern
-  speicherePreisInFirestore(currentSupermarkt, eintraege);
+  speicherePreisInFirestore(currentSupermarkt, eintraege, bildURL);
+
+  // Überprüfung der Bild Speicherung 
+  if (bildURL) {
+  console.log("📷 Bild erfolgreich hochgeladen:", bildURL);
+} else {
+  console.warn("⚠️ Kein Bild-URL erhalten – Upload fehlgeschlagen?");
+}
 
   // Marker aktualisieren
   if (currentMarker) {
