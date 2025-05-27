@@ -233,28 +233,14 @@ const bildDatei = form.elements["bild"].files[0];
 let bildURL = null;
 
 if (bildDatei) {
-  const base64Image = await fileToBase64(bildDatei);
-  const fileName = `${currentSupermarkt}_${Date.now()}.jpg`;
-
+  const storageRef = ref(storage, `bilder/${currentSupermarkt}_${Date.now()}.jpg`);
   try {
-    const res = await fetch("/api/upload-image", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        imageBase64: base64Image,
-        fileName: fileName,
-      }),
-    });
-
-    const result = await res.json();
-    bildURL = result.url;
+    const snapshot = await uploadBytes(storageRef, bildDatei);
+    bildURL = await getDownloadURL(snapshot.ref);
   } catch (err) {
     console.error("❌ Fehler beim Hochladen des Bildes:", err);
   }
 }
-
 
 // Einheitlich speichern
   preisDaten[currentSupermarkt] = {
