@@ -249,14 +249,37 @@ const bildDatei = form.elements["bild"].files[0];
 let bildURL = null;
 
 if (bildDatei) {
-  const storageRef = ref(storage, `bilder/${currentSupermarkt}_${Date.now()}.jpg`);
+ const bildDatei = form.elements["bild"].files[0];
+let bildURL = null;
+
+if (bildDatei) {
+  const base64Image = await fileToBase64(bildDatei);
+  const fileName = `${currentSupermarkt}_${Date.now()}.jpg`;
+
   try {
-    const snapshot = await uploadBytes(storageRef, bildDatei);
-    bildURL = await getDownloadURL(snapshot.ref);
+    const res = await fetch("/api/upload-image", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+        // "Authorization": "deinSicheresPasswort123" // (optional, wenn aktiviert)
+      },
+      body: JSON.stringify({
+        imageBase64: base64Image,
+        fileName: fileName,
+      }),
+    });
+
+    const result = await res.json();
+    if (res.ok) {
+      bildURL = result.url;
+    } else {
+      console.warn("⚠️ Fehler beim Hochladen des Bildes:", result.message);
+    }
   } catch (err) {
-    console.error("❌ Fehler beim Hochladen des Bildes:", err);
+    console.error("❌ Upload fehlgeschlagen:", err);
   }
 }
+
 
 // Einheitlich speichern
   preisDaten[currentSupermarkt] = {
