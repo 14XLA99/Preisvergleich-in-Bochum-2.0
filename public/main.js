@@ -203,6 +203,7 @@ form.addEventListener("submit", async (e) => {
   const eintraege = {};
   let fehltEtwas = false;
 
+  // Preise auslesen
   ["Brot", "Milch", "Äpfel", "Butter", "Nudeln"].forEach((produkt) => {
     const wert = parseFloat(formData.get(produkt));
     if (isNaN(wert)) fehltEtwas = true;
@@ -214,6 +215,7 @@ form.addEventListener("submit", async (e) => {
     return;
   }
 
+  // Bild-Upload
   const bildDatei = form.elements["bild"].files[0];
   let bildURL = null;
 
@@ -234,15 +236,41 @@ form.addEventListener("submit", async (e) => {
       });
 
       const result = await res.json();
-      if (res.ok) {
+      console.log("Upload-Response:", result);
+
+      if (res.ok && result.url) {
         bildURL = result.url;
       } else {
-        console.warn("⚠️ Fehler beim Hochladen des Bildes:", result.message);
+        console.warn("⚠️ Fehler beim Hochladen des Bildes:", result.message || "Keine URL erhalten");
       }
     } catch (err) {
       console.error("❌ Upload fehlgeschlagen:", err);
     }
+  } else {
+    console.log("ℹ️ Kein Bild ausgewählt – überspringe Upload.");
   }
+
+  // Eintrag zusammenbauen und speichern
+  preisDaten[currentSupermarkt] = {
+    preise: eintraege,
+    zeitstempel: new Date(),
+    bild: bildURL,  // null oder die tatsächliche URL
+  };
+  localStorage.setItem("preise", JSON.stringify(preisDaten));
+  await speicherePreisInFirestore(currentSupermarkt, eintraege, bildURL);
+
+  // Marker & Popup aktualisieren…
+  if (currentMarker) {
+    currentMarker.setIcon(greyIcon);
+    popup
+      .setLatLng(currentMarker.getLatLng())
+      .setContent(setPopupContent(currentSupermarkt))
+      .openOn(map);
+  }
+
+  modal.classList.add("hidden");
+});
+
 
   preisDaten[currentSupermarkt] = {
     preise: eintraege,
