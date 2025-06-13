@@ -28,9 +28,13 @@ export default async function handler(req, res) {
     });
 
     return res.status(200).json({ url: blob.url });
-  } catch (error) {
-    console.error("Upload error:", error);
-    return res.status(500).json({ message: "Upload failed", error: error.toString() });
-  }
+} catch (error) {
+  console.error("🚨 Upload error (detailed):", error);
+  return res.status(500).json({
+    message: "Upload failed",
+    error: error.message || error.toString(),
+    stack: error.stack,    // Nur temporär zur Analyse
+  });
 }
+
 
