@@ -2,11 +2,9 @@
   "version": 2,
   "builds": [
     { "src": "public/**/*",       "use": "@vercel/static" },
-    // Deine API‑Routen
     { "src": "pages/api/**/*.js", "use": "@vercel/node"   }
   ],
   "routes": [
-    // Root-Pfad / auf public/index.html umleiten
     { "src": "/",        "dest": "/public/index.html" },
     { "src": "/api/(.*)", "dest": "/pages/api/$1.js"    },
     { "src": "/(.*)",     "dest": "/public/$1"          }
