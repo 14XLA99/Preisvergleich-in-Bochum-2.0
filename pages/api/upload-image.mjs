@@ -1,6 +1,9 @@
 // pages/api/upload-image.js
 import { put } from "@vercel/blob";
 
+export default async function handler(req, res) {
+  console.log("▶️ Upload-Handler gestartet");
+
 export const config = {
   api: {
     bodyParser: {
