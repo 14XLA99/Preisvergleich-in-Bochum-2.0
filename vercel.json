@@ -1,0 +1,17 @@
+// vercel.json (im Root)
+{
+  "version": 2,
+  "builds": [
+    // alles in /public als Static Assets ausliefern
+    { "src": "public/**/*", "use": "@vercel/static" },
+    // deine API‑Routen
+    { "src": "pages/api/**/*.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    // Root auf public/index.html umleiten
+    { "src": "/", "dest": "/index.html" },
+    // alle anderen Anfragen direkt als Datei aus /public oder zu API
+    { "src": "/api/(.*)", "dest": "/api/$1.js" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ]
+}
