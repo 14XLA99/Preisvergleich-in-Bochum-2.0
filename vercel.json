@@ -1,12 +1,17 @@
 {
   "version": 2,
   "builds": [
+    // alles unter public/ mit @vercel/static ausliefern
     { "src": "public/**/*",       "use": "@vercel/static" },
+    // Deine API‑Routen
     { "src": "pages/api/**/*.js", "use": "@vercel/node"   }
   ],
   "routes": [
-    { "src": "/",       "dest": "/index.html"        },
-    { "src": "/api/(.*)","dest": "/api/$1.js"         },
-    { "src": "/(.*)",   "dest": "/$1"                 }
+    // Root-Pfad / auf public/index.html umleiten
+    { "src": "/",        "dest": "/public/index.html" },
+    // API-Routen
+    { "src": "/api/(.*)", "dest": "/pages/api/$1.js"    },
+    // alle anderen statischen Dateien aus public
+    { "src": "/(.*)",     "dest": "/public/$1"          }
   ]
 }
