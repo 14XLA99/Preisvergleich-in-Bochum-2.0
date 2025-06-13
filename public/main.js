@@ -264,52 +264,6 @@ form.addEventListener("submit", async (e) => {
   modal.classList.add("hidden");
 });
 
-
-  preisDaten[currentSupermarkt] = {
-    preise: eintraege,
-    zeitstempel: new Date(),
-    bild: bildURL || null
-  };
-
-  localStorage.setItem("preise", JSON.stringify(preisDaten));
-  speicherePreisInFirestore(currentSupermarkt, eintraege, bildURL);
-
-  if (bildURL) {
-    console.log("📷 Bild erfolgreich hochgeladen:", bildURL);
-  } else {
-    console.warn("⚠️ Kein Bild-URL erhalten – Upload fehlgeschlagen?");
-  }
-
-  if (currentMarker) {
-    currentMarker.setIcon(greyIcon);
-    popup
-      .setLatLng(currentMarker.getLatLng())
-      .setContent(setPopupContent(currentSupermarkt))
-      .openOn(map);
-
-    setTimeout(() => {
-      const bearbeitenBtn = document.getElementById("bearbeitenBtn");
-      if (bearbeitenBtn) {
-        bearbeitenBtn.addEventListener("click", () => {
-          form.reset();
-          formTitle.textContent = `Preise bei ${currentSupermarkt}`;
-          const daten = preisDaten[currentSupermarkt];
-          if (daten && daten.preise) {
-            ["Brot", "Milch", "Äpfel", "Butter", "Nudeln"].forEach((produkt) => {
-              if (daten.preise[produkt] != null) {
-                form.elements[produkt].value = daten.preise[produkt];
-              }
-            });
-          }
-          modal.classList.remove("hidden");
-        });
-      }
-    }, 100);
-  }
-
-  modal.classList.add("hidden");
-});
-
 function fileToBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
