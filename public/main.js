@@ -297,8 +297,9 @@ const setPopupContent = (name) => {
   }
 
   if (bildURL) {
-    content += `<br><br><img src="${bildURL}" alt="Beleg" style="max-width:200px; max-height:150px;">`;
-  }
+  content += `<br><br><img src="${bildURL}" alt="Beleg" style="max-width:200px; max-height:150px;">`;
+  content += `<br><button id="bildLoeschenBtn">🗑️ Bild löschen</button>`;
+}
 
   content += `<br><br><button id="bearbeitenBtn">Preise bearbeiten</button>`;
   return content;
