@@ -214,7 +214,7 @@ form.addEventListener("submit", async (e) => {
 
   if (bildDatei) {
     const base64Image = await fileToBase64(bildDatei);
-    const fileName = `${currentSupermarkt}_${Date.now()}.jpg`;
+    const fileName = `${currentSupermarkt.replace(/\W+/g, "_")}.jpg`;
 
     try {
       const res = await fetch("/api/upload-image", {
