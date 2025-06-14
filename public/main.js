@@ -173,11 +173,12 @@ function ladeSupermarktMarker() {
               btn.addEventListener("click", () => {
                 form.reset();
                 formTitle.textContent = `Preise bei ${markt.name}`;
-                if (preise) {
-                  ["Brot", "Milch", "Äpfel", "Butter", "Nudeln"].forEach((produkt) => {
-                    if (preise[produkt] != null) {
-                      form.elements[produkt].value = preise[produkt];
-                    }
+                const echtePreise = preise?.preise || preise;
+                if (echtePreise) {
+                ["Brot", "Milch", "Äpfel", "Butter", "Nudeln"].forEach((produkt) => {
+                if (echtePreise[produkt] != null) {
+                 form.elements[produkt].value = echtePreise[produkt];
+                  }
                   });
                 }
                 modal.classList.remove("hidden");
