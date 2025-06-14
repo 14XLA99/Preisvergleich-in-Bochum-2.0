@@ -224,12 +224,10 @@ function ladeSupermarktMarker() {
             .openOn(map);
 
         setPopupEventListeners();
-
+        });
       });
     });
 }
-
-
 const modal = document.getElementById("formModal");
 const form = document.getElementById("priceForm");
 const formTitle = document.getElementById("form-title");
