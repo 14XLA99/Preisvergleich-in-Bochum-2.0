@@ -293,6 +293,47 @@ form.addEventListener("submit", async (e) => {
       .setLatLng(currentMarker.getLatLng())
       .setContent(setPopupContent(currentSupermarkt))
       .openOn(map);
+setTimeout(() => {
+  const bearbeitenBtn = document.getElementById("bearbeitenBtn");
+  if (bearbeitenBtn) {
+    bearbeitenBtn.addEventListener("click", () => {
+      form.reset();
+      formTitle.textContent = `Preise bei ${currentSupermarkt}`;
+      const daten = preisDaten[currentSupermarkt];
+      const echtePreise = daten?.preise || {};
+      ["Brot","Milch","Äpfel","Butter","Nudeln"].forEach(p => {
+        if (echtePreise[p]!=null) form.elements[p].value = echtePreise[p];
+      });
+      const bildNameEl = document.getElementById("bildName");
+      if (bildNameEl) {
+        bildNameEl.textContent = daten.bild
+          ? `Aktuelles Bild: ${daten.bild.split("/").pop()}`
+          : "Kein Bild vorhanden";
+      }
+      modal.classList.remove("hidden");
+    });
+  }
+
+  const loeschenBtn = document.getElementById("bildLoeschenBtn");
+  if (loeschenBtn) {
+    loeschenBtn.addEventListener("click", async () => {
+      const fileName = preisDaten[currentSupermarkt]?.bild?.split("/").pop();
+      if (!fileName) return;
+      try {
+        await fetch("/api/delete-image", {
+          method: "DELETE",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({ fileName })
+        });
+        preisDaten[currentSupermarkt].bild = null;
+        await speicherePreisInFirestore(currentSupermarkt, preisDaten[currentSupermarkt].preise, null);
+        popup.setContent(setPopupContent(currentSupermarkt));
+      } catch (err) {
+        console.error("❌ Bild löschen fehlgeschlagen:", err);
+      }
+    });
+  }
+}, 100);  
   }
 
   modal.classList.add("hidden");
