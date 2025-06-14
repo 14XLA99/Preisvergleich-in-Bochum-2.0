@@ -24,6 +24,7 @@ module.exports = async function handler(req, res) {
     // fileName sollte keinen Pfad enthalten, nur z.B. "markt_123.jpg"
     const blob = await put(fileName, buffer, {
       access: "public",
+     allowOverwrite: true,
     });
 
     // blob.url ist die public URL
