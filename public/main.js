@@ -306,6 +306,7 @@ form.addEventListener("submit", async (e) => {
       .setLatLng(currentMarker.getLatLng())
       .setContent(setPopupContent(currentSupermarkt))
       .openOn(map);
+    setPopupEventListeners();
 setTimeout(() => {
   const bearbeitenBtn = document.getElementById("bearbeitenBtn");
   if (bearbeitenBtn) {
