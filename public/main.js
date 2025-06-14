@@ -111,7 +111,11 @@ async function ladePreiseAusFirestore() {
   snapshot.forEach((doc) => {
     const daten = doc.data();
     if (daten.markt && daten.preise) {
-      preisDaten[daten.markt] = daten.preise;
+     preisDaten[daten.markt] = {
+  preise: daten.preise,
+  bild: daten.bild ?? null,
+  zeitstempel: daten.zeitstempel?.toDate?.() ?? new Date()
+};
     }
   });
   ladeSupermarktMarker();
@@ -244,11 +248,13 @@ form.addEventListener("submit", async (e) => {
   }
 
   // Eintrag zusammenbauen und speichern
-  preisDaten[currentSupermarkt] = {
-    preise: eintraege,
-    zeitstempel: new Date(),
-    bild: bildURL,  // null oder die tatsächliche URL
-  };
+ preisDaten[currentSupermarkt] = {
+  ...(preisDaten[currentSupermarkt] || {}),
+  preise: eintraege,
+  bild: bildURL ?? preisDaten[currentSupermarkt]?.bild ?? null,
+  zeitstempel: new Date(),
+};
+
   localStorage.setItem("preise", JSON.stringify(preisDaten));
   await speicherePreisInFirestore(currentSupermarkt, eintraege, bildURL);
 
@@ -325,4 +331,12 @@ document.addEventListener("visibilitychange", () => {
     setTimeout(refreshMap, 100);
   }
 });
+
+if (currentMarker) {
+  currentMarker.setIcon(greyIcon);
+  popup
+    .setLatLng(currentMarker.getLatLng())
+    .setContent(setPopupContent(currentSupermarkt))
+    .openOn(map);
+}
 
