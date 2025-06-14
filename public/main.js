@@ -150,71 +150,72 @@ function ladeSupermarktMarker() {
     .then((res) => res.json())
     .then((daten) => {
       daten.forEach((markt) => {
-        const hatPreise = preisDaten[markt.name];
         const marker = L.marker(markt.coords, {
-          icon: hatPreise ? greyIcon : normalIcon,
+          icon: preisDaten[markt.name] ? greyIcon : normalIcon,
         }).addTo(map);
 
         marker.on("click", () => {
           modal.classList.add("hidden");
-
           currentSupermarkt = markt.name;
           currentMarker = marker;
-          const preise = preisDaten[currentSupermarkt];
 
           popup
             .setLatLng(markt.coords)
             .setContent(setPopupContent(markt.name))
             .openOn(map);
 
-         setTimeout(() => {
-  const bearbeitenBtn = document.getElementById("bearbeitenBtn");
-  if (bearbeitenBtn) {
-    bearbeitenBtn.addEventListener("click", () => {
-      form.reset();
-      formTitle.textContent = `Preise bei ${currentSupermarkt}`;
-      const preise = preisDaten[currentSupermarkt];
-      const echtePreise = preise?.preise || preise;
-      if (echtePreise) {
-        ["Brot", "Milch", "Äpfel", "Butter", "Nudeln"].forEach((produkt) => {
-          if (echtePreise[produkt] != null) {
-            form.elements[produkt].value = echtePreise[produkt];
-          }
-        });
-      }
+          // ─── START: setTimeout-Block ──────────────────────────────────
+          setTimeout(() => {
+            // Preise bearbeiten
+            const bearbeitenBtn = document.getElementById("bearbeitenBtn");
+            if (bearbeitenBtn) {
+              bearbeitenBtn.addEventListener("click", () => {
+                form.reset();
+                formTitle.textContent = `Preise bei ${currentSupermarkt}`;
+                const daten = preisDaten[currentSupermarkt];
+                const echtePreise = daten?.preise || {};
+                ["Brot","Milch","Äpfel","Butter","Nudeln"].forEach((p) => {
+                  if (echtePreise[p]!=null) form.elements[p].value = echtePreise[p];
+                });
+                // Bild-Name anzeigen (falls vorhanden)
+                const bildNameEl = document.getElementById("bildName");
+                if (bildNameEl) {
+                  bildNameEl.textContent = daten.bild
+                    ? `Aktuelles Bild: ${daten.bild.split("/").pop()}`
+                    : "Kein Bild vorhanden";
+                }
+                modal.classList.remove("hidden");
+              });
+            }
 
-      const bildURL = preisDaten[currentSupermarkt]?.bild;
-      const bildNameEl = document.getElementById("bildName");
-      if (bildNameEl) {
-        bildNameEl.textContent = bildURL ? `Aktuelles Bild: ${bildURL.split("/").pop()}` : "Kein Bild vorhanden";
-      }
+            // Bild löschen
+            const loeschenBtn = document.getElementById("bildLoeschenBtn");
+            if (loeschenBtn) {
+              loeschenBtn.addEventListener("click", async () => {
+                const fileName = preisDaten[currentSupermarkt]?.bild?.split("/").pop();
+                if (!fileName) return;
+                try {
+                  await fetch("/api/delete-image", {
+                    method: "DELETE",
+                    headers: {"Content-Type":"application/json"},
+                    body: JSON.stringify({ fileName })
+                  });
+                  preisDaten[currentSupermarkt].bild = null;
+                  await speicherePreisInFirestore(currentSupermarkt, preisDaten[currentSupermarkt].preise, null);
+                  popup.setContent(setPopupContent(currentSupermarkt));
+                } catch (err) {
+                  console.error("❌ Bild löschen fehlgeschlagen:", err);
+                }
+              });
+            }
+          }, 100); // ─── ENDE setTimeout ─────────────────────────────────────
 
-      modal.classList.remove("hidden");
+        }); // ─── ENDE marker.on("click") ────────────────────────────────────
+
+      });
     });
-  }
+}
 
-  const loeschenBtn = document.getElementById("bildLoeschenBtn");
-  if (loeschenBtn) {
-    loeschenBtn.addEventListener("click", async () => {
-      const fileName = preisDaten[currentSupermarkt]?.bild?.split("/").pop();
-      if (!fileName) return;
-
-      try {
-        await fetch("/api/delete-image", {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ fileName })
-        });
-        preisDaten[currentSupermarkt].bild = null;
-        await speicherePreisInFirestore(currentSupermarkt, preisDaten[currentSupermarkt].preise, null);
-        popup.setContent(setPopupContent(currentSupermarkt));
-      } catch (err) {
-        console.error("❌ Bild löschen fehlgeschlagen:", err);
-      }
-    });
-  }
-}, 100);
-});
 
 const modal = document.getElementById("formModal");
 const form = document.getElementById("priceForm");
