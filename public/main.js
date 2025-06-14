@@ -214,6 +214,7 @@ function ladeSupermarktMarker() {
     });
   }
 }, 100);
+});
 
 const modal = document.getElementById("formModal");
 const form = document.getElementById("priceForm");
