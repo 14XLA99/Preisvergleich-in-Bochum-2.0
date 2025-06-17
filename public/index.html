@@ -15,9 +15,10 @@
   <h1>🛒 Preisvergleich in Bochum</h1>
   <div id="map"></div>
 
-  <div id="formModal" class="modal hidden">
+  <!-- Modal: Preise eintragen -->
+  <div id="formModal" class="modal hidden" role="dialog" aria-modal="true">
     <div class="modal-content">
-      <span id="closeBtn">&times;</span>
+      <button id="closeBtn" class="close-btn" aria-label="Modal schließen">×</button>
       <h2 id="form-title">Preise eintragen</h2>
       <form id="priceForm">
         <div class="form-group">
@@ -26,31 +27,30 @@
           <label>Äpfel (€): <input type="number" step="0.01" name="Äpfel" required /></label>
           <label>Butter (€): <input type="number" step="0.01" name="Butter" required /></label>
           <label>Nudeln (€): <input type="number" step="0.01" name="Nudeln" required /></label>
-            <!-- 📸 Bild-Upload -->
-    <label>Foto (optional): <input type="file" name="bild" /></label>
 
-    <!-- 🖼️ Bildname anzeigen (neu) -->
-    <div id="bildName" style="font-style: italic; margin-bottom: 1em;">Kein Bild vorhanden</div>
+          <!-- 📸 Bild-Upload -->
+          <label>Foto (optional): <input type="file" name="bild" id="bildUpload" /></label>
+          <div id="bildName" class="bild-name">Kein Bild vorhanden</div>
         </div>
         <button type="submit">Eintragen</button>
       </form>
     </div>
   </div>
 
-<!-- Stepper-Modal -->
-<div id="stepperModal" class="modal hidden">
-  <div class="modal-content">
-    <button id="stepperCloseBtn" class="close-btn">×</button>
-    <div id="step-content"></div>
-    <div class="step-controls">
-      <button id="prevStep">← Zurück</button>
-      <div id="stepIndicators" class="step-indicators"></div>
-      <button id="nextStep">Weiter →</button>
+  <!-- Modal: Stepper -->
+  <div id="stepperModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <button id="stepperCloseBtn" class="close-btn" aria-label="Stepper schließen">×</button>
+      <div id="step-content"></div>
+      <div class="step-controls">
+        <button id="prevStep">← Zurück</button>
+        <div id="stepIndicators" class="step-indicators"></div>
+        <button id="nextStep">Weiter →</button>
+      </div>
     </div>
   </div>
-</div>
 
-  <!-- Skripte laden -->
+  <!-- Haupt-Skript -->
   <script type="module" src="./main.js"></script>
 </body>
 </html>
