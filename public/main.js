@@ -145,14 +145,23 @@ document.addEventListener("DOMContentLoaded", () => {
       // Ende: Preise plus Bild speichern
       const neuePreise = {};
       produkte.forEach(p=> neuePreise[p.name] = p.preisErfasst);
-      speicherePreisInFirestore(currentSupermarkt, neuePreise, zuletztHochgeladenesBildURL)
-        .then(()=>{
-          popup
-            .setContent(setPopupContent(currentSupermarkt))
-            .openOn(map);
-          setPopupEventListeners();
-        });
-      stepperModal.classList.add("hidden");
+     // → speichere und warte
+await speicherePreisInFirestore(
+  currentSupermarkt,
+  neuePreise,
+  zuletztHochgeladenesBildURL
+);
+
+// update Cache (wird in speicherePreisInFirestore gemacht) & Popup aktualisieren
+popup
+  .setContent(setPopupContent(currentSupermarkt))
+  .openOn(map);
+
+// Event listeners neu setzen
+setPopupEventListeners();
+
+// Stepper schließen
+stepperModal.classList.add("hidden");
     }
   };
 
