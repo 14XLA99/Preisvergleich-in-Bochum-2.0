@@ -236,13 +236,19 @@ document.addEventListener("DOMContentLoaded", () => {
   // ─────────── Popup-Inhalt ───────────
   function setPopupContent(name) {
     const d = preisDaten[name]||{};
-    let html = `<b>${name}</b><br>`+
-      (d.preise
-        ? Object.entries(d.preise)
-            .map(([p,v])=>`${p}: ${v!=null?v.toFixed(2)+" €":"–"}`)
-            .join("<br>")
-        : "Keine Preise"
-      );
+   let html = `<div style="margin-bottom:0.5em;">
+  <strong style="font-size:1.1em;">${name}</strong>
+</div>`;
+
+if (d.preise) {
+  html += `<table style="width:100%;font-size:0.9em;border-spacing:0;">` +
+    Object.entries(d.preise).map(([p,v]) =>
+      `<tr><td>${p}</td><td style="text-align:right;">${v != null ? v.toFixed(2) + " €" : "–"}</td></tr>`
+    ).join("") +
+    `</table>`;
+} else {
+  html += "<p>Keine Preise</p>";
+}
     if (d.bild) {
       html += `<br><img src="${d.bild}"
                style="max-width:200px;max-height:150px;"><br>`+
