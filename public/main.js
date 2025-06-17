@@ -235,28 +235,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ─────────── Popup-Inhalt ───────────
   function setPopupContent(name) {
-    const d = preisDaten[name]||{};
-   let html = `<div style="margin-bottom:0.5em;">
-  <strong style="font-size:1.1em;">${name}</strong>
-</div>`;
+  const d = preisDaten[name] || {};
+  let html = `<div style="margin-bottom:0.3em;">
+    <strong style="font-size:1.1em;">${name}</strong>
+  </div>`;
 
-if (d.preise) {
-  html += `<table style="width:100%;font-size:0.9em;border-spacing:0;">` +
-    Object.entries(d.preise).map(([p,v]) =>
-      `<tr><td>${p}</td><td style="text-align:right;">${v != null ? v.toFixed(2) + " €" : "–"}</td></tr>`
-    ).join("") +
-    `</table>`;
-} else {
-  html += "<p>Keine Preise</p>";
-}
-    if (d.bild) {
-      html += `<br><img src="${d.bild}"
-               style="max-width:200px;max-height:150px;"><br>`+
-              `<button id="bildLoeschenBtn">🗑️ Bild löschen</button>`;
-    }
-    html += `<br><button id="bearbeitenBtn">Preise bearbeiten</button>`;
-    return html;
+  if (d.preise) {
+    html += `<div style="font-size:0.9em;margin-bottom:0.5em;">` +
+      Object.entries(d.preise)
+        .map(([p, v]) => `<div><b>${p}:</b> ${v != null ? v.toFixed(2) + " €" : "–"}</div>`)
+        .join("") +
+      `</div>`;
+  } else {
+    html += `<p>Keine Preise</p>`;
   }
+
+  if (d.bild) {
+    html += `
+      <img src="${d.bild}" style="max-width:100%;max-height:150px;display:block;margin:0.5em 0;border-radius:4px;object-fit:contain;">
+      <button id="bildLoeschenBtn" style="margin-bottom:0.5em;">🗑️ Bild löschen</button>
+    `;
+  }
+
+  html += `<button id="bearbeitenBtn">Preise bearbeiten</button>`;
+  return html;
+}
 
   // ─────────── Popup-Events ───────────
   function setPopupEventListeners() {
