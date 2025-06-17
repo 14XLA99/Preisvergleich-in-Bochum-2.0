@@ -33,7 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
     maxBounds: L.latLngBounds([51.35,7.05],[51.56,7.35]),
     maxBoundsViscosity: 1.0
   }).setView([51.4718,7.2162],12);
-
   L.tileLayer(
     "https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",
     { attribution:'&copy; CARTO &copy; OSM', subdomains:"abcd", maxZoom:19 }
@@ -90,26 +89,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ─────────── Produkte für den Stepper ───────────
   const produkte = [
-    { name: "Brot",   beschreibung: "Frisches Brot vom Bäcker."   },
-    { name: "Milch",  beschreibung: "1 Liter Vollmilch, 3,5 % Fett." },
-    { name: "Äpfel",  beschreibung: "Ca. 1 kg regionale Äpfel."  },
-    { name: "Butter", beschreibung: "250 g Markenbutter, Bio."   },
-    { name: "Nudeln", beschreibung: "500 g Hartweizengrieß‑Nudeln." }
+    { name:"Brot",   beschreibung:"Frisches Brot vom Bäcker.", bildUrl:"/products/brot.jpg" },
+    { name:"Milch",  beschreibung:"1 Liter Vollmilch, 3,5 % Fett.", bildUrl:"/products/milch.jpg" },
+    { name:"Äpfel",  beschreibung:"Ca. 1 kg regionale Äpfel.", bildUrl:"/products/aepfel.jpg" },
+    { name:"Butter", beschreibung:"250 g Markenbutter, Bio.", bildUrl:"/products/butter.jpg" },
+    { name:"Nudeln", beschreibung:"500 g Hartweizengrieß‑Nudeln.", bildUrl:"/products/nudeln.jpg" }
   ];
   let currentStep = 0;
 
-  // ─────────── Dom-Refs für den Stepper ───────────
+  // ─────────── Dom‑Refs für Stepper ───────────
   const stepperModal = document.getElementById("stepperModal");
-  const stepContent    = document.getElementById("step-content");
-  const prevBtn        = document.getElementById("prevStep");
-  const nextBtn        = document.getElementById("nextStep");
-  const indicators     = document.getElementById("stepIndicators");
-  const closeStepper   = document.getElementById("stepperCloseBtn");
+  const stepContent   = document.getElementById("step-content");
+  const prevBtn       = document.getElementById("prevStep");
+  const nextBtn       = document.getElementById("nextStep");
+  const indicators    = document.getElementById("stepIndicators");
+  const closeStepper  = document.getElementById("stepperCloseBtn");
 
   // ─────────── Stepper rendern ───────────
   function renderStep() {
     const p = produkte[currentStep];
     stepContent.innerHTML = `
+      <img src="${p.bildUrl}" alt="${p.name}" style="max-width:100%;border-radius:4px;margin-bottom:1em;">
       <h3>${p.name}</h3>
       <p>${p.beschreibung}</p>
       <label>Preis (€):
@@ -137,12 +137,12 @@ document.addEventListener("DOMContentLoaded", () => {
   nextBtn.onclick      = ()=>{
     // Eingabe speichern
     produkte[currentStep].preisErfasst =
-      parseFloat(document.getElementById("preisInput").value) || null;
+      parseFloat(document.getElementById("preisInput").value)||null;
     if (currentStep < produkte.length-1) {
       currentStep++;
       renderStep();
     } else {
-      // am Ende: alles sammeln und speichern
+      // Ende: Preise plus Bild speichern
       const neuePreise = {};
       produkte.forEach(p=> neuePreise[p.name] = p.preisErfasst);
       speicherePreisInFirestore(currentSupermarkt, neuePreise, zuletztHochgeladenesBildURL)
@@ -150,12 +150,13 @@ document.addEventListener("DOMContentLoaded", () => {
           popup
             .setContent(setPopupContent(currentSupermarkt))
             .openOn(map);
+          setPopupEventListeners();
         });
       stepperModal.classList.add("hidden");
     }
   };
 
-  // ─────────── Firestore‑Leseroutine ───────────
+  // ─────────── Firestore lesen ───────────
   async function ladePreiseAusFirestore() {
     const snap = await getDocs(collection(db,"preise"));
     snap.forEach(d=>{
@@ -163,25 +164,26 @@ document.addEventListener("DOMContentLoaded", () => {
       if (data.markt && data.preise) {
         preisDaten[data.markt] = {
           preise: data.preise,
-          bild:   data.bild || null
+          bild:   data.bild||null
         };
       }
     });
     ladeSupermarktMarker();
   }
 
-  // ─────────── Marker auf Karte setzen ───────────
+  // ─────────── Marker setzen ───────────
   function ladeSupermarktMarker() {
     fetch("/supermaerkte.json")
       .then(r=>r.json())
       .then(arr=>{
         arr.forEach(markt=>{
           const has = preisDaten[markt.name];
-          const mk  = L.marker(markt.coords, { icon: has? greyIcon: normalIcon })
-            .addTo(map);
-          mk.on("click", ()=>{
+          const mk  = L.marker(markt.coords,{icon:has?greyIcon:normalIcon}).addTo(map);
+          mk.on("click",()=>{
             currentSupermarkt = markt.name;
             currentMarker     = mk;
+            zuletztHochgeladenesBildURL = preisDaten[markt.name]?.bild||null;
+            produkte.forEach(p=> p.preisErfasst = preisDaten[markt.name]?.preise?.[p.name]||null);
             popup
               .setLatLng(markt.coords)
               .setContent(setPopupContent(markt.name))
@@ -192,41 +194,37 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  // ─────────── Popup‑Inhalt generieren ───────────
+  // ─────────── Popup‑Inhalt ───────────
   function setPopupContent(name) {
-    const d = preisDaten[name] || {};
+    const d = preisDaten[name]||{};
     let html = `<b>${name}</b><br>` +
       (d.preise
         ? Object.entries(d.preise).map(([p,v])=>`${p}: ${v!=null?v.toFixed(2)+" €":"–"}`).join("<br>")
         : "Keine Preise"
       );
     if (d.bild) {
-      html += `<br><img src="${d.bild}" style="max-width:200px;max-height:150px;"><br>` +
+      html += `<br><img src="${d.bild}" style="max-width:200px;max-height:150px;"><br>`+
               `<button id="bildLoeschenBtn">🗑️ Bild löschen</button>`;
     }
-    html += `<br><button id="bearbeitenBtn">Preise eintragen / bearbeiten</button>`;
+    html += `<br><button id="bearbeitenBtn">Preise bearbeiten</button>`;
     return html;
   }
 
-  // ─────────── Popup‑Eventhandler (Bearbeiten + Löschen) ───────────
+  // ─────────── Popup‑Events ───────────
   function setPopupEventListeners() {
-    // ✏️ Bearbeiten → Stepper (mit Bild-Voreinstellung)
+    // Bearbeiten → Stepper
     const bp = document.getElementById("bearbeitenBtn");
-    if (bp) bp.onclick = ()=>{
-      zuletztHochgeladenesBildURL = preisDaten[currentSupermarkt]?.bild || null;
-      const gespeicherte = preisDaten[currentSupermarkt]?.preise || {};
-      produkte.forEach(p=> p.preisErfasst = gespeicherte[p.name] ?? null);
-      openStepper();
-    };
-    // 🗑️ Bild löschen
+    if (bp) bp.onclick = openStepper;
+
+    // Bild löschen
     const del = document.getElementById("bildLoeschenBtn");
-    if (del) del.onclick = async ()=>{
+    if (del) del.onclick = async()=>{
       const fn = (preisDaten[currentSupermarkt].bild||"").split("/").pop();
-      if (!fn) return;
-      await fetch("/api/delete-image", {
+      if(!fn)return;
+      await fetch("/api/delete-image",{
         method:"DELETE",
         headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({ fileName: fn })
+        body:JSON.stringify({fileName:fn})
       });
       preisDaten[currentSupermarkt].bild = null;
       await speicherePreisInFirestore(currentSupermarkt, preisDaten[currentSupermarkt].preise, null);
@@ -237,38 +235,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ─────────── Speichern in Firestore ───────────
   async function speicherePreisInFirestore(markt, eintraege, bildURL=null) {
-    await setDoc(doc(db,"preise",markt.replace(/\W+/g,"_")), {
+    await setDoc(doc(db,"preise",markt.replace(/\W+/g,"_")),{
       markt, preise:eintraege, bild:bildURL||null, zeitstempel:serverTimestamp()
     });
-    preisDaten[markt] = { preise:eintraege, bild:bildURL||null };
-    if (currentMarker) currentMarker.setIcon(greyIcon);
+    preisDaten[arkt] = {preise:eintraege, bild:bildURL||null};
+    if(currentMarker)currentMarker.setIcon(greyIcon);
   }
 
-  // ─────────── Helper: File → Base64 ───────────
-  function fileToBase64(file) {
-    return new Promise((res,rej)=>{
-      const r = new FileReader();
-      r.onloadend = ()=> res(r.result.split(",")[1]);
-      r.onerror   = rej;
-      r.readAsDataURL(file);
-    });
-  }
-
-  // ─────────── Karte bei Visibility-Change neu zeichnen ───────────
-  function refreshMap(){
-    map.invalidateSize();
-    map.eachLayer(l=>{
-      if(l._icon){
-        l._icon.style.display='none';
-        void l._icon.offsetHeight;
-        l._icon.style.display='';
-      }
-      if(l._path&&l.redraw) l.redraw();
-    });
-  }
-  window.addEventListener("pageshow",()=>setTimeout(refreshMap,100));
-  document.addEventListener("visibilitychange",()=>!document.hidden&&setTimeout(refreshMap,100));
+  // ─────────── Karte neu zeichnen bei Sichtbarkeitswechsel ───────────
+  window.addEventListener("pageshow", ()=> map.invalidateSize());
+  document.addEventListener("visibilitychange", ()=> !document.hidden && map.invalidateSize());
 
   // ─────────── App starten ───────────
   ladePreiseAusFirestore();
 });
+
