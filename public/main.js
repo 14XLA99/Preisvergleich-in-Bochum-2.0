@@ -73,9 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ─────────── Globale Variablen ───────────
   let preisDaten = {};                 // In‑Memory Cache
-  let currentMarker = null;
-  let currentSupermarkt = "";
-  let zuletztHochgeladenesBildURL = null;
 
  // 🔁 Bild-Upload + Stepper
 const bildModal = document.getElementById("bildUploadModal");
