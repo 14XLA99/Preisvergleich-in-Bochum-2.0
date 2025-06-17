@@ -194,3 +194,19 @@ input[type="file"] {
 .leaflet-popup-content {
   overflow-x: hidden;
 }
+/* Einheitliche Bildgröße im Stepper */
+#step-content img {
+  max-width: 100%;
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 1em;
+}
+
+/* Verhindert horizontalen Scroll im Modal */
+#step-content {
+  overflow-x: hidden;
+  padding-right: 1em;
+}
+
