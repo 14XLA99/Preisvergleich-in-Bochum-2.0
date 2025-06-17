@@ -145,3 +145,30 @@ button:hover {
     transform: scale(1);
   }
 }
+
+/* Stepper‑Modal */
+#stepperModal .modal-content {
+  max-width: 400px;
+  text-align: center;
+}
+.step-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+#stepIndicators {
+  display: flex;
+  gap: 0.4rem;
+}
+.step-dot {
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background: #ccc;
+  cursor: pointer;
+}
+.step-dot.active {
+  background: #00458a;
+}
+
