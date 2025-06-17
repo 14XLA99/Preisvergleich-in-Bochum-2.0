@@ -82,18 +82,38 @@ document.addEventListener("DOMContentLoaded", () => {
   const popup = L.popup();
 
   // ─────────── State ───────────
-  let preisDaten = {};               // In‑Memory Cache pro Markt
+  let preisDaten = {};                   // In‑Memory Cache pro Markt
   let currentMarker = null;
   let currentSupermarkt = "";
   let zuletztHochgeladenesBildURL = null;
 
   // ─────────── Produkte für den Stepper ───────────
   const produkte = [
-    { name:"Brot",   beschreibung:"Frisches Brot vom Bäcker.", bildUrl:"https://www.kingarthurbaking.com/sites/default/files/styles/featured_image/public/2020-05/french-style-country-loaf.jpg?itok=LVIWYfCO" },
-    { name:"Milch",  beschreibung:"1 Liter Vollmilch, 3,5 % Fett.", bildUrl:"https://www.kelemidis.de/media/cache/40/d0/40d0d055572d14c2e2c12eb8412ca577.webp" },
-    { name:"Äpfel",  beschreibung:"Ca. 1 kg regionale Äpfel.", bildUrl:"https://www.spargelbuffet.de/wp-content/uploads/2021/01/aepfel1.jpg" },
-    { name:"Butter", beschreibung:"250 g Markenbutter, Bio.", bildUrl:"https://img.rewe-static.de/9954773/45203893_digital-image.png?imwidth=840&impolicy=pdp" },
-    { name:"Nudeln", beschreibung:"500 g Barilla Fusilli.", bildUrl:"https://www.kelemidis.de/media/cache/73/9c/739ca90930ace806f2f6210ad9d92610.jpg" }
+    {
+      name:   "Brot",
+      beschreibung: "Frisches Brot vom Bäcker.",
+      bildUrl: "https://www.kingarthurbaking.com/sites/default/files/styles/featured_image/public/2020-05/french-style-country-loaf.jpg"
+    },
+    {
+      name:   "Milch",
+      beschreibung: "1 Liter Vollmilch, 3,5 % Fett.",
+      bildUrl: "https://www.kelemidis.de/media/cache/40/d0/40d0d055572d14c2e2c12eb8412ca577.webp"
+    },
+    {
+      name:   "Äpfel",
+      beschreibung: "Ca. 1 kg regionale Äpfel.",
+      bildUrl: "https://www.spargelbuffet.de/wp-content/uploads/2021/01/aepfel1.jpg"
+    },
+    {
+      name:   "Butter",
+      beschreibung: "250 g Markenbutter, Bio.",
+      bildUrl: "https://img.rewe-static.de/9954773/45203893_digital-image.png?imwidth=840&impolicy=pdp"
+    },
+    {
+      name:   "Nudeln",
+      beschreibung: "500 g Barilla Fusilli.",
+      bildUrl: "https://www.kelemidis.de/media/cache/73/9c/739ca90930ace806f2f6210ad9d92610.jpg"
+    }
   ];
   let currentStep = 0;
 
@@ -109,19 +129,22 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderStep() {
     const p = produkte[currentStep];
     stepContent.innerHTML = `
-      <img src="${p.bildUrl}" alt="${p.name}" style="max-width:100%;border-radius:4px;margin-bottom:1em;">
+      <img src="${p.bildUrl}"
+           alt="${p.name}"
+           style="max-width:100%;border-radius:4px;margin-bottom:1em;">
       <h3>${p.name}</h3>
       <p>${p.beschreibung}</p>
       <label>Preis (€):
-        <input id="preisInput" type="number" step="0.01" value="${p.preisErfasst ?? ''}" />
+        <input id="preisInput" type="number" step="0.01"
+               value="${p.preisErfasst ?? ''}" />
       </label>
     `;
-    // Indikatoren
+    // Indikatoren aktualisieren
     indicators.innerHTML = "";
     produkte.forEach((_,i)=>{
       const dot = document.createElement("div");
-      dot.className = "step-dot"+(i===currentStep?" active":"");
-      dot.onclick   = ()=>{ currentStep=i; renderStep(); };
+      dot.className = "step-dot" + (i===currentStep ? " active" : "");
+      dot.onclick   = () => { currentStep = i; renderStep(); };
       indicators.appendChild(dot);
     });
   }
@@ -132,67 +155,78 @@ document.addEventListener("DOMContentLoaded", () => {
     renderStep();
     stepperModal.classList.remove("hidden");
   }
-  closeStepper.onclick = ()=> stepperModal.classList.add("hidden");
-  prevBtn.onclick      = ()=>{ if(currentStep>0){ currentStep--; renderStep(); }};
-  nextBtn.onclick      = ()=>{
-    // Eingabe speichern
+  closeStepper.onclick = () => stepperModal.classList.add("hidden");
+  prevBtn.onclick      = () => {
+    if (currentStep > 0) {
+      currentStep--;
+      renderStep();
+    }
+  };
+  nextBtn.onclick      = async () => {
+    // Preis für aktuellen Schritt speichern
     produkte[currentStep].preisErfasst =
-      parseFloat(document.getElementById("preisInput").value)||null;
-    if (currentStep < produkte.length-1) {
+      parseFloat(document.getElementById("preisInput").value) || null;
+
+    if (currentStep < produkte.length - 1) {
       currentStep++;
       renderStep();
     } else {
-      // Ende: Preise plus Bild speichern
+      // → am Ende: alle Preise + evtl. Upload‑Bild speichern
       const neuePreise = {};
-      produkte.forEach(p=> neuePreise[p.name] = p.preisErfasst);
-     // → speichere und warte
-await speicherePreisInFirestore(
-  currentSupermarkt,
-  neuePreise,
-  zuletztHochgeladenesBildURL
-);
+      produkte.forEach(p => neuePreise[p.name] = p.preisErfasst);
 
-// update Cache (wird in speicherePreisInFirestore gemacht) & Popup aktualisieren
-popup
-  .setContent(setPopupContent(currentSupermarkt))
-  .openOn(map);
+      // Firestore speichern & warten
+      await speicherePreisInFirestore(
+        currentSupermarkt,
+        neuePreise,
+        zuletztHochgeladenesBildURL
+      );
 
-// Event listeners neu setzen
-setPopupEventListeners();
+      // Popup neu aufbauen & öffnen
+      popup
+        .setContent(setPopupContent(currentSupermarkt))
+        .openOn(map);
 
-// Stepper schließen
-stepperModal.classList.add("hidden");
+      // Event‑Handler zurücksetzen
+      setPopupEventListeners();
+
+      // Stepper schließen
+      stepperModal.classList.add("hidden");
     }
   };
 
   // ─────────── Firestore lesen ───────────
   async function ladePreiseAusFirestore() {
-    const snap = await getDocs(collection(db,"preise"));
-    snap.forEach(d=>{
+    const snap = await getDocs(collection(db, "preise"));
+    snap.forEach(d => {
       const data = d.data();
       if (data.markt && data.preise) {
         preisDaten[data.markt] = {
           preise: data.preise,
-          bild:   data.bild||null
+          bild:   data.bild || null
         };
       }
     });
     ladeSupermarktMarker();
   }
 
-  // ─────────── Marker setzen ───────────
+  // ─────────── Supermarkt‑Marker setzen ───────────
   function ladeSupermarktMarker() {
     fetch("/supermaerkte.json")
       .then(r=>r.json())
       .then(arr=>{
         arr.forEach(markt=>{
           const has = preisDaten[markt.name];
-          const mk  = L.marker(markt.coords,{icon:has?greyIcon:normalIcon}).addTo(map);
-          mk.on("click",()=>{
-            currentSupermarkt = markt.name;
-            currentMarker     = mk;
-            zuletztHochgeladenesBildURL = preisDaten[markt.name]?.bild||null;
-            produkte.forEach(p=> p.preisErfasst = preisDaten[markt.name]?.preise?.[p.name]||null);
+          const mk  = L.marker(markt.coords, { icon: has ? greyIcon : normalIcon })
+            .addTo(map);
+          mk.on("click", ()=>{
+            currentSupermarkt           = markt.name;
+            currentMarker               = mk;
+            zuletztHochgeladenesBildURL = preisDaten[markt.name]?.bild || null;
+            // Preise vorfüllen
+            produkte.forEach(p =>
+              p.preisErfasst = preisDaten[markt.name]?.preise?.[p.name] ?? null
+            );
             popup
               .setLatLng(markt.coords)
               .setContent(setPopupContent(markt.name))
@@ -203,23 +237,26 @@ stepperModal.classList.add("hidden");
       });
   }
 
-  // ─────────── Popup‑Inhalt ───────────
+  // ─────────── Popup‑Inhalt generieren ───────────
   function setPopupContent(name) {
-    const d = preisDaten[name]||{};
+    const d = preisDaten[name] || {};
     let html = `<b>${name}</b><br>` +
       (d.preise
-        ? Object.entries(d.preise).map(([p,v])=>`${p}: ${v!=null?v.toFixed(2)+" €":"–"}`).join("<br>")
+        ? Object.entries(d.preise)
+            .map(([p,v]) => `${p}: ${v != null ? v.toFixed(2)+" €" : "–"}`)
+            .join("<br>")
         : "Keine Preise"
       );
     if (d.bild) {
-      html += `<br><img src="${d.bild}" style="max-width:200px;max-height:150px;"><br>`+
+      html += `<br><img src="${d.bild}"
+                        style="max-width:200px; max-height:150px;"><br>` +
               `<button id="bildLoeschenBtn">🗑️ Bild löschen</button>`;
     }
     html += `<br><button id="bearbeitenBtn">Preise bearbeiten</button>`;
     return html;
   }
 
-  // ─────────── Popup‑Events ───────────
+  // ─────────── Popup‑Event‑Handler ───────────
   function setPopupEventListeners() {
     // Bearbeiten → Stepper
     const bp = document.getElementById("bearbeitenBtn");
@@ -227,16 +264,20 @@ stepperModal.classList.add("hidden");
 
     // Bild löschen
     const del = document.getElementById("bildLoeschenBtn");
-    if (del) del.onclick = async()=>{
+    if (del) del.onclick = async () => {
       const fn = (preisDaten[currentSupermarkt].bild||"").split("/").pop();
-      if(!fn)return;
-      await fetch("/api/delete-image",{
+      if (!fn) return;
+      await fetch("/api/delete-image", {
         method:"DELETE",
         headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({fileName:fn})
+        body:JSON.stringify({ fileName:fn })
       });
       preisDaten[currentSupermarkt].bild = null;
-      await speicherePreisInFirestore(currentSupermarkt, preisDaten[currentSupermarkt].preise, null);
+      await speicherePreisInFirestore(
+        currentSupermarkt,
+        preisDaten[currentSupermarkt].preise,
+        null
+      );
       popup.setContent(setPopupContent(currentSupermarkt)).openOn(map);
       setPopupEventListeners();
     };
@@ -244,16 +285,24 @@ stepperModal.classList.add("hidden");
 
   // ─────────── Speichern in Firestore ───────────
   async function speicherePreisInFirestore(markt, eintraege, bildURL=null) {
-    await setDoc(doc(db,"preise",markt.replace(/\W+/g,"_")),{
-      markt, preise:eintraege, bild:bildURL||null, zeitstempel:serverTimestamp()
-    });
-    preisDaten[arkt] = {preise:eintraege, bild:bildURL||null};
-    if(currentMarker)currentMarker.setIcon(greyIcon);
+    await setDoc(
+      doc(db, "preise", markt.replace(/\W+/g, "_")),
+      {
+        markt,
+        preise: eintraege,
+        bild: bildURL || null,
+        zeitstempel: serverTimestamp()
+      }
+    );
+    preisDaten[markt] = { preise: eintraege, bild: bildURL || null };
+    if (currentMarker) currentMarker.setIcon(greyIcon);
   }
 
-  // ─────────── Karte neu zeichnen bei Sichtbarkeitswechsel ───────────
-  window.addEventListener("pageshow", ()=> map.invalidateSize());
-  document.addEventListener("visibilitychange", ()=> !document.hidden && map.invalidateSize());
+  // ─────────── Karte neu zeichnen bei Rückkehr ───────────
+  window.addEventListener("pageshow",      ()=> map.invalidateSize());
+  document.addEventListener("visibilitychange",
+    ()=> !document.hidden && map.invalidateSize()
+  );
 
   // ─────────── App starten ───────────
   ladePreiseAusFirestore();
