@@ -82,42 +82,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const popup = L.popup();
 
   // ─────────── State ───────────
-  let preisDaten = {};                   // In‑Memory Cache pro Markt
-  let currentMarker = null;
-  let currentSupermarkt = "";
+  let preisDaten = {}, currentMarker = null, currentSupermarkt = "";
   let zuletztHochgeladenesBildURL = null;
 
-  // ─────────── Produkte für den Stepper ───────────
+  // ─────────── Produkte für den Stepper (plus Bild‑Step) ───────────
   const produkte = [
-    {
-      name:   "Brot",
-      beschreibung: "Frisches Brot vom Bäcker.",
-      bildUrl: "https://www.kingarthurbaking.com/sites/default/files/styles/featured_image/public/2020-05/french-style-country-loaf.jpg"
-    },
-    {
-      name:   "Milch",
-      beschreibung: "1 Liter Vollmilch, 3,5 % Fett.",
-      bildUrl: "https://www.kelemidis.de/media/cache/40/d0/40d0d055572d14c2e2c12eb8412ca577.webp"
-    },
-    {
-      name:   "Äpfel",
-      beschreibung: "Ca. 1 kg regionale Äpfel.",
-      bildUrl: "https://www.spargelbuffet.de/wp-content/uploads/2021/01/aepfel1.jpg"
-    },
-    {
-      name:   "Butter",
-      beschreibung: "250 g Markenbutter, Bio.",
-      bildUrl: "https://img.rewe-static.de/9954773/45203893_digital-image.png?imwidth=840&impolicy=pdp"
-    },
-    {
-      name:   "Nudeln",
-      beschreibung: "500 g Barilla Fusilli.",
-      bildUrl: "https://www.kelemidis.de/media/cache/73/9c/739ca90930ace806f2f6210ad9d92610.jpg"
-    }
+    { name:"Brot", beschreibung:"Frisches Brot", bildUrl:"https://..." },
+    { name:"Milch", beschreibung:"1 l Vollmilch", bildUrl:"https://..." },
+    { name:"Äpfel", beschreibung:"1 kg Äpfel",    bildUrl:"https://..." },
+    { name:"Butter",beschreibung:"250 g Butter",  bildUrl:"https://..." },
+    { name:"Nudeln",beschreibung:"500 g Nudeln", bildUrl:"https://..." }
   ];
   let currentStep = 0;
 
-  // ─────────── Dom‑Refs für Stepper ───────────
+  // ─────────── DOM-Refs ───────────
   const stepperModal = document.getElementById("stepperModal");
   const stepContent   = document.getElementById("step-content");
   const prevBtn       = document.getElementById("prevStep");
@@ -127,26 +105,45 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ─────────── Stepper rendern ───────────
   function renderStep() {
-    const p = produkte[currentStep];
-    stepContent.innerHTML = `
-      <img src="${p.bildUrl}"
-           alt="${p.name}"
-           style="max-width:100%;border-radius:4px;margin-bottom:1em;">
-      <h3>${p.name}</h3>
-      <p>${p.beschreibung}</p>
-      <label>Preis (€):
-        <input id="preisInput" type="number" step="0.01"
-               value="${p.preisErfasst ?? ''}" />
-      </label>
-    `;
-    // Indikatoren aktualisieren
+    if (currentStep < produkte.length) {
+      const p = produkte[currentStep];
+      stepContent.innerHTML = `
+        <img src="${p.bildUrl}" alt="${p.name}"
+             style="max-width:100%;border-radius:4px;margin-bottom:1em;">
+        <h3>${p.name}</h3>
+        <p>${p.beschreibung}</p>
+        <label>Preis (€):
+          <input id="preisInput" type="number" step="0.01"
+                 value="${p.preisErfasst ?? ''}" />
+        </label>
+      `;
+    } else {
+      // letzter Step: Belegfoto
+      stepContent.innerHTML = `
+        <h3>Belegfoto (optional)</h3>
+        <input type="file" id="belegInput" accept="image/*" />
+        <div id="belegPreview" style="margin-top:1em;"></div>
+      `;
+      document.getElementById("belegInput")
+        .addEventListener("change", evt => {
+          const f = evt.target.files[0];
+          if (f) {
+            const url = URL.createObjectURL(f);
+            document.getElementById("belegPreview")
+              .innerHTML = `<img src="${url}"
+                style="max-width:100%;max-height:150px;border-radius:4px;">`;
+          }
+        });
+    }
+    // Indikatoren
     indicators.innerHTML = "";
-    produkte.forEach((_,i)=>{
+    const total = produkte.length + 1;
+    for (let i=0; i<total; i++) {
       const dot = document.createElement("div");
-      dot.className = "step-dot" + (i===currentStep ? " active" : "");
-      dot.onclick   = () => { currentStep = i; renderStep(); };
+      dot.className = "step-dot"+(i===currentStep?" active":"");
+      dot.onclick   = ()=>{ currentStep = i; renderStep(); };
       indicators.appendChild(dot);
-    });
+    }
   }
 
   // ─────────── Stepper öffnen ───────────
@@ -155,81 +152,80 @@ document.addEventListener("DOMContentLoaded", () => {
     renderStep();
     stepperModal.classList.remove("hidden");
   }
-  closeStepper.onclick = () => stepperModal.classList.add("hidden");
-  prevBtn.onclick      = () => {
-    if (currentStep > 0) {
-      currentStep--;
-      renderStep();
-    }
-  };
-  nextBtn.onclick      = async () => {
-    // Preis für aktuellen Schritt speichern
-    produkte[currentStep].preisErfasst =
-      parseFloat(document.getElementById("preisInput").value) || null;
-
-    if (currentStep < produkte.length - 1) {
+  closeStepper.onclick = ()=> stepperModal.classList.add("hidden");
+  prevBtn.onclick      = ()=>{ if (currentStep>0) { currentStep--; renderStep(); }};
+  nextBtn.onclick      = async ()=> {
+    if (currentStep < produkte.length) {
+      // Speichere Preis
+      produkte[currentStep].preisErfasst =
+        parseFloat(document.getElementById("preisInput").value) || null;
       currentStep++;
       renderStep();
     } else {
-      // → am Ende: alle Preise + evtl. Upload‑Bild speichern
+      // letzter Step → Belegfoto hochladen
+      const inp = document.getElementById("belegInput");
+      zuletztHochgeladenesBildURL = null;
+      if (inp.files[0]) {
+        const b64 = await fileToBase64(inp.files[0]);
+        const res = await fetch("/api/upload-image", {
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body: JSON.stringify({
+            imageBase64: b64,
+            fileName:`${currentSupermarkt.replace(/\W+/g,"_")}.jpg`
+          })
+        });
+        const j = await res.json();
+        if (res.ok) zuletztHochgeladenesBildURL = j.url;
+      }
+      // Speichere alle Preise + Bild
       const neuePreise = {};
-      produkte.forEach(p => neuePreise[p.name] = p.preisErfasst);
-
-      // Firestore speichern & warten
+      produkte.forEach(p=> neuePreise[p.name] = p.preisErfasst);
       await speicherePreisInFirestore(
         currentSupermarkt,
         neuePreise,
         zuletztHochgeladenesBildURL
       );
-
-      // Popup neu aufbauen & öffnen
+      // Popup aktualisieren
       popup
         .setContent(setPopupContent(currentSupermarkt))
         .openOn(map);
-
-      // Event‑Handler zurücksetzen
       setPopupEventListeners();
-
-      // Stepper schließen
       stepperModal.classList.add("hidden");
     }
   };
 
-  // ─────────── Firestore lesen ───────────
+  // ─────────── Firestore lesen & starten ───────────
   async function ladePreiseAusFirestore() {
-    const snap = await getDocs(collection(db, "preise"));
-    snap.forEach(d => {
+    const snap = await getDocs(collection(db,"preise"));
+    snap.forEach(d=>{
       const data = d.data();
       if (data.markt && data.preise) {
-        preisDaten[data.markt] = {
-          preise: data.preise,
-          bild:   data.bild || null
-        };
+        preisDaten[data.markt] = { preise:data.preise, bild:data.bild||null };
       }
     });
     ladeSupermarktMarker();
   }
 
-  // ─────────── Supermarkt‑Marker setzen ───────────
+  // ─────────── Marker setzen ───────────
   function ladeSupermarktMarker() {
     fetch("/supermaerkte.json")
       .then(r=>r.json())
       .then(arr=>{
-        arr.forEach(markt=>{
-          const has = preisDaten[markt.name];
-          const mk  = L.marker(markt.coords, { icon: has ? greyIcon : normalIcon })
+        arr.forEach(m=>{
+          const has = preisDaten[m.name];
+          const mk  = L.marker(m.coords,{icon:has?greyIcon:normalIcon})
             .addTo(map);
-          mk.on("click", ()=>{
-            currentSupermarkt           = markt.name;
-            currentMarker               = mk;
-            zuletztHochgeladenesBildURL = preisDaten[markt.name]?.bild || null;
-            // Preise vorfüllen
-            produkte.forEach(p =>
-              p.preisErfasst = preisDaten[markt.name]?.preise?.[p.name] ?? null
+          mk.on("click",()=>{
+            currentSupermarkt = m.name;
+            currentMarker     = mk;
+            zuletztHochgeladenesBildURL = preisDaten[m.name]?.bild||null;
+            produkte.forEach(p=>
+              p.preisErfasst = preisDaten[m.name]?.preise?.[p.name]||null
             );
             popup
-              .setLatLng(markt.coords)
-              .setContent(setPopupContent(markt.name))
+              .setLatLng(m.coords)
+              .setContent(setPopupContent(m.name))
               .openOn(map);
             setPopupEventListeners();
           });
@@ -237,40 +233,38 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  // ─────────── Popup‑Inhalt generieren ───────────
+  // ─────────── Popup-Inhalt ───────────
   function setPopupContent(name) {
-    const d = preisDaten[name] || {};
-    let html = `<b>${name}</b><br>` +
+    const d = preisDaten[name]||{};
+    let html = `<b>${name}</b><br>`+
       (d.preise
         ? Object.entries(d.preise)
-            .map(([p,v]) => `${p}: ${v != null ? v.toFixed(2)+" €" : "–"}`)
+            .map(([p,v])=>`${p}: ${v!=null?v.toFixed(2)+" €":"–"}`)
             .join("<br>")
         : "Keine Preise"
       );
     if (d.bild) {
       html += `<br><img src="${d.bild}"
-                        style="max-width:200px; max-height:150px;"><br>` +
+               style="max-width:200px;max-height:150px;"><br>`+
               `<button id="bildLoeschenBtn">🗑️ Bild löschen</button>`;
     }
     html += `<br><button id="bearbeitenBtn">Preise bearbeiten</button>`;
     return html;
   }
 
-  // ─────────── Popup‑Event‑Handler ───────────
+  // ─────────── Popup-Events ───────────
   function setPopupEventListeners() {
-    // Bearbeiten → Stepper
     const bp = document.getElementById("bearbeitenBtn");
     if (bp) bp.onclick = openStepper;
 
-    // Bild löschen
     const del = document.getElementById("bildLoeschenBtn");
-    if (del) del.onclick = async () => {
+    if (del) del.onclick = async ()=>{
       const fn = (preisDaten[currentSupermarkt].bild||"").split("/").pop();
       if (!fn) return;
-      await fetch("/api/delete-image", {
+      await fetch("/api/delete-image",{
         method:"DELETE",
         headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({ fileName:fn })
+        body: JSON.stringify({fileName:fn})
       });
       preisDaten[currentSupermarkt].bild = null;
       await speicherePreisInFirestore(
@@ -286,19 +280,24 @@ document.addEventListener("DOMContentLoaded", () => {
   // ─────────── Speichern in Firestore ───────────
   async function speicherePreisInFirestore(markt, eintraege, bildURL=null) {
     await setDoc(
-      doc(db, "preise", markt.replace(/\W+/g, "_")),
-      {
-        markt,
-        preise: eintraege,
-        bild: bildURL || null,
-        zeitstempel: serverTimestamp()
-      }
+      doc(db,"preise",markt.replace(/\W+/g,"_")),
+      { markt, preise:eintraege, bild:bildURL||null, zeitstempel:serverTimestamp() }
     );
-    preisDaten[markt] = { preise: eintraege, bild: bildURL || null };
+    preisDaten[markt] = { preise:eintraege, bild:bildURL||null };
     if (currentMarker) currentMarker.setIcon(greyIcon);
   }
 
-  // ─────────── Karte neu zeichnen bei Rückkehr ───────────
+  // ─────────── Helfer: File → Base64 ───────────
+  function fileToBase64(file) {
+    return new Promise((res,rej)=>{
+      const r = new FileReader();
+      r.onloadend = ()=> res(r.result.split(",")[1]);
+      r.onerror   = rej;
+      r.readAsDataURL(file);
+    });
+  }
+
+  // ─────────── Karte bei Sichtbarkeit neu zeichnen ───────────
   window.addEventListener("pageshow",      ()=> map.invalidateSize());
   document.addEventListener("visibilitychange",
     ()=> !document.hidden && map.invalidateSize()
@@ -307,4 +306,3 @@ document.addEventListener("DOMContentLoaded", () => {
   // ─────────── App starten ───────────
   ladePreiseAusFirestore();
 });
-
