@@ -89,11 +89,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ─────────── Produkte für den Stepper ───────────
   const produkte = [
-    { name:"Brot",   beschreibung:"Frisches Brot vom Bäcker.", bildUrl:"/products/brot.jpg" },
-    { name:"Milch",  beschreibung:"1 Liter Vollmilch, 3,5 % Fett.", bildUrl:"/products/milch.jpg" },
-    { name:"Äpfel",  beschreibung:"Ca. 1 kg regionale Äpfel.", bildUrl:"/products/aepfel.jpg" },
-    { name:"Butter", beschreibung:"250 g Markenbutter, Bio.", bildUrl:"/products/butter.jpg" },
-    { name:"Nudeln", beschreibung:"500 g Hartweizengrieß‑Nudeln.", bildUrl:"/products/nudeln.jpg" }
+    { name:"Brot",   beschreibung:"Frisches Brot vom Bäcker.", bildUrl:"https://www.kingarthurbaking.com/sites/default/files/styles/featured_image/public/2020-05/french-style-country-loaf.jpg?itok=LVIWYfCO" },
+    { name:"Milch",  beschreibung:"1 Liter Vollmilch, 3,5 % Fett.", bildUrl:"https://www.kelemidis.de/media/cache/40/d0/40d0d055572d14c2e2c12eb8412ca577.webp" },
+    { name:"Äpfel",  beschreibung:"Ca. 1 kg regionale Äpfel.", bildUrl:"https://www.spargelbuffet.de/wp-content/uploads/2021/01/aepfel1.jpg" },
+    { name:"Butter", beschreibung:"250 g Markenbutter, Bio.", bildUrl:"https://img.rewe-static.de/9954773/45203893_digital-image.png?imwidth=840&impolicy=pdp" },
+    { name:"Nudeln", beschreibung:"500 g Barilla Fusilli.", bildUrl:"https://www.kelemidis.de/media/cache/73/9c/739ca90930ace806f2f6210ad9d92610.jpg" }
   ];
   let currentStep = 0;
 
