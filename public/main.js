@@ -411,8 +411,18 @@ window.addEventListener("pageshow", () => {
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) {
     setTimeout(refreshMap, 100);
-  }
+    const fileInput = document.querySelector('input[type="file"]');
+  const bildNameDiv = document.getElementById("bildName");
+
+  fileInput.addEventListener("change", () => {
+    if (fileInput.files.length > 0) {
+      bildNameDiv.textContent = fileInput.files[0].name;
+    } else {
+      bildNameDiv.textContent = "Kein Bild vorhanden";
+    }
+  });
 });
+  });
 
 if (currentMarker) {
   currentMarker.setIcon(greyIcon);
@@ -420,5 +430,14 @@ if (currentMarker) {
     .setLatLng(currentMarker.getLatLng())
     .setContent(setPopupContent(currentSupermarkt))
     .openOn(map);
+}
+
+function handlePriceSubmit(data) {
+  // Hier deine bestehende Logik (z. B. Marker erstellen, speichern etc.)
+  // z.B.:
+  addPriceMarker(currentLatLng, data); // oder was du verwendest
+  priceForm.reset();
+  document.getElementById("bildName").textContent = "Kein Bild vorhanden";
+  formModal.classList.add("hidden");
 }
 
