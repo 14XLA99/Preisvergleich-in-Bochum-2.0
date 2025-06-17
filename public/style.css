@@ -1,3 +1,4 @@
+/* === Grundlayout === */
 body {
   margin: 0;
   font-family: system-ui, sans-serif;
@@ -5,19 +6,23 @@ body {
   color: #333;
 }
 
+/* === Überschrift === */
 h1 {
   text-align: center;
   color: #00458a;
-  padding: 1rem;
+  padding: 1.5rem 1rem 1rem;
+  margin: 0;
 }
 
+/* === Kartenbereich === */
 #map {
   height: 80vh;
   width: 100%;
   z-index: 1;
+  border-top: 1px solid #ccc;
 }
 
-/* Modal Styling */
+/* === Modal === */
 .modal {
   position: fixed;
   top: 0;
@@ -37,27 +42,88 @@ h1 {
 
 .modal-content {
   background: white;
-  padding: 1.5rem;
+  padding: 2rem 1.5rem;
   border-radius: 12px;
   width: 90%;
   max-width: 500px;
   position: relative;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-out;
 }
 
+/* ✖️ Schließen-Button */
 #closeBtn {
   position: absolute;
-  top: 8px;
-  right: 14px;
+  top: 10px;
+  right: 16px;
   font-size: 24px;
   cursor: pointer;
+  color: #888;
+}
+
+#closeBtn:hover {
+  color: #333;
+}
+
+/* === Formular === */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
 }
 
 .form-group label {
-  display: block;
-  margin: 0.5rem 0;
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  color: #222;
+  font-size: 0.95rem;
 }
 
+/* Eingabefelder */
+input[type="number"],
+input[type="file"] {
+  margin-top: 0.25rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input[type="file"] {
+  padding: 0.3rem 0.2rem;
+  font-size: 0.9rem;
+}
+
+/* Bildname-Anzeige */
+#bildName {
+  margin-top: 0.5rem;
+  font-size: 0.9em;
+  font-style: italic;
+  color: #666;
+}
+
+/* === Button === */
+button {
+  background-color: #00458a;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #0059b3;
+}
+
+/* === Zusatz: Bezirks-Label === */
 .bezirk-label {
   font-size: 12px;
   color: #333;
@@ -68,28 +134,14 @@ h1 {
   text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
 }
 
-button {
-  background-color: #00458a;
-  color: white;
-  padding: 0.4rem 0.8rem;
-  border: none;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  cursor: pointer;
+/* === Animation === */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
-
-button:hover {
-  background-color: #0059b3;
-}
-
-
-#bildName {
-  margin-top: 0.5rem;
-  font-size: 0.9em;
-  font-style: italic;
-  color: #666;
-}
-
-
-
-
