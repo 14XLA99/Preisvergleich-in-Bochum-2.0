@@ -172,3 +172,32 @@ button:hover {
   background: #00458a;
 }
 
+/* Stepper Navigation */
+.step-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+#stepIndicators {
+  display: flex;
+  gap: 0.5rem;
+}
+.step-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ccc;
+  cursor: pointer;
+}
+.step-dot.active {
+  background: #00458a;
+}
+
+/* Feinjustierung Buttons */
+button {
+  font-size: 0.85rem;        /* etwas kleiner */
+  padding: 0.3rem 0.6rem;    /* kompakter */
+}
+
+
