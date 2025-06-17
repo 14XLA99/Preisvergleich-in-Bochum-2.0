@@ -77,13 +77,55 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentSupermarkt = "";
   let zuletztHochgeladenesBildURL = null;
 
-  // ─────────── HTML‑Elemente ───────────
-  const modal       = document.getElementById("formModal");
-  const form        = document.getElementById("priceForm");
-  const formTitle   = document.getElementById("form-title");
-  const closeBtn    = document.getElementById("closeBtn");
-  const fileInput   = document.getElementById("bildUpload");
-  const bildNameDiv = document.getElementById("bildName");
+ // 🔁 Bild-Upload + Stepper
+const bildModal = document.getElementById("bildUploadModal");
+const bildInput = document.getElementById("bildDateiInput");
+const bildInfo  = document.getElementById("bildUploadInfo");
+const skipBtn   = document.getElementById("bildUeberspringenBtn");
+const nextBtn   = document.getElementById("bildWeiterBtn");
+
+let zuletztHochgeladenesBildURL = null;
+let currentSupermarkt = "";
+let currentMarker = null;
+
+// Wenn Marker geklickt wurde → Modal öffnen
+function openBildUploadUndDannStepper() {
+  zuletztHochgeladenesBildURL = null;
+  bildInput.value = "";
+  bildInfo.textContent = "Kein Bild ausgewählt";
+  bildModal.classList.remove("hidden");
+}
+
+bildInput.addEventListener("change", () => {
+  const file = bildInput.files[0];
+  bildInfo.textContent = file ? file.name : "Kein Bild ausgewählt";
+});
+
+skipBtn.onclick = () => {
+  bildModal.classList.add("hidden");
+  openStepper();
+};
+
+nextBtn.onclick = async () => {
+  const file = bildInput.files[0];
+  if (file) {
+    const b64 = await fileToBase64(file);
+    const res = await fetch("/api/upload-image", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        imageBase64: b64,
+        fileName: `${currentSupermarkt.replace(/\W+/g, "_")}.jpg`
+      })
+    });
+    const j = await res.json();
+    if (res.ok) {
+      zuletztHochgeladenesBildURL = j.url;
+    }
+  }
+  bildModal.classList.add("hidden");
+  openStepper();
+};
 
   // ─────────── Datei‑Name anzeigen ───────────
   fileInput.addEventListener("change", () => {
