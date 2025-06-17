@@ -188,7 +188,7 @@ nextBtn.onclick = async () => {
   // ─────────── Popup‑Event‑Handler (Bearbeiten + Löschen) ───────────
   function setPopupEventListeners() {
     const bp = document.getElementById("bearbeitenBtn");
-    if (bp) bp.onclick = openFileAndPriceForm;
+    if (bp) bp.onclick = openBildUploadUndDannStepper;
 
     const del = document.getElementById("bildLoeschenBtn");
     if (del) del.onclick = async () => {
