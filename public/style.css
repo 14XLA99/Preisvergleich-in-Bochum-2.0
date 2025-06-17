@@ -158,14 +158,21 @@ input[type="file"] {
     font-size: 0.9em;
   }
 }
-/* Für das Stepper‑Modal: feste Größe + Scrollbar bei Überlauf */
+/* Stepper-Modal größer und kein Scrollen */
 #stepperModal .modal-content {
-  width: 400px;
-  height: 450px;
-  max-width: 90%;
-  max-height: 90%;
-  overflow-y: auto;
-  box-sizing: border-box;
+  width: 500px;
+  max-width: 95%;
+  max-height: 90vh;
+  overflow: hidden; /* kein Scrollen mehr */
+  display: flex;
+  flex-direction: column;
+}
+#stepperModal #step-content {
+  flex: 1;
+  overflow-y: auto; /* nur der Inhalt scrollt, wenn wirklich nötig */
+  margin-bottom: 1em;
+}
+
 }
 #step-image img {
   max-width: 100%;
