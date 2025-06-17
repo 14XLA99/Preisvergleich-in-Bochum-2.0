@@ -42,7 +42,7 @@ h1 {
   padding: 2em;
   border-radius: 8px;
   width: 90%;
-  max-width: 500px;
+  max-width: 600px;
   position: relative;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
@@ -158,55 +158,45 @@ input[type="file"] {
     font-size: 0.9em;
   }
 }
-/* Stepper-Modal größer und kein Scrollen */
+
+/* Modal im Stepper größer & scrollbar */
 #stepperModal .modal-content {
-  width: 500px;
+  width: 600px;
   max-width: 95%;
   max-height: 90vh;
-  overflow: hidden; /* kein Scrollen mehr */
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
+
+/* Inhalt scrollt bei Bedarf */
 #stepperModal #step-content {
   flex: 1;
-  overflow-y: auto; /* nur der Inhalt scrollt, wenn wirklich nötig */
+  overflow-y: auto;
   margin-bottom: 1em;
-}
-
-}
-#step-image img {
-  max-width: 100%;
-  max-height: 200px;
-  display: block;
-  margin-top: 0.5em;
-}
-/* Einheitliche Bilddarstellung im Leaflet-Popup */
-.leaflet-popup-content img {
-  max-width: 100%;
-  max-height: 150px;
-  width: auto;
-  height: auto;
-  display: block;
-  margin: 0.5em 0;
-  object-fit: contain;
-}
-/* Leaflet-Popup Scroll fix */
-.leaflet-popup-content {
-  overflow-x: hidden;
-}
-/* Einheitliche Bildgröße im Stepper */
-#step-content img {
-  max-width: 100%;
-  width: 100%;
-  max-height: 180px;
-  object-fit: cover;
-  border-radius: 4px;
-  margin-bottom: 1em;
-}
-
-/* Verhindert horizontalen Scroll im Modal */
-#step-content {
   overflow-x: hidden;
   padding-right: 1em;
 }
 
+/* Einheitliche Bilddarstellung im Stepper */
+#step-content img {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 1em;
+}
+
+/* Einheitliche Bilddarstellung im Leaflet-Popup */
+.leaflet-popup-content img {
+  max-width: 100%;
+  max-height: 150px;
+  display: block;
+  margin: 0.5em 0;
+  object-fit: contain;
+}
+
+/* Popup horizontaler Scroll fix */
+.leaflet-popup-content {
+  overflow-x: hidden;
+}
