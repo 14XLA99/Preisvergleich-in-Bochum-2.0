@@ -12,6 +12,17 @@
   <h1>🛒 Preisvergleich in Bochum</h1>
   <div id="map"></div>
 
+<!-- NEU: Einfacher Modal für Bildauswahl -->
+<div id="bildUploadModal" class="modal hidden">
+  <div class="modal-content">
+    <h2>Optional: Foto hinzufügen</h2>
+    <input type="file" id="bildDateiInput" accept="image/*" />
+    <div id="bildUploadInfo">Kein Bild ausgewählt</div>
+    <button id="bildUeberspringenBtn">Überspringen</button>
+    <button id="bildWeiterBtn">Weiter</button>
+  </div>
+</div>
+
   <!-- Stepper-Modal -->
   <div id="stepperModal" class="modal hidden">
     <div class="modal-content">
