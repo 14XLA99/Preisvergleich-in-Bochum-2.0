@@ -100,6 +100,60 @@ function setPopupEventListeners() {
   }
 }
 
+// Stepper‑Daten
+const produkte = [
+  { name: "Brot", beschreibung: "Frisches Brot vom Bäcker." },
+  { name: "Milch", beschreibung: "1 Liter Vollmilch, 3,5% Fett." },
+  { name: "Äpfel", beschreibung: "Ca. 1 kg regionale Äpfel." },
+  { name: "Butter", beschreibung: "250 g Markenbutter, Bio." },
+  { name: "Nudeln", beschreibung: "500 g Hartweizengrieß‑Nudeln." }
+];
+let currentStep = 0;
+
+// Elemente
+const stepperModal = document.getElementById("stepperModal");
+const stepContent    = document.getElementById("step-content");
+const prevBtn        = document.getElementById("prevStep");
+const nextBtn        = document.getElementById("nextStep");
+const indicators     = document.getElementById("stepIndicators");
+const closeStepper   = document.getElementById("stepperCloseBtn");
+
+function openStepper() {
+  currentStep = 0;
+  renderStep();
+  stepperModal.classList.remove("hidden");
+}
+
+closeStepper.onclick = () => stepperModal.classList.add("hidden");
+prevBtn.onclick       = () => { if (currentStep>0) { currentStep--; renderStep(); } };
+nextBtn.onclick       = () => {
+  if (currentStep < produkte.length - 1) {
+    currentStep++;
+    renderStep();
+  } else {
+    stepperModal.classList.add("hidden");
+    // hier eure save‑Funktion aufrufen:
+    handleStepperSubmit();
+  }
+};
+
+function renderStep() {
+  const p = produkte[currentStep];
+  stepContent.innerHTML = `
+    <h3>${p.name}</h3>
+    <p>${p.beschreibung}</p>
+    <label>Preis (€): <input id="preisInput" type="number" step="0.01" /></label>
+  `;
+  // Indicators aktualisieren
+  indicators.innerHTML = "";
+  produkte.forEach((_, i) => {
+    const dot = document.createElement("div");
+    dot.className = "step-dot" + (i===currentStep?" active":"");
+    dot.onclick   = () => { currentStep=i; renderStep(); };
+    indicators.appendChild(dot);
+  });
+}
+
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -445,4 +499,17 @@ if (fileInput && bildNameDiv) {
   });
 }
 
+function handleStepperSubmit() {
+  // Hier sammelt ihr alle Preise aus den Inputs der einzelnen Schritte...
+  const erfasstePreise = {};
+  produkte.forEach((p, idx) => {
+    const val = document.querySelectorAll("#step-content input")[idx].value;
+    erfasstePreise[p.name] = parseFloat(val) || null;
+  });
+  // Und danach euren bestehenden Speichervorgang auslösen:
+  speicherePreisInFirestore(currentSupermarkt, erfasstePreise, zuletztHochgeladenesBildURL);
+  // Popup ggf. aktualisieren
+  popup.setContent(setPopupContent(currentSupermarkt));
+  popup.openOn(map);
+}
 
