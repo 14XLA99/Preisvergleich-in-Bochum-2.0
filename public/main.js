@@ -411,17 +411,8 @@ window.addEventListener("pageshow", () => {
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) {
     setTimeout(refreshMap, 100);
-    const fileInput = document.querySelector('input[type="file"]');
-  const bildNameDiv = document.getElementById("bildName");
-
-  fileInput.addEventListener("change", () => {
-    if (fileInput.files.length > 0) {
-      bildNameDiv.textContent = fileInput.files[0].name;
-    } else {
-      bildNameDiv.textContent = "Kein Bild vorhanden";
+  
     }
-  });
-});
   });
 
 if (currentMarker) {
@@ -440,4 +431,18 @@ function handlePriceSubmit(data) {
   document.getElementById("bildName").textContent = "Kein Bild vorhanden";
   formModal.classList.add("hidden");
 }
+
+const fileInput = document.querySelector('input[type="file"]');
+const bildNameDiv = document.getElementById("bildName");
+
+if (fileInput && bildNameDiv) {
+  fileInput.addEventListener("change", () => {
+    if (fileInput.files.length > 0) {
+      bildNameDiv.textContent = fileInput.files[0].name;
+    } else {
+      bildNameDiv.textContent = "Kein Bild vorhanden";
+    }
+  });
+}
+
 
