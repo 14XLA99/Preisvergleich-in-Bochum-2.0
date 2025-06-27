@@ -92,9 +92,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // ─────────── 6) Produkte + Stepper Setup ───────────
   const produkte = [
     { name:"Brot", beschreibung:"Frisches Brot", bildUrl:"https://www.kingarthurbaking.com/sites/default/files/styles/featured_image/public/2020-05/french-style-country-loaf.jpg" },
-    { name:"Milch", beschreibung:"1 l Vollmilch", bildUrl:"https://www.kelemidis.de/media/cache/40/d0/40d0d055572d14c2e2c12eb8412ca577.webp" },
+    { name:"Milch", beschreibung:"1 l Vollmilch", bildUrl:"https://https://www.molkerei-weihenstephan.de/fileadmin/media/produkte/milch/frische_milch/fmilch_1l_15.png" },
     { name:"Äpfel", beschreibung:"1 kg Äpfel", bildUrl:"https://www.spargelbuffet.de/wp-content/uploads/2021/01/aepfel1.jpg" },
-    { name:"Butter", beschreibung:"250 g Butter", bildUrl:"https://img.rewe-static.de/9954773/45203893_digital-image.png?imwidth=840&impolicy=pdp" },
+    { name:"Butter", beschreibung:"250 g Butter", bildUrl:"https://www.hoche-butter.de/fileadmin/_processed_/c/4/csm_120086-Hoche-Uelzena-Paketbutter-Deutsche-Markenbutter-Buttergenuss-250g-800800_1854122865.png.pagespeed.ce.-BVqKQ7Smg.png;" },
     { name:"Nudeln", beschreibung:"500 g Nudeln", bildUrl:"https://www.kelemidis.de/media/cache/73/9c/739ca90930ace806f2f6210ad9d92610.jpg" }
   ];
   let currentStep = 0;
