@@ -113,7 +113,9 @@ document.addEventListener("DOMContentLoaded", () => {
       // Produkt-Schritt
       const p = produkte[currentStep];
       stepContent.innerHTML = `
-        <img src="${p.bildUrl}" alt="${p.name}">
+       <div class="image-wrapper">
+  <img src="${p.bildUrl}" alt="${p.name}">
+</div>
         <h3>${p.name}</h3>
         <p>${p.beschreibung}</p>
         <label>Preis (€):
