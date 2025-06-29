@@ -159,7 +159,7 @@ function renderStep() {
   // Wenn schon ein Bild da ist, zeigen wir es
   if (zuletztHochgeladenesBildURL) {
     belegPreview.innerHTML = `
-      <img src="${zuletztHochgeladenesBildURL}" style="max-width:100%;max-height:150px;border-radius:4px;">
+     <img src="${zuletztHochgeladenesBildURL}?t=${Date.now()}" style="max-width:100%;max-height:150px;border-radius:4px;">
     `;
   } else {
     belegPreview.innerHTML = `<p style="color:#888;font-size:0.9em;">(Kein Bild vorhanden)</p>`;
@@ -322,7 +322,7 @@ nextBtn.onclick = async () => {
 
     if (d.bild) {
       html += `
-        <img src="${d.bild}" style="max-width:100%;max-height:150px;display:block;margin:0.5em 0;border-radius:4px;object-fit:contain;">
+        <img src="${d.bild}?t=${Date.now()}" style="max-width:100%;max-height:150px;display:block;margin:0.5em 0;border-radius:4px;object-fit:contain;">
         <button id="bildLoeschenBtn" style="margin-bottom:0.5em;">🗑️ Bild löschen</button>
       `;
     }
