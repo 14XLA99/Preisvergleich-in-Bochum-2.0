@@ -156,19 +156,21 @@ function renderStep() {
 
     const preview = document.getElementById("belegPreview");
 
-    if (zwischenBildFile) {
-      const url = URL.createObjectURL(zwischenBildFile);
-      preview.innerHTML = `
-        <img src="${url}" style="max-width:100%;max-height:150px;border-radius:4px;">
-        <div style="font-size:0.9em;color:#666;margin-top:4px;">(Wird beim Speichern hochgeladen)</div>
-      `;
-    } else if (zuletztHochgeladenesBildURL) {
-      preview.innerHTML = `
-        <img src="${zuletztHochgeladenesBildURL}?t=${Date.now()}" style="max-width:100%;max-height:150px;border-radius:4px;">
-      `;
-    } else {
-      preview.innerHTML = `<p style="color:#888;font-size:0.9em;">(Kein Bild vorhanden)</p>`;
-    }
+if (zwischenBildFile) {
+  const url = URL.createObjectURL(zwischenBildFile);
+  preview.innerHTML = `
+    <img src="${url}" style="max-width:100%;max-height:150px;border-radius:4px;">
+    <div style="font-size:0.9em;color:#666;margin-top:4px;">(Wird beim Speichern hochgeladen)</div>
+  `;
+  setTimeout(() => URL.revokeObjectURL(url), 1000); // 🆕 Speicher freigeben
+} else if (zuletztHochgeladenesBildURL) {
+  preview.innerHTML = `
+    <img src="${zuletztHochgeladenesBildURL}?t=${Date.now()}" style="max-width:100%;max-height:150px;border-radius:4px;">
+  `;
+} else {
+  preview.innerHTML = `<p style="color:#888;font-size:0.9em;">(Kein Bild vorhanden)</p>`;
+}
+
 
     document.getElementById("belegInput").addEventListener("change", evt => {
       zwischenBildFile = evt.target.files[0] || null;
@@ -230,13 +232,15 @@ if (zwischenBildFile) {
   });
 
   const j = await res.json();
-  if (res.ok) {
-    finaleBildUrl = j.url;
-    nextBtn.textContent = "✅ Hochgeladen";
-  } else {
-    nextBtn.textContent = "❌ Fehler beim Hochladen";
-  }
+if (res.ok) {
+  finaleBildUrl = j.url;
+  zuletztHochgeladenesBildURL = finaleBildUrl;
+  zwischenBildFile = null; // 🆕 wichtig
+  nextBtn.textContent = "✅ Hochgeladen";
+} else {
+  nextBtn.textContent = "❌ Fehler beim Hochladen";
 }
+
 
 
  try {
@@ -309,6 +313,7 @@ if (zwischenBildFile) {
             // Werte vorbefüllen
             const daten = preisDaten[markt.name] || {};
             zuletztHochgeladenesBildURL = daten.bild || null;
+            zwischenBildFile = null; // 🆕 Reset für Stepper
 
             produkte.forEach(p => {
               p.preisErfasst = daten.preise?.[p.name] ?? null;
@@ -354,9 +359,9 @@ if (zwischenBildFile) {
     return html;
   }
 
-  // ──────────────────────────────
-  // 13) Popup-Event-Logik
-  // ──────────────────────────────
+// ──────────────────────────────
+// 13) Popup-Event-Logik
+// ──────────────────────────────
 function setPopupEventListeners() {
   const bearbeitenBtn = document.getElementById("bearbeitenBtn");
   if (bearbeitenBtn) bearbeitenBtn.onclick = openStepper;
@@ -386,16 +391,17 @@ function setPopupEventListeners() {
         null
       );
 
+      // 🆕 Zustände für Stepper bereinigen
+      zuletztHochgeladenesBildURL = null;
+      zwischenBildFile = null;
+
       // Popup neu zeichnen + Events reaktivieren
       popup.setContent(setPopupContent(currentSupermarkt)).openOn(map);
       setPopupEventListeners();
-
-    // Nach erfolgreichem Löschen:
-    preisDaten[currentSupermarkt].bild = null;
-    zuletztHochgeladenesBildURL = null;
     };
   }
 }
+
 
 
   // ──────────────────────────────
