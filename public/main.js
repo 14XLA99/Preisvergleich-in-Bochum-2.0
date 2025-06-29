@@ -159,17 +159,17 @@ document.addEventListener("DOMContentLoaded", () => {
           <img src="${zuletztHochgeladenesBildURL}" style="max-width:100%;max-height:150px;border-radius:4px;">
         `;
       }
-
-      document.getElementById("belegInput").addEventListener("change", evt => {
-        const file = evt.target.files[0];
-        if (file) {
-          const url = URL.createObjectURL(file);
-          zuletztHochgeladenesBildURL = null; // zurücksetzen
-          document.getElementById("belegPreview").innerHTML = `
-            <img src="${url}" style="max-width:100%;max-height:150px;border-radius:4px;">
-          `;
-        }
-      });
+document.getElementById("belegInput").addEventListener("change", evt => {
+  const file = evt.target.files[0];
+  if (file) {
+    const url = URL.createObjectURL(file);
+    document.getElementById("belegPreview").innerHTML = `
+      <img src="${url}" style="max-width:100%;max-height:150px;border-radius:4px;">
+      <div style="font-size:0.9em;color:#666;margin-top:4px;">⏳ Wird beim Speichern hochgeladen…</div>
+    `;
+    zuletztHochgeladenesBildURL = null; // zurücksetzen
+  }
+});   
     }
 
     // Indikatoren aktualisieren
