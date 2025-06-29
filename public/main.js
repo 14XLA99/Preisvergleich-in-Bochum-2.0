@@ -277,16 +277,6 @@ nextBtn.onclick = async () => {
   }
 };
 
-
-    // Popup aktualisieren und schließen
-  popup.setContent(setPopupContent(currentSupermarkt)).openOn(map);
-setPopupEventListeners();
-stepperModal.classList.add("hidden");
-
-nextBtn.disabled = false;
-nextBtn.textContent = "Weiter";
-
-
   // ──────────────────────────────
   // 10) Daten aus Firestore laden
   // ──────────────────────────────
