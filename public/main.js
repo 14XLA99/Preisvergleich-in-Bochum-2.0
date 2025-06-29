@@ -215,54 +215,64 @@ nextBtn.onclick = async () => {
     renderStep();
   } else {
     // Letzter Schritt: Bild hochladen (falls gewählt)
-  let finaleBildUrl = zuletztHochgeladenesBildURL;
+    let finaleBildUrl = zuletztHochgeladenesBildURL;
 
-if (zwischenBildFile) {
-  nextBtn.disabled = true;
-  nextBtn.textContent = "⏳ Bild wird hochgeladen...";
+    if (zwischenBildFile) {
+      nextBtn.disabled = true;
+      nextBtn.textContent = "⏳ Bild wird hochgeladen...";
 
-  const base64 = await fileToBase64(zwischenBildFile);
-  const res = await fetch("/api/upload-image", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      imageBase64: base64,
-      fileName: `${currentSupermarkt.replace(/\W+/g, "_")}.jpg`
-    })
-  });
+      const base64 = await fileToBase64(zwischenBildFile);
+      const res = await fetch("/api/upload-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          imageBase64: base64,
+          fileName: `${currentSupermarkt.replace(/\W+/g, "_")}.jpg`
+        })
+      });
 
-  const j = await res.json();
-if (res.ok) {
-  finaleBildUrl = j.url;
-  zuletztHochgeladenesBildURL = finaleBildUrl;
-  zwischenBildFile = null; // 🆕 wichtig
-  nextBtn.textContent = "✅ Hochgeladen";
-} else {
-  nextBtn.textContent = "❌ Fehler beim Hochladen";
-}
+      const j = await res.json();
+      if (res.ok) {
+        finaleBildUrl = j.url;
+        zuletztHochgeladenesBildURL = finaleBildUrl;
+        zwischenBildFile = null;
+        nextBtn.textContent = "✅ Hochgeladen";
+      } else {
+        nextBtn.textContent = "❌ Fehler beim Hochladen";
+      }
+    }
 
+    try {
+      const neuePreise = {};
+      produkte.forEach(p => neuePreise[p.name] = p.preisErfasst ?? null);
 
+      await speicherePreisInFirestore(
+        currentSupermarkt,
+        neuePreise,
+        finaleBildUrl
+      );
 
- try {
-  const neuePreise = {};
-  produkte.forEach(p => neuePreise[p.name] = p.preisErfasst ?? null);
+      // 🔄 Cache aktualisieren
+      zuletztHochgeladenesBildURL = finaleBildUrl;
+      preisDaten[currentSupermarkt].bild = finaleBildUrl;
 
-  await speicherePreisInFirestore(
-    currentSupermarkt,
-    neuePreise,
-    finaleBildUrl
-  );
+      // Popup aktualisieren und schließen
+      popup.setContent(setPopupContent(currentSupermarkt)).openOn(map);
+      setPopupEventListeners();
+      stepperModal.classList.add("hidden");
 
-  // 🔄 Cache aktualisieren
-  zuletztHochgeladenesBildURL = finaleBildUrl;
-  preisDaten[currentSupermarkt].bild = finaleBildUrl;
+      // Button zurücksetzen
+      nextBtn.disabled = false;
+      nextBtn.textContent = "Weiter";
 
-} catch (err) {
-  console.error("❌ Fehler beim Speichern:", err);
-  nextBtn.disabled = false;
-  nextBtn.textContent = "Weiter";
-  return;
-}
+    } catch (err) {
+      console.error("❌ Fehler beim Speichern:", err);
+      nextBtn.disabled = false;
+      nextBtn.textContent = "Weiter";
+    }
+  }
+};
+
 
     // Popup aktualisieren und schließen
     popup.setContent(setPopupContent(currentSupermarkt)).openOn(map);
