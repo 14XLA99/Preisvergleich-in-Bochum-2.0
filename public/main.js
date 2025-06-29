@@ -101,6 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
 let preisDaten = {};                  // { markt: { preise: {...}, bild: url } }
 let currentMarker = null;            // Aktuell angeklickter Marker
 let currentSupermarkt = "";          // Name des aktuellen Markts
+let zwischenBildFile = null; // Neu gewähltes, noch nicht hochgeladenes Bild
 let zuletztHochgeladenesBildURL = null;
 
 
@@ -146,62 +147,35 @@ function renderStep() {
         </div>
       </div>
     `;
-} else {
-  // Letzter Schritt: optionales Belegfoto
-  stepContent.innerHTML = `
-    <h3>Belegfoto (optional)</h3>
-    <input type="file" id="belegInput" accept="image/*" />
-    <div id="belegPreview" style="margin-top:1em;"></div>
-  `;
-
-  const belegPreview = document.getElementById("belegPreview");
-
-  // Wenn schon ein Bild da ist, zeigen wir es
-  if (zuletztHochgeladenesBildURL) {
-    belegPreview.innerHTML = `
-     <img src="${zuletztHochgeladenesBildURL}?t=${Date.now()}" style="max-width:100%;max-height:150px;border-radius:4px;">
-    `;
   } else {
-    belegPreview.innerHTML = `<p style="color:#888;font-size:0.9em;">(Kein Bild vorhanden)</p>`;
+    stepContent.innerHTML = `
+      <h3>Belegfoto (optional)</h3>
+      <input type="file" id="belegInput" accept="image/*" />
+      <div id="belegPreview" style="margin-top:1em;"></div>
+    `;
+
+    const preview = document.getElementById("belegPreview");
+
+    if (zwischenBildFile) {
+      const url = URL.createObjectURL(zwischenBildFile);
+      preview.innerHTML = `
+        <img src="${url}" style="max-width:100%;max-height:150px;border-radius:4px;">
+        <div style="font-size:0.9em;color:#666;margin-top:4px;">(Wird beim Speichern hochgeladen)</div>
+      `;
+    } else if (zuletztHochgeladenesBildURL) {
+      preview.innerHTML = `
+        <img src="${zuletztHochgeladenesBildURL}?t=${Date.now()}" style="max-width:100%;max-height:150px;border-radius:4px;">
+      `;
+    } else {
+      preview.innerHTML = `<p style="color:#888;font-size:0.9em;">(Kein Bild vorhanden)</p>`;
+    }
+
+    document.getElementById("belegInput").addEventListener("change", evt => {
+      zwischenBildFile = evt.target.files[0] || null;
+      renderStep(); // neu zeichnen mit aktualisierter Vorschau
+    });
   }
 
-  // Upload direkt beim Dateiwechsel
-  document.getElementById("belegInput").addEventListener("change", async evt => {
-    const file = evt.target.files[0];
-    if (file) {
-      belegPreview.innerHTML = `<p style="font-size:0.9em;color:#666;">⏳ Bild wird hochgeladen…</p>`;
-
-      try {
-        const b64 = await fileToBase64(file);
-
-        const res = await fetch("/api/upload-image", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            imageBase64: b64,
-            fileName: `${currentSupermarkt.replace(/\W+/g, "_")}.jpg`
-          })
-        });
-
-        const j = await res.json();
-        if (res.ok && j.url) {
-          zuletztHochgeladenesBildURL = j.url;
-          belegPreview.innerHTML = `
-            <img src="${j.url}" style="max-width:100%;max-height:150px;border-radius:4px;">
-            <div style="font-size:0.9em;color:#28a745;margin-top:4px;">✅ Hochgeladen</div>
-          `;
-        } else {
-          belegPreview.innerHTML = `<p style="color:red;">❌ Upload fehlgeschlagen</p>`;
-        }
-
-      } catch (err) {
-        belegPreview.innerHTML = `<p style="color:red;">❌ Fehler beim Hochladen</p>`;
-      }
-    }
-  });
-}
-
-  // Indikatoren aktualisieren
   indicators.innerHTML = "";
   const total = produkte.length + 1;
   for (let i = 0; i < total; i++) {
@@ -239,32 +213,31 @@ nextBtn.onclick = async () => {
     renderStep();
   } else {
     // Letzter Schritt: Bild hochladen (falls gewählt)
-    const input = document.getElementById("belegInput");
-    let neueBildUrl = zuletztHochgeladenesBildURL; // Fallback (falls kein neues Bild)
+  let finaleBildUrl = zuletztHochgeladenesBildURL;
 
-    if (input.files[0]) {
-      const b64 = await fileToBase64(input.files[0]);
+if (zwischenBildFile) {
+  nextBtn.disabled = true;
+  nextBtn.textContent = "⏳ Bild wird hochgeladen...";
 
-      nextBtn.disabled = true;
-      nextBtn.textContent = "⏳ Bild wird hochgeladen...";
+  const base64 = await fileToBase64(zwischenBildFile);
+  const res = await fetch("/api/upload-image", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      imageBase64: base64,
+      fileName: `${currentSupermarkt.replace(/\W+/g, "_")}.jpg`
+    })
+  });
 
-      const res = await fetch("/api/upload-image", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          imageBase64: b64,
-          fileName: `${currentSupermarkt.replace(/\W+/g, "_")}.jpg`
-        })
-      });
+  const j = await res.json();
+  if (res.ok) {
+    finaleBildUrl = j.url;
+    nextBtn.textContent = "✅ Hochgeladen";
+  } else {
+    nextBtn.textContent = "❌ Fehler beim Hochladen";
+  }
+}
 
-      const j = await res.json();
-      if (res.ok) {
-        neueBildUrl = j.url;
-        nextBtn.textContent = "✅ Hochgeladen";
-      } else {
-        nextBtn.textContent = "❌ Fehler beim Hochladen";
-      }
-    }
 
     // 🔁 Daten speichern (Preise + Bild)
     const neuePreise = {};
