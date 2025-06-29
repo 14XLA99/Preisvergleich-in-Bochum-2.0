@@ -239,20 +239,22 @@ if (zwischenBildFile) {
 }
 
 
-   await speicherePreisInFirestore(
-  currentSupermarkt,
-  neuePreise,
-  finaleBildUrl
-);
+   try {
+  await speicherePreisInFirestore(
+    currentSupermarkt,
+    neuePreise,
+    finaleBildUrl
+  );
 
-// 🔄 Cache aktualisieren
-zuletztHochgeladenesBildURL = finaleBildUrl;
-preisDaten[currentSupermarkt].bild = finaleBildUrl;
+  // 🔄 Cache aktualisieren
+  zuletztHochgeladenesBildURL = finaleBildUrl;
+  preisDaten[currentSupermarkt].bild = finaleBildUrl;
 
-try {
-  await speicherePreisInFirestore(...);
 } catch (err) {
   console.error("❌ Fehler beim Speichern:", err);
+  nextBtn.disabled = false;
+  nextBtn.textContent = "Weiter";
+  return; // Stoppe, damit kein Popup geöffnet wird
 }
 
     // Popup aktualisieren und schließen
