@@ -187,59 +187,80 @@ document.getElementById("belegInput").addEventListener("change", evt => {
     }
   }
 
-  // ──────────────────────────────
-  // 9) Stepper öffnen / schließen / steuern
-  // ──────────────────────────────
-  function openStepper() {
-    currentStep = 0;
+// ──────────────────────────────
+// 9) Stepper öffnen / schließen / steuern
+// ──────────────────────────────
+function openStepper() {
+  currentStep = 0;
+  renderStep();
+  stepperModal.classList.remove("hidden");
+}
+
+closeStepper.onclick = () => stepperModal.classList.add("hidden");
+
+prevBtn.onclick = () => {
+  if (currentStep > 0) {
+    currentStep--;
     renderStep();
-    stepperModal.classList.remove("hidden");
   }
+};
 
-  closeStepper.onclick = () => stepperModal.classList.add("hidden");
+nextBtn.onclick = async () => {
+  if (currentStep < produkte.length) {
+    // Preis speichern und nächsten Step zeigen
+    produkte[currentStep].preisErfasst =
+      parseFloat(document.getElementById("preisInput").value) || null;
+    currentStep++;
+    renderStep();
+  } else {
+    // Letzter Schritt: Bild hochladen (falls gewählt)
+    const input = document.getElementById("belegInput");
+    if (input.files[0]) {
+      const b64 = await fileToBase64(input.files[0]);
 
-  prevBtn.onclick = () => {
-    if (currentStep > 0) {
-      currentStep--;
-      renderStep();
-    }
-  };
+      // ✅ Button visuell sperren & Ladefeedback
+      nextBtn.disabled = true;
+      nextBtn.textContent = "⏳ Bild wird hochgeladen...";
 
-  nextBtn.onclick = async () => {
-    if (currentStep < produkte.length) {
-      // Preis speichern und nächsten Step zeigen
-      produkte[currentStep].preisErfasst =
-        parseFloat(document.getElementById("preisInput").value) || null;
-      currentStep++;
-      renderStep();
-    } else {
-      // Bild hochladen (falls gewählt)
-      const input = document.getElementById("belegInput");
-      if (input.files[0]) {
-        const b64 = await fileToBase64(input.files[0]);
-        const res = await fetch("/api/upload-image", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            imageBase64: b64,
-            fileName: `${currentSupermarkt.replace(/\W+/g, "_")}.jpg`
-          })
-        });
-        const j = await res.json();
-        if (res.ok) zuletztHochgeladenesBildURL = j.url;
+      const res = await fetch("/api/upload-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          imageBase64: b64,
+          fileName: `${currentSupermarkt.replace(/\W+/g, "_")}.jpg`
+        })
+      });
+
+      const j = await res.json();
+      if (res.ok) {
+        zuletztHochgeladenesBildURL = j.url;
+        nextBtn.textContent = "✅ Hochgeladen";
+      } else {
+        nextBtn.textContent = "❌ Fehler beim Hochladen";
       }
-
-      // Daten speichern
-      const neuePreise = {};
-      produkte.forEach(p => neuePreise[p.name] = p.preisErfasst ?? null);
-      await speicherePreisInFirestore(currentSupermarkt, neuePreise, zuletztHochgeladenesBildURL);
-
-      // Popup aktualisieren
-      popup.setContent(setPopupContent(currentSupermarkt)).openOn(map);
-      setPopupEventListeners();
-      stepperModal.classList.add("hidden");
     }
-  };
+
+    // 🔁 Daten speichern (Preise + Bild)
+    const neuePreise = {};
+    produkte.forEach(p => neuePreise[p.name] = p.preisErfasst ?? null);
+
+    await speicherePreisInFirestore(
+      currentSupermarkt,
+      neuePreise,
+      zuletztHochgeladenesBildURL
+    );
+
+    // Popup aktualisieren und schließen
+    popup.setContent(setPopupContent(currentSupermarkt)).openOn(map);
+    setPopupEventListeners();
+    stepperModal.classList.add("hidden");
+
+    // ✅ Button zurücksetzen
+    nextBtn.disabled = false;
+    nextBtn.textContent = "Weiter";
+  }
+};
+
   // ──────────────────────────────
   // 10) Daten aus Firestore laden
   // ──────────────────────────────
