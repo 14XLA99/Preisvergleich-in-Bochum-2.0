@@ -146,29 +146,34 @@ function renderStep() {
         </div>
       </div>
     `;
-  } else {
-    // Letzter Schritt: optionales Belegfoto
-    stepContent.innerHTML = `
-      <h3>Belegfoto (optional)</h3>
-      <input type="file" id="belegInput" accept="image/*" />
-      <div id="belegPreview" style="margin-top:1em;"></div>
+} else {
+  // Letzter Schritt: optionales Belegfoto
+  stepContent.innerHTML = `
+    <h3>Belegfoto (optional)</h3>
+    <input type="file" id="belegInput" accept="image/*" />
+    <div id="belegPreview" style="margin-top:1em;"></div>
+  `;
+
+  const belegPreview = document.getElementById("belegPreview");
+
+  // Wenn schon ein Bild da ist, zeigen wir es
+  if (zuletztHochgeladenesBildURL) {
+    belegPreview.innerHTML = `
+      <img src="${zuletztHochgeladenesBildURL}" style="max-width:100%;max-height:150px;border-radius:4px;">
     `;
+  } else {
+    belegPreview.innerHTML = `<p style="color:#888;font-size:0.9em;">(Kein Bild vorhanden)</p>`;
+  }
 
-    const belegPreview = document.getElementById("belegPreview");
-    if (zuletztHochgeladenesBildURL) {
-      belegPreview.innerHTML = `
-        <img src="${zuletztHochgeladenesBildURL}" style="max-width:100%;max-height:150px;border-radius:4px;">
-      `;
-    } else {
-      belegPreview.innerHTML = `<p style="color:#888;font-size:0.9em;">(Kein Bild vorhanden)</p>`;
-    }
+  // Upload direkt beim Dateiwechsel
+  document.getElementById("belegInput").addEventListener("change", async evt => {
+    const file = evt.target.files[0];
+    if (file) {
+      belegPreview.innerHTML = `<p style="font-size:0.9em;color:#666;">⏳ Bild wird hochgeladen…</p>`;
 
-    document.getElementById("belegInput").addEventListener("change", async evt => {
-      const file = evt.target.files[0];
-      if (file) {
-        belegPreview.innerHTML = `<div style="color:#666;font-size:0.9em;">⏳ Lade Bild hoch...</div>`;
-
+      try {
         const b64 = await fileToBase64(file);
+
         const res = await fetch("/api/upload-image", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -179,18 +184,22 @@ function renderStep() {
         });
 
         const j = await res.json();
-        if (res.ok) {
+        if (res.ok && j.url) {
           zuletztHochgeladenesBildURL = j.url;
           belegPreview.innerHTML = `
-            <img src="${zuletztHochgeladenesBildURL}" style="max-width:100%;max-height:150px;border-radius:4px;">
-            <div style="font-size:0.9em;color:#666;margin-top:4px;">✅ Bild hochgeladen</div>
+            <img src="${j.url}" style="max-width:100%;max-height:150px;border-radius:4px;">
+            <div style="font-size:0.9em;color:#28a745;margin-top:4px;">✅ Hochgeladen</div>
           `;
         } else {
-          belegPreview.innerHTML = `<p style="color:red;">Fehler beim Hochladen</p>`;
+          belegPreview.innerHTML = `<p style="color:red;">❌ Upload fehlgeschlagen</p>`;
         }
+
+      } catch (err) {
+        belegPreview.innerHTML = `<p style="color:red;">❌ Fehler beim Hochladen</p>`;
       }
-    });
-  }
+    }
+  });
+}
 
   // Indikatoren aktualisieren
   indicators.innerHTML = "";
@@ -231,11 +240,7 @@ nextBtn.onclick = async () => {
     const neuePreise = {};
     produkte.forEach(p => neuePreise[p.name] = p.preisErfasst ?? null);
 
-    await speicherePreisInFirestore(
-      currentSupermarkt,
-      neuePreise,
-      zuletztHochgeladenesBildURL
-    );
+    await speicherePreisInFirestore(currentSupermarkt, neuePreise, zuletztHochgeladenesBildURL);
 
     popup.setContent(setPopupContent(currentSupermarkt)).openOn(map);
     setPopupEventListeners();
