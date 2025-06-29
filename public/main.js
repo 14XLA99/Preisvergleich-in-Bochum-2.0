@@ -321,36 +321,42 @@ document.addEventListener("DOMContentLoaded", () => {
   // ──────────────────────────────
   // 13) Popup-Event-Logik
   // ──────────────────────────────
-  function setPopupEventListeners() {
-    const bearbeitenBtn = document.getElementById("bearbeitenBtn");
-    if (bearbeitenBtn) bearbeitenBtn.onclick = openStepper;
+function setPopupEventListeners() {
+  const bearbeitenBtn = document.getElementById("bearbeitenBtn");
+  if (bearbeitenBtn) bearbeitenBtn.onclick = openStepper;
 
-    const loeschenBtn = document.getElementById("bildLoeschenBtn");
-    if (loeschenBtn) {
-      loeschenBtn.onclick = async () => {
-        const bildName = (preisDaten[currentSupermarkt].bild || "").split("/").pop();
-        if (!bildName) return;
+  const loeschenBtn = document.getElementById("bildLoeschenBtn");
+  if (loeschenBtn) {
+    loeschenBtn.onclick = async () => {
+      // Sofortiges Feedback + Button deaktivieren
+      loeschenBtn.disabled = true;
+      loeschenBtn.textContent = "⏳ Löschen...";
 
-        // Bild bei Vercel Blob löschen
-        await fetch("/api/delete-image", {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ fileName: bildName })
-        });
+      const bildName = (preisDaten[currentSupermarkt].bild || "").split("/").pop();
+      if (!bildName) return;
 
-        // Bild-Referenz aus Firestore entfernen
-        preisDaten[currentSupermarkt].bild = null;
-        await speicherePreisInFirestore(
-          currentSupermarkt,
-          preisDaten[currentSupermarkt].preise,
-          null
-        );
+      // Bild bei Vercel löschen
+      await fetch("/api/delete-image", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fileName: bildName })
+      });
 
-        popup.setContent(setPopupContent(currentSupermarkt)).openOn(map);
-        setPopupEventListeners();
-      };
-    }
+      // Lokale Daten und Firestore aktualisieren
+      preisDaten[currentSupermarkt].bild = null;
+      await speicherePreisInFirestore(
+        currentSupermarkt,
+        preisDaten[currentSupermarkt].preise,
+        null
+      );
+
+      // Popup neu zeichnen + Events reaktivieren
+      popup.setContent(setPopupContent(currentSupermarkt)).openOn(map);
+      setPopupEventListeners();
+    };
   }
+}
+
 
   // ──────────────────────────────
   // 14) Firestore speichern
