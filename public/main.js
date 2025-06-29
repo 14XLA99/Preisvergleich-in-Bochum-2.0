@@ -154,11 +154,15 @@ document.addEventListener("DOMContentLoaded", () => {
         <div id="belegPreview" style="margin-top:1em;"></div>
       `;
 
-      if (zuletztHochgeladenesBildURL) {
-        document.getElementById("belegPreview").innerHTML = `
-          <img src="${zuletztHochgeladenesBildURL}" style="max-width:100%;max-height:150px;border-radius:4px;">
-        `;
-      }
+  const belegPreview = document.getElementById("belegPreview");
+if (zuletztHochgeladenesBildURL) {
+  belegPreview.innerHTML = `
+    <img src="${zuletztHochgeladenesBildURL}" style="max-width:100%;max-height:150px;border-radius:4px;">
+  `;
+} else {
+  belegPreview.innerHTML = `<p style="color:#888;font-size:0.9em;">(Kein Bild vorhanden)</p>`;
+}
+   
 document.getElementById("belegInput").addEventListener("change", evt => {
   const file = evt.target.files[0];
   if (file) {
@@ -353,6 +357,10 @@ function setPopupEventListeners() {
       // Popup neu zeichnen + Events reaktivieren
       popup.setContent(setPopupContent(currentSupermarkt)).openOn(map);
       setPopupEventListeners();
+
+    // Nach erfolgreichem Löschen:
+    preisDaten[currentSupermarkt].bild = null;
+    zuletztHochgeladenesBildURL = null;
     };
   }
 }
