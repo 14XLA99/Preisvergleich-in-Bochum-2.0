@@ -95,7 +95,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const popup = L.popup(); // Reuse-Popup für alle Marker
 
-});
   // ──────────────────────────────
   // 5) Lokaler Speicher / App-State
   // ──────────────────────────────
