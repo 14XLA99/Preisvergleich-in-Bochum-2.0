@@ -239,7 +239,10 @@ if (zwischenBildFile) {
 }
 
 
-   try {
+ try {
+  const neuePreise = {};
+  produkte.forEach(p => neuePreise[p.name] = p.preisErfasst ?? null);
+
   await speicherePreisInFirestore(
     currentSupermarkt,
     neuePreise,
@@ -254,7 +257,7 @@ if (zwischenBildFile) {
   console.error("❌ Fehler beim Speichern:", err);
   nextBtn.disabled = false;
   nextBtn.textContent = "Weiter";
-  return; // Stoppe, damit kein Popup geöffnet wird
+  return;
 }
 
     // Popup aktualisieren und schließen
