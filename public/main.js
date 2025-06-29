@@ -275,15 +275,12 @@ nextBtn.onclick = async () => {
 
 
     // Popup aktualisieren und schließen
-    popup.setContent(setPopupContent(currentSupermarkt)).openOn(map);
-    setPopupEventListeners();
-    stepperModal.classList.add("hidden");
+  popup.setContent(setPopupContent(currentSupermarkt)).openOn(map);
+setPopupEventListeners();
+stepperModal.classList.add("hidden");
 
-    // Button zurücksetzen
-    nextBtn.disabled = false;
-    nextBtn.textContent = "Weiter";
-  }
-};
+nextBtn.disabled = false;
+nextBtn.textContent = "Weiter";
 
 
   // ──────────────────────────────
