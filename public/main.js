@@ -239,19 +239,21 @@ if (zwischenBildFile) {
 }
 
 
-    // 🔁 Daten speichern (Preise + Bild)
-    const neuePreise = {};
-    produkte.forEach(p => neuePreise[p.name] = p.preisErfasst ?? null);
+   await speicherePreisInFirestore(
+  currentSupermarkt,
+  neuePreise,
+  finaleBildUrl
+);
 
-    await speicherePreisInFirestore(
-      currentSupermarkt,
-      neuePreise,
-      neueBildUrl
-    );
+// 🔄 Cache aktualisieren
+zuletztHochgeladenesBildURL = finaleBildUrl;
+preisDaten[currentSupermarkt].bild = finaleBildUrl;
 
-    // 🔄 Cache aktualisieren
-    zuletztHochgeladenesBildURL = neueBildUrl;
-    preisDaten[currentSupermarkt].bild = neueBildUrl;
+try {
+  await speicherePreisInFirestore(...);
+} catch (err) {
+  console.error("❌ Fehler beim Speichern:", err);
+}
 
     // Popup aktualisieren und schließen
     popup.setContent(setPopupContent(currentSupermarkt)).openOn(map);
