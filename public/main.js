@@ -212,9 +212,9 @@ function renderStep() {
   }
 }
 
-// ————————————————————
+// ──────────────────────────────
 // 9) Stepper öffnen / schließen / steuern
-// ————————————————————
+// ──────────────────────────────
 function openStepper() {
   currentStep = 0;
   renderStep();
@@ -232,19 +232,62 @@ prevBtn.onclick = () => {
 
 nextBtn.onclick = async () => {
   if (currentStep < produkte.length) {
+    // Preis speichern und nächsten Step zeigen
     produkte[currentStep].preisErfasst =
       parseFloat(document.getElementById("preisInput").value) || null;
     currentStep++;
     renderStep();
   } else {
+    // Letzter Schritt: Bild hochladen (falls gewählt)
+    const input = document.getElementById("belegInput");
+    let neueBildUrl = zuletztHochgeladenesBildURL; // Fallback (falls kein neues Bild)
+
+    if (input.files[0]) {
+      const b64 = await fileToBase64(input.files[0]);
+
+      nextBtn.disabled = true;
+      nextBtn.textContent = "⏳ Bild wird hochgeladen...";
+
+      const res = await fetch("/api/upload-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          imageBase64: b64,
+          fileName: `${currentSupermarkt.replace(/\W+/g, "_")}.jpg`
+        })
+      });
+
+      const j = await res.json();
+      if (res.ok) {
+        neueBildUrl = j.url;
+        nextBtn.textContent = "✅ Hochgeladen";
+      } else {
+        nextBtn.textContent = "❌ Fehler beim Hochladen";
+      }
+    }
+
+    // 🔁 Daten speichern (Preise + Bild)
     const neuePreise = {};
     produkte.forEach(p => neuePreise[p.name] = p.preisErfasst ?? null);
 
-    await speicherePreisInFirestore(currentSupermarkt, neuePreise, zuletztHochgeladenesBildURL);
+    await speicherePreisInFirestore(
+      currentSupermarkt,
+      neuePreise,
+      neueBildUrl
+    );
 
+    // 🔄 Cache aktualisieren
+    zuletztHochgeladenesBildURL = neueBildUrl;
+    preisDaten[currentSupermarkt].bild = neueBildUrl;
+
+    // Popup aktualisieren und schließen
     popup.setContent(setPopupContent(currentSupermarkt)).openOn(map);
     setPopupEventListeners();
     stepperModal.classList.add("hidden");
+
+    // Button zurücksetzen
+    nextBtn.disabled = false;
+    nextBtn.textContent = "Weiter";
   }
 };
 
