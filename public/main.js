@@ -257,7 +257,11 @@ nextBtn.onclick = async () => {
       preisDaten[currentSupermarkt].bild = finaleBildUrl;
 
       // Popup aktualisieren und schließen
-      popup.setContent(setPopupContent(currentSupermarkt)).openOn(map);
+     popup
+  .setLatLng(currentMarker.getLatLng()) // 🧠 sicherstellen, dass LatLng gesetzt ist
+  .setContent(setPopupContent(currentSupermarkt))
+  .openOn(map);
+
       setPopupEventListeners();
       stepperModal.classList.add("hidden");
 
