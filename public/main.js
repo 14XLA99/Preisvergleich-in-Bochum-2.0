@@ -95,13 +95,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const popup = L.popup(); // Reuse-Popup für alle Marker
 
-  // ──────────────────────────────
-  // 5) Lokaler Speicher / App-State
-  // ──────────────────────────────
-  let preisDaten = {};                  // { markt: { preise: {...}, bild: url } }
-  let currentMarker = null;            // Aktuell angeklickter Marker
-  let currentSupermarkt = "";          // Name des aktuellen Markts
-  let zuletztHochgeladenesBildURL = null;
+  // ————————————————————
+// 5) Lokaler Speicher / App-State
+// ————————————————————
+let preisDaten = {};                  // { markt: { preise: {...}, bild: url } }
+let currentMarker = null;            // Aktuell angeklickter Marker
+let currentSupermarkt = "";          // Name des aktuellen Markts
+let zuletztHochgeladenesBildURL = null;
+
 
   // ──────────────────────────────
   // 6) Produktdefinition (Stepper)
@@ -126,70 +127,85 @@ document.addEventListener("DOMContentLoaded", () => {
   const indicators    = document.getElementById("stepIndicators");
   const closeStepper  = document.getElementById("stepperCloseBtn");
 
-  // ──────────────────────────────
-  // 8) Step anzeigen
-  // ──────────────────────────────
-  function renderStep() {
-    if (currentStep < produkte.length) {
-      const p = produkte[currentStep];
+// ————————————————————
+// 8) Step anzeigen
+// ————————————————————
+function renderStep() {
+  if (currentStep < produkte.length) {
+    const p = produkte[currentStep];
 
-      // Produkt-Ansicht mit Bild, Beschreibung, Preisfeld
-      stepContent.innerHTML = `
-        <div class="step-pane-content">
-          <img src="${p.bildUrl}" alt="${p.name}">
-          <div class="step-pane-text">
-            <h3>${p.name}</h3>
-            <p>${p.beschreibung}</p>
-            <label>Preis (€):
-              <input id="preisInput" type="number" step="0.01" value="${p.preisErfasst ?? ''}" />
-            </label>
-          </div>
+    stepContent.innerHTML = `
+      <div class="step-pane-content">
+        <img src="${p.bildUrl}" alt="${p.name}">
+        <div class="step-pane-text">
+          <h3>${p.name}</h3>
+          <p>${p.beschreibung}</p>
+          <label>Preis (€):
+            <input id="preisInput" type="number" step="0.01" value="${p.preisErfasst ?? ''}" />
+          </label>
         </div>
+      </div>
+    `;
+  } else {
+    // Letzter Schritt: optionales Belegfoto
+    stepContent.innerHTML = `
+      <h3>Belegfoto (optional)</h3>
+      <input type="file" id="belegInput" accept="image/*" />
+      <div id="belegPreview" style="margin-top:1em;"></div>
+    `;
+
+    const belegPreview = document.getElementById("belegPreview");
+    if (zuletztHochgeladenesBildURL) {
+      belegPreview.innerHTML = `
+        <img src="${zuletztHochgeladenesBildURL}" style="max-width:100%;max-height:150px;border-radius:4px;">
       `;
     } else {
-      // Letzter Schritt: optionales Belegfoto
-      stepContent.innerHTML = `
-        <h3>Belegfoto (optional)</h3>
-        <input type="file" id="belegInput" accept="image/*" />
-        <div id="belegPreview" style="margin-top:1em;"></div>
-      `;
+      belegPreview.innerHTML = `<p style="color:#888;font-size:0.9em;">(Kein Bild vorhanden)</p>`;
+    }
 
-  const belegPreview = document.getElementById("belegPreview");
-if (zuletztHochgeladenesBildURL) {
-  belegPreview.innerHTML = `
-    <img src="${zuletztHochgeladenesBildURL}" style="max-width:100%;max-height:150px;border-radius:4px;">
-  `;
-} else {
-  belegPreview.innerHTML = `<p style="color:#888;font-size:0.9em;">(Kein Bild vorhanden)</p>`;
+    document.getElementById("belegInput").addEventListener("change", async evt => {
+      const file = evt.target.files[0];
+      if (file) {
+        belegPreview.innerHTML = `<div style="color:#666;font-size:0.9em;">⏳ Lade Bild hoch...</div>`;
+
+        const b64 = await fileToBase64(file);
+        const res = await fetch("/api/upload-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            imageBase64: b64,
+            fileName: `${currentSupermarkt.replace(/\W+/g, "_")}.jpg`
+          })
+        });
+
+        const j = await res.json();
+        if (res.ok) {
+          zuletztHochgeladenesBildURL = j.url;
+          belegPreview.innerHTML = `
+            <img src="${zuletztHochgeladenesBildURL}" style="max-width:100%;max-height:150px;border-radius:4px;">
+            <div style="font-size:0.9em;color:#666;margin-top:4px;">✅ Bild hochgeladen</div>
+          `;
+        } else {
+          belegPreview.innerHTML = `<p style="color:red;">Fehler beim Hochladen</p>`;
+        }
+      }
+    });
+  }
+
+  // Indikatoren aktualisieren
+  indicators.innerHTML = "";
+  const total = produkte.length + 1;
+  for (let i = 0; i < total; i++) {
+    const dot = document.createElement("div");
+    dot.className = "step-dot" + (i === currentStep ? " active" : "");
+    dot.onclick = () => { currentStep = i; renderStep(); };
+    indicators.appendChild(dot);
+  }
 }
-   
-document.getElementById("belegInput").addEventListener("change", evt => {
-  const file = evt.target.files[0];
-  if (file) {
-    const url = URL.createObjectURL(file);
-    document.getElementById("belegPreview").innerHTML = `
-      <img src="${url}" style="max-width:100%;max-height:150px;border-radius:4px;">
-      <div style="font-size:0.9em;color:#666;margin-top:4px;">⏳ Wird beim Speichern hochgeladen…</div>
-    `;
-    zuletztHochgeladenesBildURL = null; // zurücksetzen
-  }
-});   
-    }
 
-    // Indikatoren aktualisieren
-    indicators.innerHTML = "";
-    const total = produkte.length + 1;
-    for (let i = 0; i < total; i++) {
-      const dot = document.createElement("div");
-      dot.className = "step-dot" + (i === currentStep ? " active" : "");
-      dot.onclick = () => { currentStep = i; renderStep(); };
-      indicators.appendChild(dot);
-    }
-  }
-
-// ──────────────────────────────
+// ————————————————————
 // 9) Stepper öffnen / schließen / steuern
-// ──────────────────────────────
+// ————————————————————
 function openStepper() {
   currentStep = 0;
   renderStep();
@@ -207,40 +223,11 @@ prevBtn.onclick = () => {
 
 nextBtn.onclick = async () => {
   if (currentStep < produkte.length) {
-    // Preis speichern und nächsten Step zeigen
     produkte[currentStep].preisErfasst =
       parseFloat(document.getElementById("preisInput").value) || null;
     currentStep++;
     renderStep();
   } else {
-    // Letzter Schritt: Bild hochladen (falls gewählt)
-    const input = document.getElementById("belegInput");
-    if (input.files[0]) {
-      const b64 = await fileToBase64(input.files[0]);
-
-      // ✅ Button visuell sperren & Ladefeedback
-      nextBtn.disabled = true;
-      nextBtn.textContent = "⏳ Bild wird hochgeladen...";
-
-      const res = await fetch("/api/upload-image", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          imageBase64: b64,
-          fileName: `${currentSupermarkt.replace(/\W+/g, "_")}.jpg`
-        })
-      });
-
-      const j = await res.json();
-      if (res.ok) {
-        zuletztHochgeladenesBildURL = j.url;
-        nextBtn.textContent = "✅ Hochgeladen";
-      } else {
-        nextBtn.textContent = "❌ Fehler beim Hochladen";
-      }
-    }
-
-    // 🔁 Daten speichern (Preise + Bild)
     const neuePreise = {};
     produkte.forEach(p => neuePreise[p.name] = p.preisErfasst ?? null);
 
@@ -250,16 +237,12 @@ nextBtn.onclick = async () => {
       zuletztHochgeladenesBildURL
     );
 
-    // Popup aktualisieren und schließen
     popup.setContent(setPopupContent(currentSupermarkt)).openOn(map);
     setPopupEventListeners();
     stepperModal.classList.add("hidden");
-
-    // ✅ Button zurücksetzen
-    nextBtn.disabled = false;
-    nextBtn.textContent = "Weiter";
   }
 };
+
 
   // ──────────────────────────────
   // 10) Daten aus Firestore laden
