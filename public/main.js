@@ -189,7 +189,7 @@ if (zwischenBildFile) {
 }
 
 // ──────────────────────────────
-// 9) Stepper öffnen / schließen / steuern
+// 9) Stepper öffnen / schließen / steuern (vollständig)
 // ──────────────────────────────
 function openStepper() {
   currentStep = 0;
@@ -235,6 +235,7 @@ nextBtn.onclick = async () => {
       if (res.ok) {
         finaleBildUrl = j.url;
         zuletztHochgeladenesBildURL = finaleBildUrl;
+        preisDaten[currentSupermarkt].bild = finaleBildUrl;
         zwischenBildFile = null;
         nextBtn.textContent = "✅ Hochgeladen";
       } else {
@@ -257,15 +258,15 @@ nextBtn.onclick = async () => {
       preisDaten[currentSupermarkt].bild = finaleBildUrl;
 
       // Popup aktualisieren und schließen
-     popup
-  .setLatLng(currentMarker.getLatLng()) // 🧠 sicherstellen, dass LatLng gesetzt ist
-  .setContent(setPopupContent(currentSupermarkt))
-  .openOn(map);
+      if (currentMarker) {
+        popup
+          .setLatLng(currentMarker.getLatLng())
+          .setContent(setPopupContent(currentSupermarkt))
+          .openOn(map);
+        setPopupEventListeners();
+      }
 
-      setPopupEventListeners();
       stepperModal.classList.add("hidden");
-
-      // Button zurücksetzen
       nextBtn.disabled = false;
       nextBtn.textContent = "Weiter";
 
@@ -276,7 +277,6 @@ nextBtn.onclick = async () => {
     }
   }
 };
-
   // ──────────────────────────────
   // 10) Daten aus Firestore laden
   // ──────────────────────────────
