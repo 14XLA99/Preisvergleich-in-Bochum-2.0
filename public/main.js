@@ -225,7 +225,10 @@ nextBtn.onclick = async () => {
 
       // 🎯 Generiere eindeutigen Dateinamen mit Zeitstempel
       let res, j;
-try {
+  try {
+  const timestamp = Date.now();
+  const safeName = currentSupermarkt.replace(/\W+/g, "_");
+  const uniqueFileName = `${safeName}_${timestamp}.jpg`;
   res = await fetch("/api/upload-image", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
