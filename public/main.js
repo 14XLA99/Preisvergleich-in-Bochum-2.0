@@ -477,3 +477,26 @@ function compressImage(file, maxWidth = 1024) {
   // ──────────────────────────────
   ladePreiseAusFirestore(); // Startpunkt
 });
+ // ──────────────────────────────
+// 18) Hilfsfunktion: Bild verkleinern (max 1024px)
+ // ──────────────────────────────
+async function compressImage(file, maxSize = 1024) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(maxSize / img.width, maxSize / img.height, 1);
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(
+        blob => resolve(blob),
+        "image/jpeg",
+        0.8 // Qualität (0-1)
+      );
+    };
+    img.onerror = reject;
+    img.src = URL.createObjectURL(file);
+  });
+}
