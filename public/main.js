@@ -189,7 +189,7 @@ if (zwischenBildFile) {
 }
 
 // ──────────────────────────────
-// 9) Stepper öffnen / schließen / steuern (vollständig)
+// 9) Stepper öffnen / schließen / steuern (vollständig, mit unique Filename)
 // ──────────────────────────────
 function openStepper() {
   currentStep = 0;
@@ -222,22 +222,41 @@ nextBtn.onclick = async () => {
       nextBtn.textContent = "⏳ Bild wird hochgeladen...";
 
       const base64 = await fileToBase64(zwischenBildFile);
+
+      // 🎯 Generiere eindeutigen Dateinamen mit Zeitstempel
+      const timestamp = Date.now();
+      const safeName = currentSupermarkt.replace(/\W+/g, "_");
+      const uniqueFileName = `${safeName}_${timestamp}.jpg`;
+
       const res = await fetch("/api/upload-image", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           imageBase64: base64,
-          fileName: `${currentSupermarkt.replace(/\W+/g, "_")}.jpg`
+          fileName: uniqueFileName
         })
       });
 
       const j = await res.json();
       if (res.ok) {
-        finaleBildUrl = j.url;
-        zuletztHochgeladenesBildURL = finaleBildUrl;
-        preisDaten[currentSupermarkt].bild = finaleBildUrl;
-        zwischenBildFile = null;
-        nextBtn.textContent = "✅ Hochgeladen";
+  finaleBildUrl = j.url;
+
+  // 🧹 Falls vorher ein Bild existierte → löschen
+  const vorherigesBild = preisDaten[currentSupermarkt].bild;
+  if (vorherigesBild) {
+    const altDateiname = vorherigesBild.split("/").pop();
+    await fetch("/api/delete-image", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ fileName: altDateiname })
+    });
+  }
+
+  zuletztHochgeladenesBildURL = finaleBildUrl;
+  preisDaten[currentSupermarkt].bild = finaleBildUrl;
+  zwischenBildFile = null;
+  nextBtn.textContent = "✅ Hochgeladen";
+}
       } else {
         nextBtn.textContent = "❌ Fehler beim Hochladen";
       }
@@ -277,6 +296,7 @@ nextBtn.onclick = async () => {
     }
   }
 };
+
   // ──────────────────────────────
   // 10) Daten aus Firestore laden
   // ──────────────────────────────
