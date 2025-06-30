@@ -1,46 +1,61 @@
-// Importiere die 'put'-Funktion von Vercel Blob
 import { put } from "@vercel/blob";
 
-// Standard Next.js API Handler
+export const config = {
+  api: {
+    bodyParser: false, // wichtig: multipart/form-data selbst parsen
+  }
+};
+
 export default async function handler(req, res) {
-  // Erlaube nur POST-Anfragen
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Nur POST erlaubt" });
   }
 
-  // Base64-Daten und Dateiname aus dem Body extrahieren
-  const { imageBase64, fileName } = req.body;
-
-  // Basis-Validierung: Beide Felder müssen Strings sein und nicht leer
-  if (
-    typeof imageBase64 !== "string" || imageBase64.trim() === "" ||
-    typeof fileName !== "string" || fileName.trim() === ""
-  ) {
-    return res.status(400).json({ error: "Fehlender oder ungültiger Bildinhalt oder Dateiname" });
-  }
-
   try {
-    // Falls ein "data:image/jpeg;base64,..."-Prefix existiert → abschneiden
-    const base64 = imageBase64.includes(",")
-      ? imageBase64.split(",")[1]
-      : imageBase64;
+    const boundary = req.headers["content-type"].split("boundary=")[1];
+    const chunks = [];
+    for await (const chunk of req) chunks.push(chunk);
+    const buffer = Buffer.concat(chunks);
 
-    // Base64-String → Buffer umwandeln
-    const buffer = Buffer.from(base64, "base64");
+    // Parsen mit undokumentiertem, aber leichtem multipart-parser
+    const parse = await import("formidable/src/parsers/Formidable.js");
+    const { Formidable } = parse.default;
+    const form = new Formidable({ multiples: false });
 
-    // Upload zu Vercel Blob (public zugänglich, Überschreiben erlaubt)
-    const blob = await put(fileName, buffer, {
-      access: "public",
-      allowOverwrite: true,
+    // Hack: simulate req for Formidable
+    const fakeReq = {
+      headers: req.headers,
+      method: req.method,
+      url: req.url,
+      socket: req.socket,
+      on: (event, cb) => {
+        if (event === "data") cb(buffer);
+        if (event === "end") cb();
+      }
+    };
+
+    form.parse(fakeReq, async (err, fields, files) => {
+      if (err) {
+        console.error("❌ Fehler beim Parsen:", err);
+        return res.status(400).json({ error: "Fehler beim Parsen" });
+      }
+
+      const file = files.file;
+      const fileName = file.originalFilename;
+
+      const fs = await import("fs/promises");
+      const fileBuffer = await fs.readFile(file.filepath);
+
+      const blob = await put(fileName, fileBuffer, {
+        access: "public",
+        allowOverwrite: true
+      });
+
+      res.status(200).json({ url: blob.url });
     });
-
-    // Rückgabe: URL des gespeicherten Bildes
-    return res.status(200).json({ url: blob.url });
   } catch (err) {
-    // Fehler im Serverlog sichtbar machen
-    console.error("❌ Upload error:", err);
-
-    // Fehler an den Client senden
-    res.status(500).json({ error: "Fehler beim Upload", details: err.message });
+    console.error("❌ Fehler beim Upload:", err);
+    res.status(500).json({ error: "Upload fehlgeschlagen", details: err.message });
   }
 }
+
