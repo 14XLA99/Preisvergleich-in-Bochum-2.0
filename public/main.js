@@ -225,7 +225,8 @@ nextBtn.onclick = async () => {
 
       let res, j;
       try {
-        const compressedBlob = await compressImage(zwischenBildFile, 1024);
+        const compressedBlob = await resizeImage(zwischenBildFile, 1024);
+
 
         const formData = new FormData();
         formData.append("file", compressedBlob, uniqueFileName);
