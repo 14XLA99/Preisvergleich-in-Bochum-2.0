@@ -256,7 +256,7 @@ nextBtn.onclick = async () => {
   preisDaten[currentSupermarkt].bild = finaleBildUrl;
   zwischenBildFile = null;
   nextBtn.textContent = "✅ Hochgeladen";
-}
+
       } else {
         nextBtn.textContent = "❌ Fehler beim Hochladen";
       }
