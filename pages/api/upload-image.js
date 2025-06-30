@@ -1,11 +1,10 @@
-import { put } from "@vercel/blob";
+// pages/api/upload-image.js
 import formidable from "formidable";
 import fs from "fs/promises";
+import { put } from "@vercel/blob";
 
 export const config = {
-  api: {
-    bodyParser: false,
-  }
+  api: { bodyParser: false }
 };
 
 export default async function handler(req, res) {
@@ -15,24 +14,28 @@ export default async function handler(req, res) {
 
   const form = formidable({ multiples: false });
 
-  try {
-    const [fields, files] = await form.parse(req);
-
-    const file = files.file;
-    if (!file || !file.filepath || !file.originalFilename) {
-      return res.status(400).json({ error: "Datei fehlt oder ungültig" });
+  form.parse(req, async (err, fields, files) => {
+    if (err) {
+      console.error("❌ Fehler beim Parsen:", err);
+      return res.status(400).json({ error: "Fehler beim Parsen" });
     }
 
-    const fileBuffer = await fs.readFile(file.filepath);
-    const blob = await put(file.originalFilename, fileBuffer, {
-      access: "public",
-      allowOverwrite: true,
-    });
+    try {
+      const file = files.file;
+      if (!file || !file.filepath || !file.originalFilename) {
+        return res.status(400).json({ error: "Datei fehlt oder ungültig" });
+      }
 
-    return res.status(200).json({ url: blob.url });
+      const buffer = await fs.readFile(file.filepath);
+      const blob = await put(file.originalFilename, buffer, {
+        access: "public",
+        allowOverwrite: true
+      });
 
-  } catch (err) {
-    console.error("❌ Upload fehlgeschlagen:", err);
-    return res.status(500).json({ error: "Upload fehlgeschlagen", details: err.message });
-  }
+      res.status(200).json({ url: blob.url });
+    } catch (error) {
+      console.error("❌ Fehler beim Upload:", error);
+      res.status(500).json({ error: "Upload fehlgeschlagen", details: error.message });
+    }
+  });
 }
