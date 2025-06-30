@@ -21,7 +21,8 @@ export default async function handler(req, res) {
     }
 
     try {
-      const file = files.file;
+      const file = files.file?.[0];
+      console.log("📦 Datei erhalten:", files);
       if (!file || !file.filepath || !file.originalFilename) {
         return res.status(400).json({ error: "Datei fehlt oder ungültig" });
       }
