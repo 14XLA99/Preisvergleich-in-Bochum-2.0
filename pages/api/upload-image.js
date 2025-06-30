@@ -4,7 +4,7 @@ import fs from "fs/promises";
 
 export const config = {
   api: {
-    bodyParser: false, // wichtig für formidable
+    bodyParser: false,
   }
 };
 
@@ -23,22 +23,21 @@ export default async function handler(req, res) {
 
     try {
       const file = files.file;
-      if (!file) {
-        return res.status(400).json({ error: "Keine Datei empfangen" });
+      if (!file || !file.filepath || !file.originalFilename) {
+        return res.status(400).json({ error: "Datei fehlt oder ungültig" });
       }
 
       const fileBuffer = await fs.readFile(file.filepath);
-      const fileName = file.originalFilename;
-
-      const blob = await put(fileName, fileBuffer, {
+      const blob = await put(file.originalFilename, fileBuffer, {
         access: "public",
-        allowOverwrite: true
+        allowOverwrite: true,
       });
 
-      return res.status(200).json({ url: blob.url });
-    } catch (uploadErr) {
-      console.error("❌ Fehler beim Upload:", uploadErr);
-      return res.status(500).json({ error: "Upload fehlgeschlagen", details: uploadErr.message });
+      res.status(200).json({ url: blob.url });
+    } catch (error) {
+      console.error("❌ Fehler beim Upload:", error);
+      res.status(500).json({ error: "Upload fehlgeschlagen", details: error.message });
     }
   });
 }
+
