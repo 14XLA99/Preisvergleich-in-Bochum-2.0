@@ -15,29 +15,24 @@ export default async function handler(req, res) {
 
   const form = formidable({ multiples: false });
 
-  form.parse(req, async (err, fields, files) => {
-    if (err) {
-      console.error("❌ Fehler beim Parsen:", err);
-      return res.status(400).json({ error: "Fehler beim Parsen" });
+  try {
+    const [fields, files] = await form.parse(req);
+
+    const file = files.file;
+    if (!file || !file.filepath || !file.originalFilename) {
+      return res.status(400).json({ error: "Datei fehlt oder ungültig" });
     }
 
-    try {
-      const file = files.file;
-      if (!file || !file.filepath || !file.originalFilename) {
-        return res.status(400).json({ error: "Datei fehlt oder ungültig" });
-      }
+    const fileBuffer = await fs.readFile(file.filepath);
+    const blob = await put(file.originalFilename, fileBuffer, {
+      access: "public",
+      allowOverwrite: true,
+    });
 
-      const fileBuffer = await fs.readFile(file.filepath);
-      const blob = await put(file.originalFilename, fileBuffer, {
-        access: "public",
-        allowOverwrite: true,
-      });
+    return res.status(200).json({ url: blob.url });
 
-      res.status(200).json({ url: blob.url });
-    } catch (error) {
-      console.error("❌ Fehler beim Upload:", error);
-      res.status(500).json({ error: "Upload fehlgeschlagen", details: error.message });
-    }
-  });
+  } catch (err) {
+    console.error("❌ Upload fehlgeschlagen:", err);
+    return res.status(500).json({ error: "Upload fehlgeschlagen", details: err.message });
+  }
 }
-
