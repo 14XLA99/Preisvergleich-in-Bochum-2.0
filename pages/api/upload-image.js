@@ -1,8 +1,10 @@
 import { put } from "@vercel/blob";
+import formidable from "formidable";
+import fs from "fs/promises";
 
 export const config = {
   api: {
-    bodyParser: false, // wichtig: multipart/form-data selbst parsen
+    bodyParser: false, // wichtig für formidable
   }
 };
 
@@ -11,51 +13,32 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Nur POST erlaubt" });
   }
 
-  try {
-    const boundary = req.headers["content-type"].split("boundary=")[1];
-    const chunks = [];
-    for await (const chunk of req) chunks.push(chunk);
-    const buffer = Buffer.concat(chunks);
+  const form = formidable({ multiples: false });
 
-    // Parsen mit undokumentiertem, aber leichtem multipart-parser
-    const parse = await import("formidable/src/parsers/Formidable.js");
-    const { Formidable } = parse.default;
-    const form = new Formidable({ multiples: false });
+  form.parse(req, async (err, fields, files) => {
+    if (err) {
+      console.error("❌ Fehler beim Parsen:", err);
+      return res.status(400).json({ error: "Fehler beim Parsen" });
+    }
 
-    // Hack: simulate req for Formidable
-    const fakeReq = {
-      headers: req.headers,
-      method: req.method,
-      url: req.url,
-      socket: req.socket,
-      on: (event, cb) => {
-        if (event === "data") cb(buffer);
-        if (event === "end") cb();
-      }
-    };
-
-    form.parse(fakeReq, async (err, fields, files) => {
-      if (err) {
-        console.error("❌ Fehler beim Parsen:", err);
-        return res.status(400).json({ error: "Fehler beim Parsen" });
-      }
-
+    try {
       const file = files.file;
-      const fileName = file.originalFilename;
+      if (!file) {
+        return res.status(400).json({ error: "Keine Datei empfangen" });
+      }
 
-      const fs = await import("fs/promises");
       const fileBuffer = await fs.readFile(file.filepath);
+      const fileName = file.originalFilename;
 
       const blob = await put(fileName, fileBuffer, {
         access: "public",
         allowOverwrite: true
       });
 
-      res.status(200).json({ url: blob.url });
-    });
-  } catch (err) {
-    console.error("❌ Fehler beim Upload:", err);
-    res.status(500).json({ error: "Upload fehlgeschlagen", details: err.message });
-  }
+      return res.status(200).json({ url: blob.url });
+    } catch (uploadErr) {
+      console.error("❌ Fehler beim Upload:", uploadErr);
+      return res.status(500).json({ error: "Upload fehlgeschlagen", details: uploadErr.message });
+    }
+  });
 }
-
