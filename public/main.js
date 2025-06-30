@@ -189,7 +189,7 @@ if (zwischenBildFile) {
 }
 
 // ──────────────────────────────
-// 9) Stepper öffnen / schließen / steuern (vollständig, mit unique Filename)
+// 9) Stepper öffnen / schließen / steuern (vollständig, mit Komprimierung und FormData)
 // ──────────────────────────────
 function openStepper() {
   currentStep = 0;
@@ -208,61 +208,57 @@ prevBtn.onclick = () => {
 
 nextBtn.onclick = async () => {
   if (currentStep < produkte.length) {
-    // Preis speichern und nächsten Step zeigen
     produkte[currentStep].preisErfasst =
       parseFloat(document.getElementById("preisInput").value) || null;
     currentStep++;
     renderStep();
   } else {
-    // Letzter Schritt: Bild hochladen (falls gewählt)
     let finaleBildUrl = zuletztHochgeladenesBildURL;
 
     if (zwischenBildFile) {
       nextBtn.disabled = true;
       nextBtn.textContent = "⏳ Bild wird hochgeladen...";
 
-      const base64 = await fileToBase64(zwischenBildFile);
+      const timestamp = Date.now();
+      const safeName = currentSupermarkt.replace(/\W+/g, "_");
+      const uniqueFileName = `${safeName}_${timestamp}.jpg`;
 
-      // 🎯 Generiere eindeutigen Dateinamen mit Zeitstempel
       let res, j;
-  try {
-  const timestamp = Date.now();
-  const safeName = currentSupermarkt.replace(/\W+/g, "_");
-  const uniqueFileName = `${safeName}_${timestamp}.jpg`;
-  res = await fetch("/api/upload-image", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      imageBase64: base64,
-      fileName: uniqueFileName
-    })
-  });
-  j = await res.json();
-} catch (error) {
-  console.error("❌ Upload fehlgeschlagen:", error);
-  nextBtn.textContent = "❌ Netzwerkfehler beim Hochladen";
-  nextBtn.disabled = false;
-  return;
-}
+      try {
+        const compressedBlob = await compressImage(zwischenBildFile, 1024);
+
+        const formData = new FormData();
+        formData.append("file", compressedBlob, uniqueFileName);
+
+        res = await fetch("/api/upload-image", {
+          method: "POST",
+          body: formData
+        });
+        j = await res.json();
+      } catch (error) {
+        console.error("❌ Upload fehlgeschlagen:", error);
+        nextBtn.textContent = "❌ Netzwerkfehler beim Hochladen";
+        nextBtn.disabled = false;
+        return;
+      }
+
       if (res.ok) {
-  finaleBildUrl = j.url;
+        finaleBildUrl = j.url;
 
-  // 🧹 Falls vorher ein Bild existierte → löschen
-  const vorherigesBild = preisDaten[currentSupermarkt].bild;
-  if (vorherigesBild) {
-    const altDateiname = vorherigesBild.split("/").pop();
-    await fetch("/api/delete-image", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ fileName: altDateiname })
-    });
-  }
+        const vorherigesBild = preisDaten[currentSupermarkt].bild;
+        if (vorherigesBild) {
+          const altDateiname = vorherigesBild.split("/").pop();
+          await fetch("/api/delete-image", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ fileName: altDateiname })
+          });
+        }
 
-  zuletztHochgeladenesBildURL = finaleBildUrl;
-  preisDaten[currentSupermarkt].bild = finaleBildUrl;
-  zwischenBildFile = null;
-  nextBtn.textContent = "✅ Hochgeladen";
-
+        zuletztHochgeladenesBildURL = finaleBildUrl;
+        preisDaten[currentSupermarkt].bild = finaleBildUrl;
+        zwischenBildFile = null;
+        nextBtn.textContent = "✅ Hochgeladen";
       } else {
         nextBtn.textContent = "❌ Fehler beim Hochladen";
       }
@@ -278,11 +274,9 @@ nextBtn.onclick = async () => {
         finaleBildUrl
       );
 
-      // 🔄 Cache aktualisieren
       zuletztHochgeladenesBildURL = finaleBildUrl;
       preisDaten[currentSupermarkt].bild = finaleBildUrl;
 
-      // Popup aktualisieren und schließen
       if (currentMarker) {
         popup
           .setLatLng(currentMarker.getLatLng())
@@ -449,22 +443,26 @@ function setPopupEventListeners() {
     // Marker-Icon ggf. grau einfärben
     if (currentMarker) currentMarker.setIcon(greyIcon);
   }
-  // ──────────────────────────────
-  // 15) Datei → Base64 konvertieren
-  // ──────────────────────────────
-  function fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const result = reader.result;
-        // Entferne Prefix wie "data:image/jpeg;base64,..."
-        const base64 = result.includes(",") ? result.split(",")[1] : result;
-        resolve(base64);
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  }
+ // ──────────────────────────────
+// 15) Datei komprimieren (JPEG)
+// ──────────────────────────────
+function compressImage(file, maxWidth = 1024) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, maxWidth / img.width);
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(blob => resolve(blob), "image/jpeg", 0.8);
+    };
+    img.onerror = reject;
+    img.src = URL.createObjectURL(file);
+  });
+}
+
 
   // ──────────────────────────────
   // 16) Map-Größe bei Rückkehr neu berechnen
