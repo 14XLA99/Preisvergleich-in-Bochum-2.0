@@ -446,41 +446,7 @@ function setPopupEventListeners() {
  // ──────────────────────────────
 // 15) Datei komprimieren (JPEG)
 // ──────────────────────────────
-function compressImage(file, maxWidth = 1024) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => {
-      const scale = Math.min(1, maxWidth / img.width);
-      const canvas = document.createElement("canvas");
-      canvas.width = img.width * scale;
-      canvas.height = img.height * scale;
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      canvas.toBlob(blob => resolve(blob), "image/jpeg", 0.8);
-    };
-    img.onerror = reject;
-    img.src = URL.createObjectURL(file);
-  });
-}
-
-
-  // ──────────────────────────────
-  // 16) Map-Größe bei Rückkehr neu berechnen
-  // ──────────────────────────────
-  window.addEventListener("pageshow", () => map.invalidateSize());
-  document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) map.invalidateSize();
-  });
-
-  // ──────────────────────────────
-  // 17) App starten
-  // ──────────────────────────────
-  ladePreiseAusFirestore(); // Startpunkt
-});
- // ──────────────────────────────
-// 18) Hilfsfunktion: Bild verkleinern (max 1024px)
- // ──────────────────────────────
-async function compressImage(file, maxSize = 1024) {
+async function resizeImage(file, maxSize = 1024) {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
@@ -500,3 +466,17 @@ async function compressImage(file, maxSize = 1024) {
     img.src = URL.createObjectURL(file);
   });
 }
+
+  // ──────────────────────────────
+  // 16) Map-Größe bei Rückkehr neu berechnen
+  // ──────────────────────────────
+  window.addEventListener("pageshow", () => map.invalidateSize());
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) map.invalidateSize();
+  });
+
+  // ──────────────────────────────
+  // 17) App starten
+  // ──────────────────────────────
+  ladePreiseAusFirestore(); // Startpunkt
+});
