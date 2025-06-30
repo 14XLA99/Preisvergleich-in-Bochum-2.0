@@ -224,24 +224,33 @@ nextBtn.onclick = async () => {
       const uniqueFileName = `${safeName}_${timestamp}.jpg`;
 
       let res, j;
-      try {
-        const compressedBlob = await resizeImage(zwischenBildFile, 1024);
+try {
+  const compressedBlob = await resizeImage(zwischenBildFile, 1024);
+  const formData = new FormData();
+  formData.append("file", compressedBlob, uniqueFileName);
 
+  res = await fetch("/api/upload-image", {
+    method: "POST",
+    body: formData
+  });
 
-        const formData = new FormData();
-        formData.append("file", compressedBlob, uniqueFileName);
+  // ✅ Nur versuchen zu parsen, wenn Content-Type JSON ist
+  const contentType = res.headers.get("content-type") || "";
+  if (!res.ok) throw new Error("Serverfehler beim Upload");
 
-        res = await fetch("/api/upload-image", {
-          method: "POST",
-          body: formData
-        });
-        j = await res.json();
-      } catch (error) {
-        console.error("❌ Upload fehlgeschlagen:", error);
-        nextBtn.textContent = "❌ Netzwerkfehler beim Hochladen";
-        nextBtn.disabled = false;
-        return;
-      }
+  if (!contentType.includes("application/json")) {
+    const text = await res.text();
+    throw new Error("Kein JSON erhalten: " + text);
+  }
+
+  j = await res.json();
+} catch (error) {
+  console.error("❌ Upload fehlgeschlagen:", error);
+  nextBtn.textContent = "❌ Netzwerkfehler beim Hochladen";
+  nextBtn.disabled = false;
+  return;
+}
+
 
       if (res.ok) {
         finaleBildUrl = j.url;
