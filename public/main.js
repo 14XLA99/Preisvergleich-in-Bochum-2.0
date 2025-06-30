@@ -224,20 +224,23 @@ nextBtn.onclick = async () => {
       const base64 = await fileToBase64(zwischenBildFile);
 
       // 🎯 Generiere eindeutigen Dateinamen mit Zeitstempel
-      const timestamp = Date.now();
-      const safeName = currentSupermarkt.replace(/\W+/g, "_");
-      const uniqueFileName = `${safeName}_${timestamp}.jpg`;
-
-      const res = await fetch("/api/upload-image", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          imageBase64: base64,
-          fileName: uniqueFileName
-        })
-      });
-
-      const j = await res.json();
+      let res, j;
+try {
+  res = await fetch("/api/upload-image", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      imageBase64: base64,
+      fileName: uniqueFileName
+    })
+  });
+  j = await res.json();
+} catch (error) {
+  console.error("❌ Upload fehlgeschlagen:", error);
+  nextBtn.textContent = "❌ Netzwerkfehler beim Hochladen";
+  nextBtn.disabled = false;
+  return;
+}
       if (res.ok) {
   finaleBildUrl = j.url;
 
