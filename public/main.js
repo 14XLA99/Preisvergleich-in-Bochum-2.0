@@ -122,7 +122,6 @@ function safeImg(url, label) {
 // Der Stepper funktioniert auch mit dem Fallback.
 const produktGruppen = [
   {
-    typ: "Menge 1",
     vergleich: "Menge (mehr Inhalt)",
     p1: {
       name: "Coca-Cola 0,5 l PET",
@@ -137,7 +136,6 @@ const produktGruppen = [
   },
 
   {
-    typ: "Menge 2",
     vergleich: "Menge (große Packung)",
     p1: {
       name: "Rewe Beste Wahl Gouda 150 g",
@@ -152,7 +150,6 @@ const produktGruppen = [
   },
 
   {
-    typ: "Menge 3",
     vergleich: "Qualität / Mehrwert",
     p1: {
       name: "Bananen lose (1 kg)",
@@ -167,7 +164,6 @@ const produktGruppen = [
   },
 
   {
-    typ: "Menge 4",
     vergleich: "Menge",
     p1: {
       name: "Alnatura Haferflocken 500 g",
@@ -182,7 +178,6 @@ const produktGruppen = [
   },
 
   {
-    typ: "Menge 5",
     vergleich: "Menge",
     p1: {
       name: "Rama Margarine 250 g",
@@ -197,7 +192,6 @@ const produktGruppen = [
   },
 
   {
-    typ: "Marke 1",
     vergleich: "Marke",
     p1: {
       name: "Milka Alpenmilch 100 g",
@@ -212,7 +206,6 @@ const produktGruppen = [
   },
 
   {
-    typ: "Marke 2",
     vergleich: "Marke",
     p1: {
       name: "Barilla Spaghetti 500 g",
@@ -227,7 +220,6 @@ const produktGruppen = [
   },
 
   {
-    typ: "Marke 3",
     vergleich: "Marke",
     p1: {
       name: "Pringles Paprika 200 g",
@@ -242,7 +234,6 @@ const produktGruppen = [
   },
 
   {
-    typ: "Marke 4",
     vergleich: "Marke",
     p1: {
       name: "Haribo Goldbären 200 g",
@@ -257,7 +248,6 @@ const produktGruppen = [
   },
 
   {
-    typ: "Marke 5",
     vergleich: "Marke / Preis",
     p1: {
       name: "Alpro Haferdrink 1 l",
