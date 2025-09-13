@@ -124,14 +124,14 @@ const produktGruppen = [
   {
     vergleich: "Menge (mehr Inhalt)",
     p1: {
-      name: "Coca-Cola 0,5 l PET",
-      beschreibung: "Einzelflasche, 0,5 l",
-      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Coca-Cola%20Life%200.5%20liter.jpg"
+      name: "Coca-Cola 0,5l",
+      beschreibung: "Einzelflasche, 0,5l",
+      bildUrl: "https://img.rewe-static.de/0734457/24847371_digital-image.png?impolicy=s-products&imwidth=540"
     },
     p2: {
-      name: "Coca-Cola 1,25 l PET",
-      beschreibung: "Familienflasche, 1,25 l",
-      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Coca%20Cola%20life%201l%201.25%20PET%20IMG%202871.JPG"
+      name: "Coca-Cola 1l",
+      beschreibung: "Familienflasche, 1l",
+      bildUrl: "https://img.rewe-static.de/8002630/6079040_digital-image.png?impolicy=s-products&imwidth=540"
     }
   },
 
@@ -154,12 +154,12 @@ const produktGruppen = [
     p1: {
       name: "Bananen lose (1 kg)",
       beschreibung: "Konventionell",
-      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/A%20bunch%20of%20bananas.jpg"
+      bildUrl: "https://img.rewe-static.de/1028378/21012012_digital-image.png?impolicy=s-products&imwidth=540g"
     },
     p2: {
       name: "Bio-Bananen lose (1 kg)",
       beschreibung: "Bio-Qualität",
-      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Organic%20bananas%20with%20plastic%20stickers.jpg"
+      bildUrl: "https://img.rewe-static.de/1930502/24568902_digital-image.png?impolicy=s-products&imwidth=540"
     }
   },
 
@@ -180,28 +180,28 @@ const produktGruppen = [
   {
     vergleich: "Menge",
     p1: {
-      name: "Rama Margarine 250 g",
-      beschreibung: "Kleine Packung",
-      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Margarine.jpg"
+      name: "Margarine 250g",
+      beschreibung: "Normale Packung",
+      bildUrl: "https://img.rewe-static.de/0793853/5586440_digital-image.png?impolicy=s-products&imwidth=540"
     },
     p2: {
-      name: "Rama Margarine 500 g",
+      name: "Margarine 400g",
       beschreibung: "Große Packung",
-      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/2020-02-14%2004%2058%2044%20A%20sample%20of%20Land%20O%20Lakes%20Margarine%20in%20the%20Dulles%20section%20of%20Sterling%2C%20Loudoun%20County%2C%20Virginia.jpg"
+      bildUrl: "https://img.rewe-static.de/1464289/21333031_digital-image.png?impolicy=s-products&imwidth=540"
     }
   },
 
   {
     vergleich: "Marke",
     p1: {
-      name: "Milka Alpenmilch 100 g",
+      name: "Milka Alpenmilch 90 g",
       beschreibung: "Markenschokolade",
-      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Milka%20Alpine%20Milk%20Chocolate%20bar%20100g.jpg"
+      bildUrl: "https://img.rewe-static.de/9891941/48587612_digital-image.png?impolicy=s-products&imwidth=540"
     },
     p2: {
-      name: "Ja! Schokolade 100 g",
+      name: "Schokolade 90/100g",
       beschreibung: "Eigenmarke",
-      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Milk%20chocolate.jpg"
+      bildUrl: "https://img.rewe-static.de/6790143/2480960_digital-image.png?impolicy=s-products&imwidth=540"
     }
   },
 
@@ -210,12 +210,12 @@ const produktGruppen = [
     p1: {
       name: "Barilla Spaghetti 500 g",
       beschreibung: "Markenpasta",
-      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Freshly%20made%20spaghetti.jpg"
+      bildUrl: "https://img.rewe-static.de/1483021/20428098_digital-image.png?impolicy=s-products&imwidth=540"
     },
     p2: {
       name: "Rewe Beste Wahl Spaghetti 500 g",
       beschreibung: "Eigenmarke",
-      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Spaghetti%20dish.jpg"
+      bildUrl: "https://img.rewe-static.de/0687999/37902543_digital-image.png?impolicy=s-products&imwidth=540"
     }
   },
 
@@ -224,26 +224,26 @@ const produktGruppen = [
     p1: {
       name: "Pringles Paprika 200 g",
       beschreibung: "Markenchips",
-      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Pringles%20chips.jpg"
+      bildUrl: "https://img.rewe-static.de/9214490/45801461_digital-image.png?impolicy=s-products&imwidth=540"
     },
     p2: {
-      name: "Lidl Stapelchips 165 g",
+      name: "Stapelchips 175 g",
       beschreibung: "Eigenmarke",
-      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Potato%20chips.jpg"
+      bildUrl: "https://img.rewe-static.de/7627894/41711909_digital-image.png?impolicy=s-products&imwidth=540"
     }
   },
 
   {
-    vergleich: "Marke",
+    vergleich: "Menge",
     p1: {
       name: "Haribo Goldbären 200 g",
-      beschreibung: "Markensüßigkeit",
-      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Haribo_gb.jpg"
+      beschreibung: "Normale Packung",
+      bildUrl: "https://img.rewe-static.de/9095631/43997869_digital-image.png?impolicy=s-products&imwidth=540"
     },
     p2: {
-      name: "Sweetland Fruchtgummi 200 g",
-      beschreibung: "Eigenmarke",
-      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Gummy%20bears.jpg"
+      name: "Haribo Goldbären 340g",
+      beschreibung: "Große Packung",
+      bildUrl: "https://img.rewe-static.de/9933528/46743550_digital-image.png?impolicy=s-products&imwidth=540"
     }
   },
 
@@ -252,12 +252,12 @@ const produktGruppen = [
     p1: {
       name: "Alpro Haferdrink 1 l",
       beschreibung: "Marke",
-      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Oatmilk%201.jpg"
+      bildUrl: "https://img.rewe-static.de/8358463/32623823_digital-image.png?impolicy=s-products&imwidth=540"
     },
     p2: {
       name: "Rewe Bio Haferdrink 1 l",
       beschreibung: "Eigen-/Bio-Marke",
-      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Hafermilch%20aus%20dem%20Bio-Supermarkt.jpg"
+      bildUrl: "https://img.rewe-static.de/2587736/24675765_digital-image.png?impolicy=s-products&imwidth=540"
     }
   }
 ];
