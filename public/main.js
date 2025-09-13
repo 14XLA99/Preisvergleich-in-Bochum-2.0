@@ -138,14 +138,14 @@ const produktGruppen = [
   {
     vergleich: "Menge (große Packung)",
     p1: {
-      name: "Rewe Beste Wahl Gouda 150 g",
-      beschreibung: "Scheiben, kleine Packung",
-      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Gouda%20cheese%20slices.jpg"
+      name: "Nutella 450g",
+      beschreibung: "Marke",
+      bildUrl: "https://img.rewe-static.de/0900852/22057934_digital-image.png?impolicy=s-products&imwidth=540"
     },
     p2: {
-      name: "Rewe Beste Wahl Gouda 400 g",
-      beschreibung: "Scheiben, große Packung",
-      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Gouda%20Cheese.jpg"
+      name: "Nuss-Nougat-Creme 400g",
+      beschreibung: "Eigenmarke",
+      bildUrl: "https://img.rewe-static.de/5590736/2692860_digital-image.png?impolicy=s-products&imwidth=540"
     }
   },
 
@@ -154,7 +154,7 @@ const produktGruppen = [
     p1: {
       name: "Bananen lose (1 kg)",
       beschreibung: "Konventionell",
-      bildUrl: "https://img.rewe-static.de/1028378/21012012_digital-image.png?impolicy=s-products&imwidth=540g"
+      bildUrl: "https://img.rewe-static.de/1028378/21012012_digital-image.png?impolicy=s-products&imwidth=540"
     },
     p2: {
       name: "Bio-Bananen lose (1 kg)",
@@ -166,14 +166,14 @@ const produktGruppen = [
   {
     vergleich: "Menge",
     p1: {
-      name: "Alnatura Haferflocken 500 g",
+      name: "Basmatireis 500g",
       beschreibung: "Standardpackung",
-      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Rolled%20oats.jpg"
+      bildUrl: "https://img.rewe-static.de/0276692/4774470_digital-image.png?impolicy=s-products&imwidth=540"
     },
     p2: {
-      name: "Alnatura Haferflocken 1 kg",
-      beschreibung: "Großpackung",
-      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Oats%20in%20a%20bowl.jpg"
+      name: "Basmatireis 1kg",
+      beschreibung: "Große Packung",
+      bildUrl: "https://img.rewe-static.de/8928743/40161859_digital-image.png?impolicy=s-products&imwidth=540"
     }
   },
 
@@ -213,7 +213,7 @@ const produktGruppen = [
       bildUrl: "https://img.rewe-static.de/1483021/20428098_digital-image.png?impolicy=s-products&imwidth=540"
     },
     p2: {
-      name: "Rewe Beste Wahl Spaghetti 500 g",
+      name: "Spaghetti 500 g",
       beschreibung: "Eigenmarke",
       bildUrl: "https://img.rewe-static.de/0687999/37902543_digital-image.png?impolicy=s-products&imwidth=540"
     }
@@ -255,7 +255,7 @@ const produktGruppen = [
       bildUrl: "https://img.rewe-static.de/8358463/32623823_digital-image.png?impolicy=s-products&imwidth=540"
     },
     p2: {
-      name: "Rewe Bio Haferdrink 1 l",
+      name: "Haferdrink 1 l",
       beschreibung: "Eigen-/Bio-Marke",
       bildUrl: "https://img.rewe-static.de/2587736/24675765_digital-image.png?impolicy=s-products&imwidth=540"
     }
