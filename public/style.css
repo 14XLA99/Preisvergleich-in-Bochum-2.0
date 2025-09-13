@@ -1,481 +1,269 @@
-/* Grundlegendes Reset & Body */
-body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
-  background: #f5f7f9;
-  color: #333;
+/* ===========================
+   Grundlayout
+   =========================== */
+:root{
+  --brand:#00458a;
+  --brand-200:#0059b3;
+  --bg:#f5f7f9;
+  --text:#333;
+  --muted:#666;
+  --border:#e7eaf0;
 }
 
-h1 {
-  text-align: center;
-  color: #00458a;
-  padding: 1rem;
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:system-ui, sans-serif;
+  background:var(--bg);
+  color:var(--text);
 }
 
-/* Karte */
-#map {
-  height: 80vh;
-  width: 100%;
-  z-index: 1;
-}
-
-/* Modal-Basis */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-}
-.modal.hidden {
-  display: none;
-}
-
-/* Modal-Inhalt */
-.modal-content {
-  background: white;
-  padding: 2em;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 600px;
-  position: relative;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-}
-
-/* Schließen-Button */
-.close-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: transparent;
-  border: none;
-  font-size: 1.8em;
-  cursor: pointer;
-  color: #888;
-}
-.close-btn:hover {
-  color: #444;
-}
-
-/* Formular-Labels */
-.form-group label {
-  display: block;
-  margin: 0.5rem 0;
-}
-
-/* Bezirks-Label */
-.bezirk-label {
-  font-size: 12px;
-  color: #333;
-  text-align: center;
-  opacity: 0.4;
-  font-weight: bold;
-  pointer-events: none;
-  text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
-}
-
-/* Buttons */
-button {
-  background-color: #00458a;
-  color: white;
-  padding: 0.4rem 0.8rem;
-  border: none;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  cursor: pointer;
-}
-button:hover {
-  background-color: #0059b3;
-}
-
-/* Next-Button im Stepper hervorheben */
-#nextStep {
-  background-color: #007bff;
-}
-#nextStep:hover {
-  background-color: #0056b3;
-}
-
-/* Bildname */
-.bild-name {
-  margin-top: 0.5rem;
-  font-size: 0.9em;
-  font-style: italic;
-  color: #666;
-}
-
-/* Stepper-Steuerung */
-.step-controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 1em;
-}
-.step-indicators {
-  display: flex;
-  gap: 6px;
-}
-.step-dot {
-  width: 12px;
-  height: 12px;
-  background: #ccc;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.step-dot.active {
-  background: #007bff;
-}
-
-/* Input-Fehlermeldung sichtbar machen */
-input:invalid {
-  border-color: red;
-}
-input:invalid:focus {
-  outline: 1px solid red;
-}
-
-/* Inputs allgemein */
-input[type="number"],
-input[type="file"] {
-  width: 100%;
-  margin-top: 8px;
-  margin-bottom: 10px;
-}
-
-/* Responsive Tweaks */
-@media (max-width: 400px) {
-  .modal-content {
-    padding: 1.2em;
-    font-size: 0.95em;
-  }
-  .form-group label {
-    font-size: 0.9em;
-  }
-}
-
-/* Modal im Stepper größer & scrollbar */
-#stepperModal .modal-content {
-  width: 600px;
-  max-width: 95%;
-  max-height: 90vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-/* Inhalt scrollt bei Bedarf */
-#stepperModal #step-content {
-  flex: 1;
-  overflow-y: auto;
-  margin-bottom: 1em;
-  overflow-x: hidden;
-  padding-right: 1em;
-}
-
-/* Einheitliche Produktbild-Darstellung im Stepper */
-#step-content img {
-  width: 100%;
-  height: 160px;
-  object-fit: contain;
-  background: #f0f0f0;
-  border-radius: 4px;
-  margin-bottom: 1em;
-  display: block;
-}
-
-/* Optional: zentrierter Wrapper falls nötig */
-#step-content .image-wrapper {
-  width: 100%;
-  height: 160px;
-  overflow: hidden;
-  border-radius: 4px;
-  margin-bottom: 1em;
-  background: #eee;
-}
-
-/* Einheitliche Bilddarstellung im Leaflet-Popup */
-.leaflet-popup-content img {
-  max-width: 100%;
-  max-height: 150px;
-  display: block;
-  margin: 0.5em 0;
-  object-fit: contain;
-}
-
-/* Popup horizontaler Scroll fix */
-.leaflet-popup-content {
-  overflow-x: hidden;
-}
-/* Grundlegendes Reset & Body */
-body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
-  background: #f5f7f9;
-  color: #333;
-}
-
-h1 {
-  text-align: center;
-  color: #00458a;
-  padding: 1rem;
+h1{
+  text-align:center;
+  color:var(--brand);
+  padding:1rem;
 }
 
 /* Karte */
-#map {
-  height: 80vh;
-  width: 100%;
-  z-index: 1;
+#map{
+  height:80vh;
+  width:100%;
+  z-index:1;
 }
 
-/* Modal-Basis */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
+/* ===========================
+   Buttons & Inputs
+   =========================== */
+button{
+  background-color:var(--brand);
+  color:#fff;
+  padding:0.45rem 0.9rem;
+  border:none;
+  border-radius:6px;
+  font-size:0.95rem;
+  cursor:pointer;
 }
-.modal.hidden {
-  display: none;
+button:hover{ background-color:var(--brand-200); }
+
+button.secondary{
+  background:#eef3f9;
+  color:#0b4a8e;
+}
+button.secondary:hover{ background:#e1ebf7; }
+
+input[type="number"],
+input[type="file"]{
+  width:100%;
+  margin-top:8px;
+  margin-bottom:10px;
 }
 
-/* Modal-Inhalt */
-.modal-content {
-  background: white;
-  padding: 2em;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 600px;
-  position: relative;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+input:invalid{ border-color:red; }
+input:invalid:focus{ outline:1px solid red; }
+
+/* ===========================
+   Modal (Basis)
+   =========================== */
+.modal{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,.6);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+}
+.modal.hidden{ display:none; }
+
+.modal-content{
+  background:#fff;
+  padding:2rem;
+  border-radius:10px;
+  width:90%;
+  max-width:600px;
+  position:relative;
+  box-shadow:0 10px 25px rgba(0,0,0,.2);
 }
 
 /* Schließen-Button */
-.close-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: transparent;
-  border: none;
-  font-size: 1.8em;
-  cursor: pointer;
-  color: #888;
+.close-btn{
+  position:absolute;
+  top:10px;
+  right:10px;
+  background:transparent;
+  border:none;
+  font-size:1.8rem;
+  cursor:pointer;
+  color:#888;
 }
-.close-btn:hover {
-  color: #444;
+.close-btn:hover{ color:#444; }
+
+/* Formular */
+.form-group label{
+  display:block;
+  margin:.5rem 0;
+}
+.bild-name{
+  margin-top:.5rem;
+  font-size:.9em;
+  font-style:italic;
+  color:var(--muted);
 }
 
-/* Formular-Labels */
-.form-group label {
-  display: block;
-  margin: 0.5rem 0;
+/* ===========================
+   Stepper-Modal (größer)
+   =========================== */
+#stepperModal .modal-content{
+  width:800px;          /* vorher 600px */
+  max-width:95%;
+  max-height:95vh;      /* etwas mehr Höhe */
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
 }
 
-/* Bezirks-Label */
-.bezirk-label {
-  font-size: 12px;
-  color: #333;
-  text-align: center;
-  opacity: 0.4;
-  font-weight: bold;
-  pointer-events: none;
-  text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+/* Stepper: Inhalt scrollt bei Bedarf */
+#stepperModal #step-content{
+  flex:1;
+  overflow-y:auto;
+  margin-bottom:1em;
+  overflow-x:hidden;
+  padding-right:1em;
 }
 
-/* Buttons */
-button {
-  background-color: #00458a;
-  color: white;
-  padding: 0.4rem 0.8rem;
-  border: none;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  cursor: pointer;
+/* Stepper-Steuerung & Dots */
+.step-controls{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:.5rem;
+  margin-top:1em;
 }
-button:hover {
-  background-color: #0059b3;
+.step-indicators{
+  display:flex;
+  gap:6px;
+}
+.step-dot{
+  width:12px; height:12px;
+  background:#ccc;
+  border-radius:50%;
+  cursor:pointer;
+  transition:background .2s;
+}
+.step-dot.active{ background:#007bff; }
+
+/* Next-Button visuell hervorheben */
+#nextStep{
+  background:#007bff;
+}
+#nextStep:hover{
+  background:#0056b3;
 }
 
-/* Next-Button im Stepper hervorheben */
-#nextStep {
-  background-color: #007bff;
+/* ===========================
+   Stepper – Kopf & Grid
+   =========================== */
+.step-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:1rem;
+  margin-bottom:.5rem;
 }
-#nextStep:hover {
-  background-color: #0056b3;
+.step-header .step-type{
+  font-weight:600;
+  color:var(--brand);
 }
-
-/* Bildname */
-.bild-name {
-  margin-top: 0.5rem;
-  font-size: 0.9em;
-  font-style: italic;
-  color: #666;
-}
-
-/* Stepper-Steuerung */
-.step-controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 1em;
-}
-.step-indicators {
-  display: flex;
-  gap: 6px;
-}
-.step-dot {
-  width: 12px;
-  height: 12px;
-  background: #ccc;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.step-dot.active {
-  background: #007bff;
+.step-header .step-compare{
+  color:#555;
+  font-size:.95em;
 }
 
-/* Input-Fehlermeldung sichtbar machen */
-input:invalid {
-  border-color: red;
+/* Zwei Produkte nebeneinander (responsive) */
+.step-pane-content-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
 }
-input:invalid:focus {
-  outline: 1px solid red;
-}
-
-/* Inputs allgemein */
-input[type="number"],
-input[type="file"] {
-  width: 100%;
-  margin-top: 8px;
-  margin-bottom: 10px;
+.product-card{
+  background:#fafafa;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:12px;
+  box-shadow:0 2px 6px rgba(0,0,0,.05);
 }
 
-/* Responsive Tweaks */
-@media (max-width: 400px) {
-  .modal-content {
-    padding: 1.2em;
-    font-size: 0.95em;
+/* Einheitliche Bildbox für alle Packshots */
+.product-card .image-wrapper{
+  width:100%;
+  height:220px;          /* größer & einheitlich */
+  overflow:hidden;
+  border-radius:8px;
+  background:#fff;
+  border:1px solid #ddd;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-bottom:10px;
+  padding:8px;           /* weißer Rand um das Bild */
+}
+.product-card img{
+  width:100%;
+  height:100%;
+  object-fit:contain;    /* immer vollständig sichtbar */
+}
+
+/* Fallback für ältere Markup-Pfade */
+#step-content img{
+  width:100%;
+  height:220px;
+  object-fit:contain;
+  background:#fff;
+  border:1px solid #ddd;
+  border-radius:6px;
+  padding:8px;
+  display:block;
+  margin-bottom:1em;
+}
+
+/* Mobil: einspaltig */
+@media (max-width:560px){
+  .step-pane-content-grid{ grid-template-columns:1fr; }
+  #stepperModal .modal-content{ width:95%; }
+}
+
+/* ===========================
+   Leaflet-Popup & Bezirkslabel
+   =========================== */
+.leaflet-popup-content img{
+  max-width:100%;
+  max-height:150px;
+  display:block;
+  margin:.5em 0;
+  object-fit:contain;
+}
+.leaflet-popup-content{ overflow-x:hidden; }
+
+.bezirk-label{
+  font-size:12px;
+  color:#333;
+  text-align:center;
+  opacity:.4;
+  font-weight:bold;
+  pointer-events:none;
+  text-shadow:1px 1px 2px rgba(255,255,255,.8);
+}
+
+/* ===========================
+   Kleines Responsive-Tuning
+   =========================== */
+@media (max-width:400px){
+  .modal-content{
+    padding:1.2rem;
+    font-size:.95em;
   }
-  .form-group label {
-    font-size: 0.9em;
-  }
-}
-
-/* Modal im Stepper größer & scrollbar */
-#stepperModal .modal-content {
-  width: 600px;
-  max-width: 95%;
-  max-height: 90vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-/* Inhalt scrollt bei Bedarf */
-#stepperModal #step-content {
-  flex: 1;
-  overflow-y: auto;
-  margin-bottom: 1em;
-  overflow-x: hidden;
-  padding-right: 1em;
-}
-
-/* Einheitliche Produktbild-Darstellung im Stepper */
-#step-content img {
-  width: 100%;
-  height: 160px;
-  object-fit: contain;
-  background: #f0f0f0;
-  border-radius: 4px;
-  margin-bottom: 1em;
-  display: block;
-}
-
-/* Optional: zentrierter Wrapper falls nötig */
-#step-content .image-wrapper {
-  width: 100%;
-  height: 160px;
-  overflow: hidden;
-  border-radius: 4px;
-  margin-bottom: 1em;
-  background: #eee;
-}
-
-/* Einheitliche Bilddarstellung im Leaflet-Popup */
-.leaflet-popup-content img {
-  max-width: 100%;
-  max-height: 150px;
-  display: block;
-  margin: 0.5em 0;
-  object-fit: contain;
-}
-
-/* Popup horizontaler Scroll fix */
-.leaflet-popup-content {
-  overflow-x: hidden;
-}
-
-/* Stepper: Kopf mit Typ/Vergeich */
-.step-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 0.5em;
-  gap: 1em;
-}
-.step-header .step-type {
-  font-weight: 600;
-  color: #00458a;
-}
-.step-header .step-compare {
-  font-size: 0.95em;
-  color: #555;
-}
-
-/* Stepper: 2 Spalten (responsive) */
-.step-pane-content-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-.product-card {
-  background: #fff;
-  border: 1px solid #e7eaf0;
-  border-radius: 8px;
-  padding: 12px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
-}
-
-.product-card .image-wrapper {
-  width: 100%;
-  height: 160px;
-  overflow: hidden;
-  border-radius: 6px;
-  background: #f0f2f5;
-  margin-bottom: 10px;
-}
-
-.product-card img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-@media (max-width: 560px) {
-  .step-pane-content-grid {
-    grid-template-columns: 1fr;
-  }
+  .form-group label{ font-size:.9em; }
 }
