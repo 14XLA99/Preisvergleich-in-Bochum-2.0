@@ -120,56 +120,155 @@ function safeImg(url, label) {
 // Genau 10 Paare (je 2 Produkte pro Step) + Vergleichsart
 // Du kannst die bildUrl-Felder später mit echten URLs füllen.
 // Der Stepper funktioniert auch mit dem Fallback.
-const produktPaare = [
+const produktGruppen = [
   {
+    typ: "Menge 1",
     vergleich: "Menge (mehr Inhalt)",
-    p1: { name: "Coca-Cola 0,5 l PET", beschreibung: "Einzelflasche 0,5 l", bildUrl: "..." },
-    p2: { name: "Coca-Cola 1,25 l PET", beschreibung: "Familienflasche 1,25 l", bildUrl: "..." }
+    p1: {
+      name: "Coca-Cola 0,5 l PET",
+      beschreibung: "Einzelflasche, 0,5 l",
+      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Coca-Cola%20Life%200.5%20liter.jpg"
+    },
+    p2: {
+      name: "Coca-Cola 1,25 l PET",
+      beschreibung: "Familienflasche, 1,25 l",
+      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Coca%20Cola%20life%201l%201.25%20PET%20IMG%202871.JPG"
+    }
   },
+
   {
+    typ: "Menge 2",
     vergleich: "Menge (große Packung)",
-    p1: { name: "Rewe Beste Wahl Gouda 150 g", beschreibung: "Scheiben 150 g", bildUrl: "..." },
-    p2: { name: "Rewe Beste Wahl Gouda 400 g", beschreibung: "Scheiben 400 g", bildUrl: "..." }
+    p1: {
+      name: "Rewe Beste Wahl Gouda 150 g",
+      beschreibung: "Scheiben, kleine Packung",
+      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Gouda%20cheese%20slices.jpg"
+    },
+    p2: {
+      name: "Rewe Beste Wahl Gouda 400 g",
+      beschreibung: "Scheiben, große Packung",
+      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Gouda%20Cheese.jpg"
+    }
   },
+
   {
+    typ: "Menge 3",
     vergleich: "Qualität / Mehrwert",
-    p1: { name: "Bananen lose (1 kg)", beschreibung: "Konventionell, 1 kg", bildUrl: "..." },
-    p2: { name: "Bio-Bananen lose (1 kg)", beschreibung: "Bio, 1 kg", bildUrl: "..." }
+    p1: {
+      name: "Bananen lose (1 kg)",
+      beschreibung: "Konventionell",
+      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/A%20bunch%20of%20bananas.jpg"
+    },
+    p2: {
+      name: "Bio-Bananen lose (1 kg)",
+      beschreibung: "Bio-Qualität",
+      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Organic%20bananas%20with%20plastic%20stickers.jpg"
+    }
   },
+
   {
+    typ: "Menge 4",
     vergleich: "Menge",
-    p1: { name: "Alnatura Haferflocken 500 g", beschreibung: "Feinblatt 500 g", bildUrl: "..." },
-    p2: { name: "Alnatura Haferflocken 1 kg", beschreibung: "Feinblatt 1 kg", bildUrl: "..." }
+    p1: {
+      name: "Alnatura Haferflocken 500 g",
+      beschreibung: "Standardpackung",
+      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Rolled%20oats.jpg"
+    },
+    p2: {
+      name: "Alnatura Haferflocken 1 kg",
+      beschreibung: "Großpackung",
+      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Oats%20in%20a%20bowl.jpg"
+    }
   },
+
   {
+    typ: "Menge 5",
     vergleich: "Menge",
-    p1: { name: "Rama Margarine 250 g", beschreibung: "Streichfett 250 g", bildUrl: "..." },
-    p2: { name: "Rama Margarine 500 g", beschreibung: "Streichfett 500 g", bildUrl: "..." }
+    p1: {
+      name: "Rama Margarine 250 g",
+      beschreibung: "Kleine Packung",
+      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Margarine.jpg"
+    },
+    p2: {
+      name: "Rama Margarine 500 g",
+      beschreibung: "Große Packung",
+      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/2020-02-14%2004%2058%2044%20A%20sample%20of%20Land%20O%20Lakes%20Margarine%20in%20the%20Dulles%20section%20of%20Sterling%2C%20Loudoun%20County%2C%20Virginia.jpg"
+    }
   },
+
   {
+    typ: "Marke 1",
     vergleich: "Marke",
-    p1: { name: "Milka Alpenmilch 100 g", beschreibung: "Markenschokolade 100 g", bildUrl: "..." },
-    p2: { name: "Ja! Schokolade 100 g", beschreibung: "Eigenmarke 100 g", bildUrl: "..." }
+    p1: {
+      name: "Milka Alpenmilch 100 g",
+      beschreibung: "Markenschokolade",
+      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Milka%20Alpine%20Milk%20Chocolate%20bar%20100g.jpg"
+    },
+    p2: {
+      name: "Ja! Schokolade 100 g",
+      beschreibung: "Eigenmarke",
+      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Milk%20chocolate.jpg"
+    }
   },
+
   {
+    typ: "Marke 2",
     vergleich: "Marke",
-    p1: { name: "Barilla Spaghetti 500 g", beschreibung: "Markenpasta 500 g", bildUrl: "..." },
-    p2: { name: "Rewe Beste Wahl Spaghetti 500 g", beschreibung: "Eigenmarke 500 g", bildUrl: "..." }
+    p1: {
+      name: "Barilla Spaghetti 500 g",
+      beschreibung: "Markenpasta",
+      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Freshly%20made%20spaghetti.jpg"
+    },
+    p2: {
+      name: "Rewe Beste Wahl Spaghetti 500 g",
+      beschreibung: "Eigenmarke",
+      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Spaghetti%20dish.jpg"
+    }
   },
+
   {
+    typ: "Marke 3",
     vergleich: "Marke",
-    p1: { name: "Pringles Paprika 200 g", beschreibung: "Markenchips 200 g", bildUrl: "..." },
-    p2: { name: "Lidl Stapelchips 165 g", beschreibung: "Eigenmarke 165 g", bildUrl: "..." }
+    p1: {
+      name: "Pringles Paprika 200 g",
+      beschreibung: "Markenchips",
+      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Pringles%20chips.jpg"
+    },
+    p2: {
+      name: "Lidl Stapelchips 165 g",
+      beschreibung: "Eigenmarke",
+      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Potato%20chips.jpg"
+    }
   },
+
   {
+    typ: "Marke 4",
     vergleich: "Marke",
-    p1: { name: "Haribo Goldbären 200 g", beschreibung: "Markengummi 200 g", bildUrl: "..." },
-    p2: { name: "Gut&Günstig Fruchtgummi 200 g", beschreibung: "Eigenmarke 200 g", bildUrl: "..." }
+    p1: {
+      name: "Haribo Goldbären 200 g",
+      beschreibung: "Markensüßigkeit",
+      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Haribo_gb.jpg"
+    },
+    p2: {
+      name: "Sweetland Fruchtgummi 200 g",
+      beschreibung: "Eigenmarke",
+      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Gummy%20bears.jpg"
+    }
   },
+
   {
+    typ: "Marke 5",
     vergleich: "Marke / Preis",
-    p1: { name: "Alpro Haferdrink 1 l", beschreibung: "Pflanzendrink 1 l", bildUrl: "..." },
-    p2: { name: "Rewe Bio Haferdrink 1 l", beschreibung: "Pflanzendrink 1 l", bildUrl: "..." }
+    p1: {
+      name: "Alpro Haferdrink 1 l",
+      beschreibung: "Marke",
+      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Oatmilk%201.jpg"
+    },
+    p2: {
+      name: "Rewe Bio Haferdrink 1 l",
+      beschreibung: "Eigen-/Bio-Marke",
+      bildUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Hafermilch%20aus%20dem%20Bio-Supermarkt.jpg"
+    }
   }
 ];
 
