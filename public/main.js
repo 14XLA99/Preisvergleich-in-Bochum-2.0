@@ -287,8 +287,8 @@ function renderStep() {
 
     stepContent.innerHTML = `
       <div class="step-header">
-        <div class="step-type">${pair.typ}</div>
-        <div class="step-compare">Vergleich: ${pair.vergleich}</div>
+        <div class="step-type">${pair.typ || ""}</div>
+        <div class="step-compare">Vergleich: ${pair.vergleich || ""}</div>
       </div>
 
       <div class="step-pane-content-grid">
@@ -319,28 +319,32 @@ function renderStep() {
       </div>
     `;
   } else {
-    // Bild-Step (Step 10)
+    // Bild-Step (Step 10/11)
     stepContent.innerHTML = `
-      <h3>Belegfoto (optional)</h3>
-      <input type="file" id="belegInput" accept="image/*" />
-      <div id="belegPreview" style="margin-top:1em;"></div>
+      <div class="upload-card">
+        <h3>Belegfoto (optional)</h3>
+        <input type="file" id="belegInput" accept="image/*" />
+        <!-- Vorschau-Box im gleichen Look wie Produktbilder -->
+        <div id="belegBox" class="image-wrapper" style="margin-top:1em;"></div>
+        <div id="belegHint" style="font-size:0.9em;color:#666;margin-top:6px;"></div>
+      </div>
     `;
 
-    const preview = document.getElementById("belegPreview");
+    const box  = document.getElementById("belegBox");
+    const hint = document.getElementById("belegHint");
+
     if (zwischenBildFile) {
       const url = URL.createObjectURL(zwischenBildFile);
-      preview.innerHTML = `
-        <img src="${url}" style="max-width:100%;max-height:150px;border-radius:4px;">
-        <div style="font-size:0.9em;color:#666;margin-top:4px;">(Wird beim Speichern hochgeladen)</div>
-      `;
-      const img = preview.querySelector("img");
-      img.onload = () => URL.revokeObjectURL(url); // sicherer als starre 1s
+      box.innerHTML = `<img src="${url}" alt="Belegvorschau" />`;
+      hint.textContent = "(Wird beim Speichern hochgeladen)";
+      const img = box.querySelector("img");
+      img.onload = () => URL.revokeObjectURL(url);
     } else if (zuletztHochgeladenesBildURL) {
-      preview.innerHTML = `
-        <img src="${zuletztHochgeladenesBildURL}?t=${Date.now()}" style="max-width:100%;max-height:150px;border-radius:4px;">
-      `;
+      box.innerHTML = `<img src="${zuletztHochgeladenesBildURL}?t=${Date.now()}" alt="Beleg" />`;
+      hint.textContent = "";
     } else {
-      preview.innerHTML = `<p style="color:#888;font-size:0.9em;">(Kein Bild vorhanden)</p>`;
+      box.innerHTML = ""; // leere weiße Box (durch .image-wrapper)
+      hint.textContent = "(Kein Bild vorhanden)";
     }
 
     document.getElementById("belegInput").addEventListener("change", evt => {
@@ -349,7 +353,7 @@ function renderStep() {
     });
   }
 
-  // Indikatoren: 10 Produkt-Steps + 1 Bild-Step = 11
+  // Indikatoren: N Produkt-Steps + 1 Bild-Step
   indicators.innerHTML = "";
   const total = produktPaare.length + 1;
   for (let i = 0; i < total; i++) {
