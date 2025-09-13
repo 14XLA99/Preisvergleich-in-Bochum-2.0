@@ -319,61 +319,74 @@ function renderStep() {
       </div>
     `;
   } else {
-  // Bild-Step in gleicher Optik wie die Produkt-Steps (2 Karten im Grid)
-  stepContent.innerHTML = `
-    <div class="step-header">
-      <div class="step-type">Beleg</div>
-      <div class="step-compare">Optionales Foto hochladen</div>
-    </div>
-
-    <div class="step-pane-content-grid">
-      <!-- Linke Karte: Upload + Vorschau -->
-      <div class="product-card">
-        <div class="image-wrapper" id="belegBox"></div>
-        <div class="step-pane-text">
-          <h3>Belegfoto (optional)</h3>
-          <input type="file" id="belegInput" accept="image/*" />
-          <p id="belegHint" style="font-size:0.9em;color:#666;margin-top:6px;"></p>
-        </div>
+    // Bild-Step in gleicher Optik wie die Produkt-Steps (2 Karten im Grid)
+    stepContent.innerHTML = `
+      <div class="step-header">
+        <div class="step-type">Beleg</div>
+        <div class="step-compare">Optionales Foto hochladen</div>
       </div>
 
-      <!-- Rechte Karte: Hinweise (leer lassen oder Infos zeigen) -->
-      <div class="product-card">
-        <div class="step-pane-text">
-          <h3>Hinweis</h3>
-          <p>Du kannst ein Foto vom Kassenbeleg hochladen. Das hilft, Preise zu verifizieren.</p>
-          <ul style="margin:0.5em 0 0 1.25em; padding:0; font-size:0.95em; color:#555;">
-            <li>Max. 1 Bild pro Markt-Eintrag</li>
-            <li>Das Bild wird beim Speichern komprimiert</li>
-          </ul>
+      <div class="step-pane-content-grid">
+        <!-- Linke Karte: Upload + Vorschau -->
+        <div class="product-card">
+          <div class="image-wrapper" id="belegBox"></div>
+          <div class="step-pane-text">
+            <h3>Belegfoto (optional)</h3>
+            <input type="file" id="belegInput" accept="image/*" />
+            <p id="belegHint" style="font-size:0.9em;color:#666;margin-top:6px;"></p>
+          </div>
+        </div>
+
+        <!-- Rechte Karte: Hinweis -->
+        <div class="product-card">
+          <div class="step-pane-text">
+            <h3>Hinweis</h3>
+            <p>Du kannst ein Foto vom Kassenbeleg hochladen. Das hilft, Preise zu verifizieren.</p>
+            <ul style="margin:0.5em 0 0 1.25em; padding:0; font-size:0.95em; color:#555;">
+              <li>Max. 1 Bild pro Markt-Eintrag</li>
+              <li>Das Bild wird beim Speichern komprimiert</li>
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
-  `;
+    `;
 
-  const box  = document.getElementById("belegBox");
-  const hint = document.getElementById("belegHint");
+    const box  = document.getElementById("belegBox");
+    const hint = document.getElementById("belegHint");
 
-  if (zwischenBildFile) {
-    const url = URL.createObjectURL(zwischenBildFile);
-    box.innerHTML = `<img src="${url}" alt="Belegvorschau" />`;
-    hint.textContent = "(Wird beim Speichern hochgeladen)";
-    const img = box.querySelector("img");
-    img.onload = () => URL.revokeObjectURL(url);
-  } else if (zuletztHochgeladenesBildURL) {
-    box.innerHTML = `<img src="${zuletztHochgeladenesBildURL}?t=${Date.now()}" alt="Beleg" />`;
-    hint.textContent = "";
-  } else {
-    box.innerHTML = ""; // leere weiße Box (durch .image-wrapper)
-    hint.textContent = "(Kein Bild vorhanden)";
+    if (zwischenBildFile) {
+      const url = URL.createObjectURL(zwischenBildFile);
+      box.innerHTML = `<img src="${url}" alt="Belegvorschau" />`;
+      hint.textContent = "(Wird beim Speichern hochgeladen)";
+      const img = box.querySelector("img");
+      img.onload = () => URL.revokeObjectURL(url);
+    } else if (zuletztHochgeladenesBildURL) {
+      box.innerHTML = `<img src="${zuletztHochgeladenesBildURL}?t=${Date.now()}" alt="Beleg" />`;
+      hint.textContent = "";
+    } else {
+      box.innerHTML = ""; // leere weiße Box (durch .image-wrapper)
+      hint.textContent = "(Kein Bild vorhanden)";
+    }
+
+    const belegInput = document.getElementById("belegInput");
+    if (belegInput) {
+      belegInput.addEventListener("change", evt => {
+        zwischenBildFile = evt.target.files[0] || null;
+        renderStep();
+      });
+    }
   }
 
-  document.getElementById("belegInput").addEventListener("change", evt => {
-    zwischenBildFile = evt.target.files[0] || null;
-    renderStep();
-  });
+  // Indikatoren: N Produkt-Steps + 1 Bild-Step
+  indicators.innerHTML = "";
+  const total = produktPaare.length + 1;
+  for (let i = 0; i < total; i++) {
+    const dot = document.createElement("div");
+    dot.className = "step-dot" + (i === currentStep ? " active" : "");
+    dot.onclick = () => { currentStep = i; renderStep(); };
+    indicators.appendChild(dot);
+  }
 }
-
 
 // ──────────────────────────────
 // 9) Stepper öffnen / schließen / steuern (vollständig, mit Komprimierung und FormData)
