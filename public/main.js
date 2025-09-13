@@ -109,47 +109,27 @@ let zuletztHochgeladenesBildURL = null;
   // 6) Produktdefinition (Stepper)
   // ──────────────────────────────
   const produkte = [
-  // 🧪 1. Mengenvergleich
-  { name: "Cola 0.33 l", beschreibung: "Einzelflasche, 0.33 l", bildUrl: "..." },
-  { name: "Cola 1.5 l", beschreibung: "Familienflasche, 1.5 l", bildUrl: "..." },
-
-  // 🧪 2. Mengenvergleich
-  { name: "Milch 1 l", beschreibung: "Vollmilch, 1 Liter", bildUrl: "..." },
-  { name: "Milch 0.5 l", beschreibung: "Vollmilch, 0.5 Liter", bildUrl: "..." },
-
-  // 🧪 3. Mengenvergleich
-  { name: "Nudeln 500 g", beschreibung: "Standardpackung", bildUrl: "..." },
-  { name: "Nudeln 1 kg", beschreibung: "Großpackung", bildUrl: "..." },
-
-  // 🧪 4. Mengenvergleich
-  { name: "Butter 250 g", beschreibung: "Standardpackung", bildUrl: "..." },
-  { name: "Butter 500 g", beschreibung: "Doppelpackung", bildUrl: "..." },
-
-  // 🧪 5. Mengenvergleich
-  { name: "Reis 500 g", beschreibung: "Kleine Packung", bildUrl: "..." },
-  { name: "Reis 1 kg", beschreibung: "Große Packung", bildUrl: "..." },
-
-  // 🏷️ 6. Markenvergleich
-  { name: "Barilla Spaghetti", beschreibung: "Markenpasta (500 g)", bildUrl: "..." },
-  { name: "Ja! Spaghetti", beschreibung: "Eigenmarke (500 g)", bildUrl: "..." },
-
-  // 🏷️ 7. Markenvergleich
-  { name: "Coca-Cola 1.5 l", beschreibung: "Markengetränk", bildUrl: "..." },
-  { name: "River Cola 1.5 l", beschreibung: "Eigenmarke", bildUrl: "..." },
-
-  // 🏷️ 8. Markenvergleich
-  { name: "Landliebe Butter", beschreibung: "Markenbutter (250 g)", bildUrl: "..." },
-  { name: "Gut&Günstig Butter", beschreibung: "Eigenmarke (250 g)", bildUrl: "..." },
-
-  // 🏷️ 9. Markenvergleich
-  { name: "Haribo Goldbären", beschreibung: "Markensüßigkeit (175 g)", bildUrl: "..." },
-  { name: "Sweetland Fruchtgummi", beschreibung: "Eigenmarke (175 g)", bildUrl: "..." },
-
-  // 🏷️ 10. Markenvergleich
-  { name: "Funny Frisch Chips", beschreibung: "Markenchips (175 g)", bildUrl: "..." },
-  { name: "Snack Day Chips", beschreibung: "Eigenmarke (175 g)", bildUrl: "..." }
+{ name: "Coca-Cola 0,5l", beschreibung: "Coca-Cola 0,5 l PET-Flasche", bildUrl: "https://cdn.picnic.nl/images/product/medium/306552.jpg" },
+{ name: "Coca-Cola 1,25l", beschreibung: "Coca-Cola 1,25 l PET-Flasche", bildUrl: "https://cdn.picnic.nl/images/product/medium/305105.jpg" },
+{ name: "Gouda 150g", beschreibung: "Rewe Beste Wahl Gouda 150 g", bildUrl: "https://rewe.scene7.com/is/image/rewe/2828078-01?$548x548$" },
+{ name: "Gouda 400g", beschreibung: "Rewe Beste Wahl Gouda 400 g", bildUrl: "https://rewe.scene7.com/is/image/rewe/0647359-01?$548x548$" },
+{ name: "Haferflocken 500g", beschreibung: "Alnatura Haferflocken 500 g", bildUrl: "https://cdn.alnatura.de/media/Artikel/703091/XL/703091_HaferflockenZartblatt_500g.png" },
+{ name: "Haferflocken 1kg", beschreibung: "Alnatura Haferflocken 1 kg", bildUrl: "https://cdn.alnatura.de/media/Artikel/703203/XL/703203_HaferflockenGrobblatt_1000g.png" },
+{ name: "Milka Schokolade", beschreibung: "Milka Alpenmilch 100 g", bildUrl: "https://www.milka.de/~/media/milka/products/milka/alpenmilch-100g.png" },
+{ name: "Ja! Schokolade", beschreibung: "Ja! Schokolade 100 g", bildUrl: "https://rewe.scene7.com/is/image/rewe/0133522-01?$548x548$" },
+{ name: "Pringles Paprika", beschreibung: "Pringles Paprika 200 g", bildUrl: "https://m.media-amazon.com/images/I/61uz4kkUw1L._AC_UF894,1000_QL80_.jpg" },
+{ name: "Lidl Stapelchips", beschreibung: "Lidl Stapelchips Paprika 165 g", bildUrl: "https://www.lidl.de/media/fb/d0/66/1700646884/lays-stapelchips-paprika--600x600.jpg" },
+{ name: "Haribo Goldbären", beschreibung: "Haribo Goldbären 200 g", bildUrl: "https://www.haribo.com/media/catalog/product/cache/00a7e260fe5c12f835eb82e6934f6b27/0/2/021786_HARIBO_Goldbaeren_200g_Frontshot.png" },
+{ name: "Fruchtgummi G&G", beschreibung: "Gut&Günstig Fruchtgummi 200 g", bildUrl: "https://www.edeka.de/media/product/2023/07/13/34c4e6d2aa2248d28f5b1aa999183a91.png" },
+{ name: "Rama 250g", beschreibung: "Rama Margarine 250 g", bildUrl: "https://www.rama.de/Images/rama-original-250g_tcm1148-123175.png" },
+{ name: "Rama 500g", beschreibung: "Rama Margarine 500 g", bildUrl: "https://www.rama.de/Images/rama-original-500g_tcm1148-123176.png" },
+{ name: "Barilla Spaghetti", beschreibung: "Barilla Spaghetti 500 g", bildUrl: "https://www.barilla.com/-/media/images/products/10005501-barilla-spaghetti-500g.ashx" },
+{ name: "Rewe Spaghetti", beschreibung: "Rewe Beste Wahl Spaghetti 500 g", bildUrl: "https://rewe.scene7.com/is/image/rewe/0234320-01?$548x548$" },
+{ name: "Alpro Haferdrink", beschreibung: "Alpro Haferdrink 1 l", bildUrl: "https://www.alpro.com/globalassets/products/drinks/oat/original/oat-original-1l--left.png" },
+{ name: "Rewe Bio Haferdrink", beschreibung: "Rewe Bio Haferdrink 1 l", bildUrl: "https://rewe.scene7.com/is/image/rewe/0648016-01?$548x548$" },
+{ name: "Bananen konv.", beschreibung: "Bananen lose (1 kg)", bildUrl: "https://www.costa-rica-info.com/images/bananen2.jpg" },
+{ name: "Bananen bio", beschreibung: "Bio-Bananen lose (1 kg)", bildUrl: "https://www.basicbio.de/media/image/product/12253/md/biobananen-kgware.jpg" },
 ];
-
   let currentStep = 0;
 
   // ──────────────────────────────
