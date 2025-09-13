@@ -108,29 +108,73 @@ let zuletztHochgeladenesBildURL = null;
   // ──────────────────────────────
   // 6) Produktdefinition (Stepper)
   // ──────────────────────────────
-  const produkte = [
-{ name: "Coca-Cola 0,5l", beschreibung: "Coca-Cola 0,5 l PET-Flasche", bildUrl: "https://cdn.picnic.nl/images/product/medium/306552.jpg" },
-{ name: "Coca-Cola 1,25l", beschreibung: "Coca-Cola 1,25 l PET-Flasche", bildUrl: "https://cdn.picnic.nl/images/product/medium/305105.jpg" },
-{ name: "Gouda 150g", beschreibung: "Rewe Beste Wahl Gouda 150 g", bildUrl: "https://rewe.scene7.com/is/image/rewe/2828078-01?$548x548$" },
-{ name: "Gouda 400g", beschreibung: "Rewe Beste Wahl Gouda 400 g", bildUrl: "https://rewe.scene7.com/is/image/rewe/0647359-01?$548x548$" },
-{ name: "Haferflocken 500g", beschreibung: "Alnatura Haferflocken 500 g", bildUrl: "https://cdn.alnatura.de/media/Artikel/703091/XL/703091_HaferflockenZartblatt_500g.png" },
-{ name: "Haferflocken 1kg", beschreibung: "Alnatura Haferflocken 1 kg", bildUrl: "https://cdn.alnatura.de/media/Artikel/703203/XL/703203_HaferflockenGrobblatt_1000g.png" },
-{ name: "Milka Schokolade", beschreibung: "Milka Alpenmilch 100 g", bildUrl: "https://www.milka.de/~/media/milka/products/milka/alpenmilch-100g.png" },
-{ name: "Ja! Schokolade", beschreibung: "Ja! Schokolade 100 g", bildUrl: "https://rewe.scene7.com/is/image/rewe/0133522-01?$548x548$" },
-{ name: "Pringles Paprika", beschreibung: "Pringles Paprika 200 g", bildUrl: "https://m.media-amazon.com/images/I/61uz4kkUw1L._AC_UF894,1000_QL80_.jpg" },
-{ name: "Lidl Stapelchips", beschreibung: "Lidl Stapelchips Paprika 165 g", bildUrl: "https://www.lidl.de/media/fb/d0/66/1700646884/lays-stapelchips-paprika--600x600.jpg" },
-{ name: "Haribo Goldbären", beschreibung: "Haribo Goldbären 200 g", bildUrl: "https://www.haribo.com/media/catalog/product/cache/00a7e260fe5c12f835eb82e6934f6b27/0/2/021786_HARIBO_Goldbaeren_200g_Frontshot.png" },
-{ name: "Fruchtgummi G&G", beschreibung: "Gut&Günstig Fruchtgummi 200 g", bildUrl: "https://www.edeka.de/media/product/2023/07/13/34c4e6d2aa2248d28f5b1aa999183a91.png" },
-{ name: "Rama 250g", beschreibung: "Rama Margarine 250 g", bildUrl: "https://www.rama.de/Images/rama-original-250g_tcm1148-123175.png" },
-{ name: "Rama 500g", beschreibung: "Rama Margarine 500 g", bildUrl: "https://www.rama.de/Images/rama-original-500g_tcm1148-123176.png" },
-{ name: "Barilla Spaghetti", beschreibung: "Barilla Spaghetti 500 g", bildUrl: "https://www.barilla.com/-/media/images/products/10005501-barilla-spaghetti-500g.ashx" },
-{ name: "Rewe Spaghetti", beschreibung: "Rewe Beste Wahl Spaghetti 500 g", bildUrl: "https://rewe.scene7.com/is/image/rewe/0234320-01?$548x548$" },
-{ name: "Alpro Haferdrink", beschreibung: "Alpro Haferdrink 1 l", bildUrl: "https://www.alpro.com/globalassets/products/drinks/oat/original/oat-original-1l--left.png" },
-{ name: "Rewe Bio Haferdrink", beschreibung: "Rewe Bio Haferdrink 1 l", bildUrl: "https://rewe.scene7.com/is/image/rewe/0648016-01?$548x548$" },
-{ name: "Bananen konv.", beschreibung: "Bananen lose (1 kg)", bildUrl: "https://www.costa-rica-info.com/images/bananen2.jpg" },
-{ name: "Bananen bio", beschreibung: "Bio-Bananen lose (1 kg)", bildUrl: "https://www.basicbio.de/media/image/product/12253/md/biobananen-kgware.jpg" },
+ // Hilfsfunktion: sicheres Bild (Fallback, wenn URL leer/ungültig)
+function safeImg(url, label) {
+  const clean = (url || "").trim();
+  if (!clean || clean === "..." ) {
+    return `https://via.placeholder.com/480x300?text=${encodeURIComponent(label || "Produkt")}`;
+  }
+  return clean;
+}
+
+// Genau 10 Paare (je 2 Produkte pro Step) + Vergleichsart
+// Du kannst die bildUrl-Felder später mit echten URLs füllen.
+// Der Stepper funktioniert auch mit dem Fallback.
+const produktPaare = [
+  {
+    vergleich: "Menge (mehr Inhalt)",
+    p1: { name: "Coca-Cola 0,5 l PET", beschreibung: "Einzelflasche 0,5 l", bildUrl: "..." },
+    p2: { name: "Coca-Cola 1,25 l PET", beschreibung: "Familienflasche 1,25 l", bildUrl: "..." }
+  },
+  {
+    vergleich: "Menge (große Packung)",
+    p1: { name: "Rewe Beste Wahl Gouda 150 g", beschreibung: "Scheiben 150 g", bildUrl: "..." },
+    p2: { name: "Rewe Beste Wahl Gouda 400 g", beschreibung: "Scheiben 400 g", bildUrl: "..." }
+  },
+  {
+    vergleich: "Qualität / Mehrwert",
+    p1: { name: "Bananen lose (1 kg)", beschreibung: "Konventionell, 1 kg", bildUrl: "..." },
+    p2: { name: "Bio-Bananen lose (1 kg)", beschreibung: "Bio, 1 kg", bildUrl: "..." }
+  },
+  {
+    vergleich: "Menge",
+    p1: { name: "Alnatura Haferflocken 500 g", beschreibung: "Feinblatt 500 g", bildUrl: "..." },
+    p2: { name: "Alnatura Haferflocken 1 kg", beschreibung: "Feinblatt 1 kg", bildUrl: "..." }
+  },
+  {
+    vergleich: "Menge",
+    p1: { name: "Rama Margarine 250 g", beschreibung: "Streichfett 250 g", bildUrl: "..." },
+    p2: { name: "Rama Margarine 500 g", beschreibung: "Streichfett 500 g", bildUrl: "..." }
+  },
+  {
+    vergleich: "Marke",
+    p1: { name: "Milka Alpenmilch 100 g", beschreibung: "Markenschokolade 100 g", bildUrl: "..." },
+    p2: { name: "Ja! Schokolade 100 g", beschreibung: "Eigenmarke 100 g", bildUrl: "..." }
+  },
+  {
+    vergleich: "Marke",
+    p1: { name: "Barilla Spaghetti 500 g", beschreibung: "Markenpasta 500 g", bildUrl: "..." },
+    p2: { name: "Rewe Beste Wahl Spaghetti 500 g", beschreibung: "Eigenmarke 500 g", bildUrl: "..." }
+  },
+  {
+    vergleich: "Marke",
+    p1: { name: "Pringles Paprika 200 g", beschreibung: "Markenchips 200 g", bildUrl: "..." },
+    p2: { name: "Lidl Stapelchips 165 g", beschreibung: "Eigenmarke 165 g", bildUrl: "..." }
+  },
+  {
+    vergleich: "Marke",
+    p1: { name: "Haribo Goldbären 200 g", beschreibung: "Markengummi 200 g", bildUrl: "..." },
+    p2: { name: "Gut&Günstig Fruchtgummi 200 g", beschreibung: "Eigenmarke 200 g", bildUrl: "..." }
+  },
+  {
+    vergleich: "Marke / Preis",
+    p1: { name: "Alpro Haferdrink 1 l", beschreibung: "Pflanzendrink 1 l", bildUrl: "..." },
+    p2: { name: "Rewe Bio Haferdrink 1 l", beschreibung: "Pflanzendrink 1 l", bildUrl: "..." }
+  }
 ];
-  let currentStep = 0;
+
+// Step-Zustand
+let currentStep = 0; // 0..9 sind Produktsteps, 10 ist Bild-Step
 
   // ──────────────────────────────
   // 7) Stepper-Referenzen (DOM)
@@ -146,22 +190,46 @@ let zuletztHochgeladenesBildURL = null;
 // 8) Step anzeigen
 // ————————————————————
 function renderStep() {
-  if (currentStep < produkte.length) {
-    const p = produkte[currentStep];
+  const istProduktStep = currentStep < produktPaare.length;
+
+  if (istProduktStep) {
+    const pair = produktPaare[currentStep];
 
     stepContent.innerHTML = `
-      <div class="step-pane-content">
-        <img src="${p.bildUrl}" alt="${p.name}">
-        <div class="step-pane-text">
-          <h3>${p.name}</h3>
-          <p>${p.beschreibung}</p>
-          <label>Preis (€):
-            <input id="preisInput" type="number" step="0.01" value="${p.preisErfasst ?? ''}" />
-          </label>
-        </div>
+      <div class="step-header">
+        <div class="step-type">${pair.typ}</div>
+        <div class="step-compare">Vergleich: ${pair.vergleich}</div>
+      </div>
+
+      <div class="step-pane-content-grid">
+        ${[pair.p1, pair.p2].map((p, idx) => {
+          const inputId = `preisInput_${idx}`;
+          const preset = (typeof p.preisErfasst === "number")
+            ? p.preisErfasst
+            : (p.preisErfasst ?? "");
+          return `
+            <div class="product-card">
+              <div class="image-wrapper">
+                <img
+                  src="${safeImg(p.bildUrl, p.name)}"
+                  alt="${p.name}"
+                  onerror="this.onerror=null;this.src='${safeImg('', p.name)}';"
+                />
+              </div>
+              <div class="step-pane-text">
+                <h3>${p.name}</h3>
+                <p>${p.beschreibung || ""}</p>
+                <label>Preis (€):
+                  <input id="${inputId}" type="number" step="0.01" inputmode="decimal" value="${preset}" />
+                </label>
+              </div>
+            </div>
+          `;
+        }).join("")}
       </div>
     `;
   } else {
+    // Bild-Step (Step 10)
     stepContent.innerHTML = `
       <h3>Belegfoto (optional)</h3>
       <input type="file" id="belegInput" accept="image/*" />
@@ -169,31 +237,31 @@ function renderStep() {
     `;
 
     const preview = document.getElementById("belegPreview");
-
-if (zwischenBildFile) {
-  const url = URL.createObjectURL(zwischenBildFile);
-  preview.innerHTML = `
-    <img src="${url}" style="max-width:100%;max-height:150px;border-radius:4px;">
-    <div style="font-size:0.9em;color:#666;margin-top:4px;">(Wird beim Speichern hochgeladen)</div>
-  `;
-  setTimeout(() => URL.revokeObjectURL(url), 1000); // 🆕 Speicher freigeben
-} else if (zuletztHochgeladenesBildURL) {
-  preview.innerHTML = `
-    <img src="${zuletztHochgeladenesBildURL}?t=${Date.now()}" style="max-width:100%;max-height:150px;border-radius:4px;">
-  `;
-} else {
-  preview.innerHTML = `<p style="color:#888;font-size:0.9em;">(Kein Bild vorhanden)</p>`;
-}
-
+    if (zwischenBildFile) {
+      const url = URL.createObjectURL(zwischenBildFile);
+      preview.innerHTML = `
+        <img src="${url}" style="max-width:100%;max-height:150px;border-radius:4px;">
+        <div style="font-size:0.9em;color:#666;margin-top:4px;">(Wird beim Speichern hochgeladen)</div>
+      `;
+      const img = preview.querySelector("img");
+      img.onload = () => URL.revokeObjectURL(url); // sicherer als starre 1s
+    } else if (zuletztHochgeladenesBildURL) {
+      preview.innerHTML = `
+        <img src="${zuletztHochgeladenesBildURL}?t=${Date.now()}" style="max-width:100%;max-height:150px;border-radius:4px;">
+      `;
+    } else {
+      preview.innerHTML = `<p style="color:#888;font-size:0.9em;">(Kein Bild vorhanden)</p>`;
+    }
 
     document.getElementById("belegInput").addEventListener("change", evt => {
       zwischenBildFile = evt.target.files[0] || null;
-      renderStep(); // neu zeichnen mit aktualisierter Vorschau
+      renderStep();
     });
   }
 
+  // Indikatoren: 10 Produkt-Steps + 1 Bild-Step = 11
   indicators.innerHTML = "";
-  const total = produkte.length + 1;
+  const total = produktPaare.length + 1;
   for (let i = 0; i < total; i++) {
     const dot = document.createElement("div");
     dot.className = "step-dot" + (i === currentStep ? " active" : "");
@@ -221,103 +289,107 @@ prevBtn.onclick = () => {
 };
 
 nextBtn.onclick = async () => {
-  if (currentStep < produkte.length) {
-    produkte[currentStep].preisErfasst =
-      parseFloat(document.getElementById("preisInput").value) || null;
+  const istProduktStep = currentStep < produktPaare.length;
+
+  if (istProduktStep) {
+    // beide Preise auslesen & zwischenspeichern
+    const pair = produktPaare[currentStep];
+    [pair.p1, pair.p2].forEach((p, idx) => {
+      const el = document.getElementById(`preisInput_${idx}`);
+      const raw = el ? ("" + el.value).replace(",", ".") : "";
+      const val = parseFloat(raw);
+      p.preisErfasst = Number.isFinite(val) ? val : null;
+    });
+
     currentStep++;
     renderStep();
-  } else {
-    let finaleBildUrl = zuletztHochgeladenesBildURL;
-
-    if (zwischenBildFile) {
-      nextBtn.disabled = true;
-      nextBtn.textContent = "⏳ Bild wird hochgeladen...";
-
-      const timestamp = Date.now();
-      const safeName = currentSupermarkt.replace(/\W+/g, "_");
-      const uniqueFileName = `${safeName}_${timestamp}.jpg`;
-
-      let res, j;
-try {
-  const compressedBlob = await resizeImage(zwischenBildFile, 1024);
-  const formData = new FormData();
-  formData.append("file", compressedBlob, uniqueFileName);
-
-  res = await fetch("/api/upload-image", {
-    method: "POST",
-    body: formData
-  });
-
-  // ✅ Nur versuchen zu parsen, wenn Content-Type JSON ist
-  const contentType = res.headers.get("content-type") || "";
-  if (!res.ok) throw new Error("Serverfehler beim Upload");
-
-  if (!contentType.includes("application/json")) {
-    const text = await res.text();
-    throw new Error("Kein JSON erhalten: " + text);
+    return;
   }
 
-  j = await res.json();
-} catch (error) {
-  console.error("❌ Upload fehlgeschlagen:", error);
-  nextBtn.textContent = "❌ Netzwerkfehler beim Hochladen";
-  nextBtn.disabled = false;
-  return;
-}
+  // Bild-Step: Upload (falls neu) + Firestore speichern
+  let finaleBildUrl = zuletztHochgeladenesBildURL;
 
+  if (zwischenBildFile) {
+    nextBtn.disabled = true;
+    nextBtn.textContent = "⏳ Bild wird hochgeladen...";
 
-      if (res.ok) {
-        finaleBildUrl = j.url;
-
-        const vorherigesBild = preisDaten[currentSupermarkt].bild;
-        if (vorherigesBild) {
-          const altDateiname = vorherigesBild.split("/").pop();
-          await fetch("/api/delete-image", {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ fileName: altDateiname })
-          });
-        }
-
-        zuletztHochgeladenesBildURL = finaleBildUrl;
-        preisDaten[currentSupermarkt].bild = finaleBildUrl;
-        zwischenBildFile = null;
-        nextBtn.textContent = "✅ Hochgeladen";
-      } else {
-        nextBtn.textContent = "❌ Fehler beim Hochladen";
-      }
-    }
+    const timestamp = Date.now();
+    const safeName = currentSupermarkt.replace(/\W+/g, "_");
+    const uniqueFileName = `${safeName}_${timestamp}.jpg`;
 
     try {
-      const neuePreise = {};
-      produkte.forEach(p => neuePreise[p.name] = p.preisErfasst ?? null);
+      const compressedBlob = await resizeImage(zwischenBildFile, 1024);
+      const formData = new FormData();
+      formData.append("file", compressedBlob, uniqueFileName);
 
-      await speicherePreisInFirestore(
-        currentSupermarkt,
-        neuePreise,
-        finaleBildUrl
-      );
-
-      zuletztHochgeladenesBildURL = finaleBildUrl;
-      preisDaten[currentSupermarkt].bild = finaleBildUrl;
-
-      if (currentMarker) {
-        popup
-          .setLatLng(currentMarker.getLatLng())
-          .setContent(setPopupContent(currentSupermarkt))
-          .openOn(map);
-        setPopupEventListeners();
+      const res = await fetch("/api/upload-image", { method: "POST", body: formData });
+      const contentType = (res.headers.get("content-type") || "");
+      if (!res.ok) throw new Error("Serverfehler beim Upload");
+      if (!contentType.includes("application/json")) {
+        const text = await res.text();
+        throw new Error("Kein JSON erhalten: " + text);
       }
 
-      stepperModal.classList.add("hidden");
-      nextBtn.disabled = false;
-      nextBtn.textContent = "Weiter";
+      const j = await res.json();
+      finaleBildUrl = j.url;
 
-    } catch (err) {
-      console.error("❌ Fehler beim Speichern:", err);
+      // Altes Bild (falls vorhanden) löschen
+      const vorherigesBild = preisDaten[currentSupermarkt]?.bild;
+      if (vorherigesBild) {
+        const altDateiname = vorherigesBild.split("/").pop();
+        await fetch("/api/delete-image", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ fileName: altDateiname })
+        });
+      }
+
+      zuletztHochgeladenesBildURL = finaleBildUrl;
+      preisDaten[currentSupermarkt] = preisDaten[currentSupermarkt] || { preise: {}, bild: null };
+      preisDaten[currentSupermarkt].bild = finaleBildUrl;
+      zwischenBildFile = null;
+      nextBtn.textContent = "✅ Hochgeladen";
+    } catch (error) {
+      console.error("❌ Upload fehlgeschlagen:", error);
+      nextBtn.textContent = "❌ Netzwerkfehler beim Hochladen";
       nextBtn.disabled = false;
-      nextBtn.textContent = "Weiter";
+      return;
+    } finally {
+      nextBtn.disabled = false;
     }
+  }
+
+  try {
+    // Preise flach in ein Objekt überführen: { "Produktname": Preis|null, ... }
+    const neuePreise = {};
+    produktPaare.forEach(({ p1, p2 }) => {
+      neuePreise[p1.name] = (typeof p1.preisErfasst === "number") ? p1.preisErfasst : (p1.preisErfasst ?? null);
+      neuePreise[p2.name] = (typeof p2.preisErfasst === "number") ? p2.preisErfasst : (p2.preisErfasst ?? null);
+    });
+
+    await speicherePreisInFirestore(
+      currentSupermarkt,
+      neuePreise,
+      finaleBildUrl
+    );
+
+    zuletztHochgeladenesBildURL = finaleBildUrl;
+    if (!preisDaten[currentSupermarkt]) preisDaten[currentSupermarkt] = { preise: {}, bild: null };
+    preisDaten[currentSupermarkt].bild = finaleBildUrl;
+
+    if (currentMarker) {
+      popup
+        .setLatLng(currentMarker.getLatLng())
+        .setContent(setPopupContent(currentSupermarkt))
+        .openOn(map);
+      setPopupEventListeners();
+    }
+
+    stepperModal.classList.add("hidden");
+    nextBtn.textContent = "Weiter";
+  } catch (err) {
+    console.error("❌ Fehler beim Speichern:", err);
+    nextBtn.textContent = "Weiter";
   }
 };
 
@@ -355,15 +427,18 @@ try {
             currentSupermarkt = markt.name;
             currentMarker     = marker;
 
-            // Werte vorbefüllen
-            const daten = preisDaten[markt.name] || {};
-            zuletztHochgeladenesBildURL = daten.bild || null;
-            zwischenBildFile = null; // 🆕 Reset für Stepper
-
-            produkte.forEach(p => {
-              p.preisErfasst = daten.preise?.[p.name] ?? null;
-            });
-
+          // Werte vorbefüllen
+              const daten = preisDaten[markt.name] || {};
+              zuletztHochgeladenesBildURL = daten.bild || null;
+              zwischenBildFile = null; // Reset für Stepper
+              
+              // Preise aus Firestore in die Paare mappen
+              produktPaare.forEach(pair => {
+                const preis1 = daten.preise?.[pair.p1.name];
+                const preis2 = daten.preise?.[pair.p2.name];
+                pair.p1.preisErfasst = (typeof preis1 === "number") ? preis1 : (preis1 ?? null);
+                pair.p2.preisErfasst = (typeof preis2 === "number") ? preis2 : (preis2 ?? null);
+              });
             // Popup anzeigen
             popup
               .setLatLng(markt.coords)
