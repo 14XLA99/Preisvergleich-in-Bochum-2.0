@@ -277,4 +277,13 @@ input:invalid:focus{ outline:1px solid red; }
   border:1px solid #e7eaf0;
   box-shadow:0 2px 6px rgba(0,0,0,0.05);
 }
+/* Stepper: gleichbleibende Inhaltshöhe, damit die Buttons nicht springen */
+#stepperModal #step-content{
+  min-height: 520px; /* passt zur Höhe der 2 Produktkarten */
+}
+
+/* Karten gleich hoch ziehen */
+.product-card{
+  min-height: 360px; /* gleiche Höhe für Produkt- & Upload-Karte */
+}
 
