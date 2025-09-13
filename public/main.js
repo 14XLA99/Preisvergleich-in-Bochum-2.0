@@ -109,12 +109,46 @@ let zuletztHochgeladenesBildURL = null;
   // 6) Produktdefinition (Stepper)
   // ──────────────────────────────
   const produkte = [
-    { name: "Brot",   beschreibung: "Frisches Brot",      bildUrl: "https://www.kingarthurbaking.com/sites/default/files/styles/featured_image/public/2020-05/french-style-country-loaf.jpg" },
-    { name: "Milch",  beschreibung: "1 l Vollmilch",       bildUrl: "https://m.media-amazon.com/images/I/41srjN9JNnL.jpg" },
-    { name: "Äpfel",  beschreibung: "1 kg Äpfel",          bildUrl: "https://www.spargelbuffet.de/wp-content/uploads/2021/01/aepfel1.jpg" },
-    { name: "Butter", beschreibung: "250 g Butter",        bildUrl: "https://www.hoche-butter.de/fileadmin/_processed_/c/4/csm_120086-Hoche-Uelzena-Paketbutter-Deutsche-Markenbutter-Buttergenuss-250g-800800_1854122865.png.pagespeed.ce.-BVqKQ7Smg.png;" },
-    { name: "Nudeln", beschreibung: "500 g Nudeln",        bildUrl: "https://www.kelemidis.de/media/cache/73/9c/739ca90930ace806f2f6210ad9d92610.jpg" }
-  ];
+  // 🧪 1. Mengenvergleich
+  { name: "Cola 0.33 l", beschreibung: "Einzelflasche, 0.33 l", bildUrl: "..." },
+  { name: "Cola 1.5 l", beschreibung: "Familienflasche, 1.5 l", bildUrl: "..." },
+
+  // 🧪 2. Mengenvergleich
+  { name: "Milch 1 l", beschreibung: "Vollmilch, 1 Liter", bildUrl: "..." },
+  { name: "Milch 0.5 l", beschreibung: "Vollmilch, 0.5 Liter", bildUrl: "..." },
+
+  // 🧪 3. Mengenvergleich
+  { name: "Nudeln 500 g", beschreibung: "Standardpackung", bildUrl: "..." },
+  { name: "Nudeln 1 kg", beschreibung: "Großpackung", bildUrl: "..." },
+
+  // 🧪 4. Mengenvergleich
+  { name: "Butter 250 g", beschreibung: "Standardpackung", bildUrl: "..." },
+  { name: "Butter 500 g", beschreibung: "Doppelpackung", bildUrl: "..." },
+
+  // 🧪 5. Mengenvergleich
+  { name: "Reis 500 g", beschreibung: "Kleine Packung", bildUrl: "..." },
+  { name: "Reis 1 kg", beschreibung: "Große Packung", bildUrl: "..." },
+
+  // 🏷️ 6. Markenvergleich
+  { name: "Barilla Spaghetti", beschreibung: "Markenpasta (500 g)", bildUrl: "..." },
+  { name: "Ja! Spaghetti", beschreibung: "Eigenmarke (500 g)", bildUrl: "..." },
+
+  // 🏷️ 7. Markenvergleich
+  { name: "Coca-Cola 1.5 l", beschreibung: "Markengetränk", bildUrl: "..." },
+  { name: "River Cola 1.5 l", beschreibung: "Eigenmarke", bildUrl: "..." },
+
+  // 🏷️ 8. Markenvergleich
+  { name: "Landliebe Butter", beschreibung: "Markenbutter (250 g)", bildUrl: "..." },
+  { name: "Gut&Günstig Butter", beschreibung: "Eigenmarke (250 g)", bildUrl: "..." },
+
+  // 🏷️ 9. Markenvergleich
+  { name: "Haribo Goldbären", beschreibung: "Markensüßigkeit (175 g)", bildUrl: "..." },
+  { name: "Sweetland Fruchtgummi", beschreibung: "Eigenmarke (175 g)", bildUrl: "..." },
+
+  // 🏷️ 10. Markenvergleich
+  { name: "Funny Frisch Chips", beschreibung: "Markenchips (175 g)", bildUrl: "..." },
+  { name: "Snack Day Chips", beschreibung: "Eigenmarke (175 g)", bildUrl: "..." }
+];
 
   let currentStep = 0;
 
