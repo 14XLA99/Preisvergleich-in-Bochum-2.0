@@ -204,7 +204,7 @@ input:invalid:focus{ outline:1px solid red; }
   overflow:hidden;
   border-radius:8px;
   background:#fff;
-  border:1px solid #ddd;
+  border:none;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -224,7 +224,7 @@ input:invalid:focus{ outline:1px solid red; }
   height:220px;
   object-fit:contain;
   background:#fff;
-  border:1px solid #ddd;
+  border:none;
   border-radius:6px;
   padding:8px;
   display:block;
@@ -269,3 +269,12 @@ input:invalid:focus{ outline:1px solid red; }
   }
   .form-group label{ font-size:.9em; }
 }
+/* Einheitliche Box für den Upload-Step (Belegfoto) */
+.upload-card {
+  background:#fff;
+  border-radius:10px;
+  padding:16px;
+  border:1px solid #e7eaf0;
+  box-shadow:0 2px 6px rgba(0,0,0,0.05);
+}
+
