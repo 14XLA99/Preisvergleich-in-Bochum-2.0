@@ -261,6 +261,7 @@ const produktGruppen = [
     }
   }
 ];
+  const produktPaare = produktGruppen; // 🔧 Alias, damit alle Stellen funktionieren
 
 // Step-Zustand
 let currentStep = 0; // 0..9 sind Produktsteps, 10 ist Bild-Step
