@@ -98,7 +98,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // ————————————————————
 // 5) Lokaler Speicher / App-State
 // ————————————————————
-let preisDaten = {};                  // { markt: { preise: {...}, bild: url } }
+let preisDaten = {}; // { markt: { preise: {...}, bild: url } }
+// Popup-Zustand pro Markt: eingeklappt/ausgeklappt
+const popupState = {}; // { [marktName]: { expanded: boolean } }
 let currentMarker = null;            // Aktuell angeklickter Marker
 let currentSupermarkt = "";          // Name des aktuellen Markts
 let zwischenBildFile = null; // Neu gewähltes, noch nicht hochgeladenes Bild
@@ -572,30 +574,63 @@ nextBtn.onclick = async () => {
   // ──────────────────────────────
   // 12) Popup-HTML generieren
   // ──────────────────────────────
-  function setPopupContent(name) {
-    const d = preisDaten[name] || {};
-    let html = `<div style="margin-bottom:0.3em;"><strong style="font-size:1.1em;">${name}</strong></div>`;
+function setPopupContent(name) {
+  const d = preisDaten[name] || {};
+  const preise = d.preise || {};
+  const entries = Object.entries(preise)
+    .filter(([, v]) => v != null)           // nur eingetragene Preise
+    .sort((a, b) => a[0].localeCompare(b[0], "de")); // alpha sortiert
 
-    if (d.preise) {
-      html += `<div style="font-size:0.9em;margin-bottom:0.5em;">` +
-        Object.entries(d.preise).map(([produkt, wert]) =>
-          `<div><b>${produkt}:</b> ${wert != null ? wert.toFixed(2) + " €" : "–"}</div>`
-        ).join("") +
-        `</div>`;
-    } else {
-      html += `<p>Keine Preise</p>`;
-    }
+  const expanded = popupState[name]?.expanded === true;
+  const totalCount = entries.length;
+  const limit = 6; // Anzahl, die wir in der Vorschau zeigen
+  const visible = expanded ? entries : entries.slice(0, limit);
+  const hiddenCount = Math.max(0, totalCount - limit);
 
-    if (d.bild) {
+  // Hilfsformat
+  const fmt = (v) => (typeof v === "number" ? v.toFixed(2).replace(".", ",") + " €" : "–");
+
+  let html = `
+    <div style="margin-bottom:0.3em;">
+      <strong style="font-size:1.1em;">${name}</strong>
+    </div>
+  `;
+
+  if (totalCount > 0) {
+    html += `
+      <div class="popup-price-grid">
+        ${visible.map(([produkt, wert]) => `
+          <div class="popup-price-item">
+            <div class="ppi-name">${produkt}</div>
+            <div class="ppi-value">${fmt(wert)}</div>
+          </div>
+        `).join("")}
+      </div>
+    `;
+
+    if (hiddenCount > 0) {
       html += `
-        <img src="${d.bild}?t=${Date.now()}" style="max-width:100%;max-height:150px;display:block;margin:0.5em 0;border-radius:4px;object-fit:contain;">
-        <button id="bildLoeschenBtn" style="margin-bottom:0.5em;">🗑️ Bild löschen</button>
+        <button id="popupToggleBtn" class="secondary" style="margin-top:8px;">
+          ${expanded ? "Weniger anzeigen" : `Alle anzeigen (${totalCount})`}
+        </button>
       `;
     }
-
-    html += `<button id="bearbeitenBtn">Preise bearbeiten</button>`;
-    return html;
+  } else {
+    html += `<p style="margin:0 0 .5em 0;">Noch keine Preise eingetragen.</p>`;
   }
+
+  if (d.bild) {
+    html += `
+      <img src="${d.bild}?t=${Date.now()}"
+           style="max-width:100%;max-height:150px;display:block;margin:0.5em 0;border-radius:6px;object-fit:contain;background:#fff;">
+      <button id="bildLoeschenBtn" class="secondary" style="margin-bottom:0.5em;">🗑️ Bild löschen</button>
+    `;
+  }
+
+  html += `<button id="bearbeitenBtn">Preise bearbeiten</button>`;
+  return html;
+}
+
 
 // ──────────────────────────────
 // 13) Popup-Event-Logik
@@ -639,7 +674,20 @@ function setPopupEventListeners() {
     };
   }
 }
+  const toggleBtn = document.getElementById("popupToggleBtn");
+  if (toggleBtn) {
+    toggleBtn.onclick = () => {
+      const state = popupState[currentSupermarkt] || { expanded: false };
+      state.expanded = !state.expanded;
+      popupState[currentSupermarkt] = state;
 
+      // Popup neu zeichnen und Eventlistener reaktivieren
+      popup
+        .setContent(setPopupContent(currentSupermarkt))
+        .update();
+      setPopupEventListeners();
+    };
+  }
 
 
   // ──────────────────────────────
