@@ -287,3 +287,26 @@ input:invalid:focus{ outline:1px solid red; }
   min-height: 360px; /* gleiche Höhe für Produkt- & Upload-Karte */
 }
 
+/* Kompakte Preisübersicht im Popup */
+.popup-price-grid{
+  display:grid;
+  grid-template-columns: 1fr auto;
+  gap:6px 10px;
+  align-items:center;
+  margin-bottom:.5em;
+}
+.popup-price-item{
+  display:contents; /* ermöglicht grid in zwei Spalten ohne Wrapper */
+}
+.ppi-name{
+  font-size:.92em;
+  color:#333;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.ppi-value{
+  font-weight:600;
+  font-size:.92em;
+  text-align:right;
+}
