@@ -361,4 +361,58 @@ input:invalid:focus{ outline:1px solid red; }
 .pp-toggle{
   margin: .25em 0 .6em;
 }
+/* Popup kompakt */
+.price-popup .leaflet-popup-content { margin:10px; }
+.pp-head{ font-size:1.05em; margin:0 0 .4em; }
+
+.pp-img{
+  max-width:100%;
+  max-height:120px;
+  display:block;
+  margin:.25em 0 .4em;
+  object-fit:contain;
+  background:#fff;
+  border-radius:6px;
+}
+
+.pp-btn{ width:100%; margin:.35em 0; }
+
+/* Scrollbereich nur für die Preisliste, damit der Bearbeiten-Button immer sichtbar bleibt */
+.pp-scroll{
+  max-height: 160px;          /* klein halten, damit kein Gesamtscroll nötig ist */
+  overflow:auto;
+  margin-bottom:.35em;
+}
+
+.pp-row{
+  padding:.45em .55em;
+  border:1px solid #e7eaf0;
+  border-radius:8px;
+  background:#fff;
+  display:flex;
+  flex-direction:column;
+  gap:.25em;
+}
+.pp-cat{
+  font-size:.86em;
+  color:#0b4a8e;
+  font-weight:600;
+}
+.pp-values{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  font-size:.95em;
+  font-weight:600;
+}
+.pp-pill{
+  background:#eef3f9;
+  color:#0b4a8e;
+  border-radius:999px;
+  padding:2px 10px;
+}
+.pp-cheap{ color:#0a7a2f; background:#e9f6ee; }
+.pp-delta{ color:#555; min-width:48px; text-align:center; }
+.pp-empty{ margin:.25em 0 .6em; color:#555; }
 
