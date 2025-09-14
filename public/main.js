@@ -133,8 +133,6 @@ function getRowLabels(pair){
   if (v.includes("marke")) return { l1: "Marke", l2: "Eigenmarke" };
   return { l1: "A", l2: "B" };
 }
-// Popup-Zustand pro Markt: eingeklappt/ausgeklappt
-const popupState = {}; // { [marktName]: { expanded: boolean } }
 let currentMarker = null;            // Aktuell angeklickter Marker
 let currentSupermarkt = "";          // Name des aktuellen Markts
 let zwischenBildFile = null; // Neu gewähltes, noch nicht hochgeladenes Bild
@@ -693,21 +691,18 @@ function setPopupEventListeners() {
   const loeschenBtn = document.getElementById("bildLoeschenBtn");
   if (loeschenBtn) {
     loeschenBtn.onclick = async () => {
-      // Sofortiges Feedback + Button deaktivieren
       loeschenBtn.disabled = true;
       loeschenBtn.textContent = "⏳ Löschen...";
 
       const bildName = (preisDaten[currentSupermarkt].bild || "").split("/").pop();
       if (!bildName) return;
 
-      // Bild bei Vercel löschen
       await fetch("/api/delete-image", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ fileName: bildName })
       });
 
-      // Lokale Daten und Firestore aktualisieren
       preisDaten[currentSupermarkt].bild = null;
       await speicherePreisInFirestore(
         currentSupermarkt,
@@ -715,27 +710,26 @@ function setPopupEventListeners() {
         null
       );
 
-      // 🆕 Zustände für Stepper bereinigen
       zuletztHochgeladenesBildURL = null;
       zwischenBildFile = null;
 
-      // Popup neu zeichnen + Events reaktivieren
       popup.setContent(setPopupContent(currentSupermarkt)).openOn(map);
       setPopupEventListeners();
     };
   }
-}
-// Toggle-Button binden
-const toggleBtn = document.getElementById("popupToggleBtn");
-if (toggleBtn) {
-  toggleBtn.onclick = () => {
-    const state = popupState[currentSupermarkt] || { expanded: false };
-    state.expanded = !state.expanded;
-    popupState[currentSupermarkt] = state;
 
-    popup.setContent(setPopupContent(currentSupermarkt)).update();
-    setPopupEventListeners();
-  };
+  // 👉 Toggle hier anbinden (nicht global)
+  const toggleBtn = document.getElementById("popupToggleBtn");
+  if (toggleBtn) {
+    toggleBtn.onclick = () => {
+      const state = popupState[currentSupermarkt] || { expanded: false };
+      state.expanded = !state.expanded;
+      popupState[currentSupermarkt] = state;
+
+      popup.setContent(setPopupContent(currentSupermarkt)).update();
+      setPopupEventListeners();
+    };
+  }
 }
 
   // ──────────────────────────────
