@@ -93,7 +93,16 @@ document.addEventListener("DOMContentLoaded", () => {
     shadowSize: [41, 41]
   });
 
-  const popup = L.popup(); // Reuse-Popup für alle Marker
+  // Popup mit Auto-Pan und großzügigem Top-Padding, damit Marker oben nicht verdeckt sind
+const popup = L.popup({
+  autoPan: true,
+  autoPanPaddingTopLeft: [20, 120],     // ↑ mehr Platz oben
+  autoPanPaddingBottomRight: [20, 40],
+  maxWidth: 280,
+  maxHeight: 260,
+  closeButton: true,
+  className: "price-popup"
+});
 
   // ————————————————————
 // 5) Lokaler Speicher / App-State
@@ -577,60 +586,69 @@ nextBtn.onclick = async () => {
 function setPopupContent(name) {
   const d = preisDaten[name] || {};
   const preise = d.preise || {};
-  const entries = Object.entries(preise)
-    .filter(([, v]) => v != null)           // nur eingetragene Preise
-    .sort((a, b) => a[0].localeCompare(b[0], "de")); // alpha sortiert
+
+  // Reihenfolge wie in produktPaare
+  const pairRows = produktPaare.map((pair, idx) => {
+    const v1 = preise[pair.p1.name];
+    const v2 = preise[pair.p2.name];
+    const hasAny = v1 != null || v2 != null;
+    return { idx, pair, v1, v2, hasAny };
+  }).filter(r => r.hasAny);
 
   const expanded = popupState[name]?.expanded === true;
-  const totalCount = entries.length;
-  const limit = 6; // Anzahl, die wir in der Vorschau zeigen
-  const visible = expanded ? entries : entries.slice(0, limit);
-  const hiddenCount = Math.max(0, totalCount - limit);
+  const total    = pairRows.length;
+  const limit    = 5;
+  const visible  = expanded ? pairRows : pairRows.slice(0, limit);
+  const hidden   = Math.max(0, total - limit);
 
-  // Hilfsformat
   const fmt = (v) => (typeof v === "number" ? v.toFixed(2).replace(".", ",") + " €" : "–");
+  const delta = (a, b) => {
+    if (typeof a !== "number" || typeof b !== "number") return "";
+    const diff = b - a;
+    const pct  = (diff / b) * 100; // „wie viel günstiger ist p1 vs p2“
+    const sign = diff === 0 ? "±" : (diff < 0 ? "−" : "+");
+    return `${sign}${Math.abs(pct).toFixed(0)}%`;
+  };
 
   let html = `
-    <div style="margin-bottom:0.3em;">
-      <strong style="font-size:1.1em;">${name}</strong>
+    <div class="pp-head"><strong>${name}</strong></div>
+    <div class="pp-grid">
+      ${visible.map(({ pair, v1, v2 }) => {
+        const cheaper = (typeof v1 === "number" && typeof v2 === "number")
+          ? (v1 < v2 ? "left" : (v2 < v1 ? "right" : "equal"))
+          : "unknown";
+        return `
+          <div class="pp-row">
+            <div class="pp-line pp-names">
+              <span class="pp-badge">${pair.vergleich || pair.typ || "Vergleich"}</span>
+              <span class="pp-p1 ${cheaper==="left"?"pp-cheap":""}" title="${pair.p1.name}">${pair.p1.name}</span>
+              <span class="pp-p2 ${cheaper==="right"?"pp-cheap":""}" title="${pair.p2.name}">${pair.p2.name}</span>
+            </div>
+            <div class="pp-line pp-values">
+              <span class="pp-v1 ${cheaper==="left"?"pp-cheap":""}">${fmt(v1)}</span>
+              <span class="pp-delta">${delta(v1, v2)}</span>
+              <span class="pp-v2 ${cheaper==="right"?"pp-cheap":""}">${fmt(v2)}</span>
+            </div>
+          </div>
+        `;
+      }).join("")}
     </div>
   `;
 
-  if (totalCount > 0) {
-    html += `
-      <div class="popup-price-grid">
-        ${visible.map(([produkt, wert]) => `
-          <div class="popup-price-item">
-            <div class="ppi-name">${produkt}</div>
-            <div class="ppi-value">${fmt(wert)}</div>
-          </div>
-        `).join("")}
-      </div>
-    `;
-
-    if (hiddenCount > 0) {
-      html += `
-        <button id="popupToggleBtn" class="secondary" style="margin-top:8px;">
-          ${expanded ? "Weniger anzeigen" : `Alle anzeigen (${totalCount})`}
-        </button>
-      `;
-    }
-  } else {
-    html += `<p style="margin:0 0 .5em 0;">Noch keine Preise eingetragen.</p>`;
+  if (hidden > 0) {
+    html += `<button id="popupToggleBtn" class="secondary pp-toggle">${expanded ? "Weniger anzeigen" : `Alle anzeigen (${total})`}</button>`;
   }
 
   if (d.bild) {
     html += `
-      <img src="${d.bild}?t=${Date.now()}"
-           style="max-width:100%;max-height:150px;display:block;margin:0.5em 0;border-radius:6px;object-fit:contain;background:#fff;">
-      <button id="bildLoeschenBtn" class="secondary" style="margin-bottom:0.5em;">🗑️ Bild löschen</button>
+      <img src="${d.bild}?t=${Date.now()}" class="pp-img">
+      <button id="bildLoeschenBtn" class="secondary" style="margin-bottom:.4em;">🗑️ Bild löschen</button>
     `;
   }
 
   html += `<button id="bearbeitenBtn">Preise bearbeiten</button>`;
   return html;
 }
-
 
 // ──────────────────────────────
 // 13) Popup-Event-Logik
@@ -674,20 +692,18 @@ function setPopupEventListeners() {
     };
   }
 }
-  const toggleBtn = document.getElementById("popupToggleBtn");
-  if (toggleBtn) {
-    toggleBtn.onclick = () => {
-      const state = popupState[currentSupermarkt] || { expanded: false };
-      state.expanded = !state.expanded;
-      popupState[currentSupermarkt] = state;
+// Toggle-Button binden
+const toggleBtn = document.getElementById("popupToggleBtn");
+if (toggleBtn) {
+  toggleBtn.onclick = () => {
+    const state = popupState[currentSupermarkt] || { expanded: false };
+    state.expanded = !state.expanded;
+    popupState[currentSupermarkt] = state;
+    popup.setContent(setPopupContent(currentSupermarkt)).update();
+    setPopupEventListeners();
+  };
+}
 
-      // Popup neu zeichnen und Eventlistener reaktivieren
-      popup
-        .setContent(setPopupContent(currentSupermarkt))
-        .update();
-      setPopupEventListeners();
-    };
-  }
 
 
   // ──────────────────────────────
