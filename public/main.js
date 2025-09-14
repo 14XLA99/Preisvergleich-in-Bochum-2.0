@@ -108,6 +108,31 @@ const popup = L.popup({
 // 5) Lokaler Speicher / App-State
 // ————————————————————
 let preisDaten = {}; // { markt: { preise: {...}, bild: url } }
+  // Popup-Zustand (eingeklappt/ausgeklappt)
+const popupState = {}; // { [marktName]: { expanded: boolean } }
+// Oberkategorie aus Produktnamen ableiten (oder pair.kategorie nutzen, wenn vorhanden)
+function getPairCategory(pair){
+  if (pair.kategorie) return pair.kategorie;
+  const n = (pair.p1?.name || "").toLowerCase();
+  if (n.includes("cola")) return "Cola";
+  if (n.includes("banan")) return "Bananen";
+  if (n.includes("joghurt")) return "Joghurt";
+  if (n.includes("reis")) return "Reis";
+  if (n.includes("margarine")) return "Margarine";
+  if (n.includes("schokolade")) return "Schokolade";
+  if (n.includes("spaghetti")) return "Spaghetti";
+  if (n.includes("chips") || n.includes("pringles") || n.includes("stapelchips")) return "Chips";
+  if (n.includes("goldb") || n.includes("gummi")) return "Gummibärchen";
+  if (n.includes("hafer")) return "Haferdrink";
+  return pair.vergleich || pair.typ || "Vergleich";
+}
+// Kleine Labels links/rechts (für Menge/Marke)
+function getRowLabels(pair){
+  const v = (pair.vergleich || "").toLowerCase();
+  if (v.includes("menge")) return { l1: "Klein", l2: "Groß" };
+  if (v.includes("marke")) return { l1: "Marke", l2: "Eigenmarke" };
+  return { l1: "A", l2: "B" };
+}
 // Popup-Zustand pro Markt: eingeklappt/ausgeklappt
 const popupState = {}; // { [marktName]: { expanded: boolean } }
 let currentMarker = null;            // Aktuell angeklickter Marker
@@ -587,7 +612,7 @@ function setPopupContent(name) {
   const d = preisDaten[name] || {};
   const preise = d.preise || {};
 
-  // Reihenfolge wie in produktPaare
+  // Reihenfolge wie im Stepper
   const pairRows = produktPaare.map((pair, idx) => {
     const v1 = preise[pair.p1.name];
     const v2 = preise[pair.p2.name];
@@ -597,56 +622,64 @@ function setPopupContent(name) {
 
   const expanded = popupState[name]?.expanded === true;
   const total    = pairRows.length;
-  const limit    = 5;
+  const limit    = 4;                      // <= kompakt: kein Scroll nötig
   const visible  = expanded ? pairRows : pairRows.slice(0, limit);
   const hidden   = Math.max(0, total - limit);
 
   const fmt = (v) => (typeof v === "number" ? v.toFixed(2).replace(".", ",") + " €" : "–");
-  const delta = (a, b) => {
+  const calcDelta = (a, b) => {
     if (typeof a !== "number" || typeof b !== "number") return "";
-    const diff = b - a;
-    const pct  = (diff / b) * 100; // „wie viel günstiger ist p1 vs p2“
-    const sign = diff === 0 ? "±" : (diff < 0 ? "−" : "+");
-    return `${sign}${Math.abs(pct).toFixed(0)}%`;
+    const diff = a - b;                   // a vs b
+    if (diff === 0) return "±0%";
+    const pct = Math.round(Math.abs(diff / b * 100));
+    return (diff < 0 ? "−" : "+") + pct + "%";
   };
 
   let html = `
     <div class="pp-head"><strong>${name}</strong></div>
-    <div class="pp-grid">
-      ${visible.map(({ pair, v1, v2 }) => {
-        const cheaper = (typeof v1 === "number" && typeof v2 === "number")
-          ? (v1 < v2 ? "left" : (v2 < v1 ? "right" : "equal"))
-          : "unknown";
-        return `
-          <div class="pp-row">
-            <div class="pp-line pp-names">
-              <span class="pp-badge">${pair.vergleich || pair.typ || "Vergleich"}</span>
-              <span class="pp-p1 ${cheaper==="left"?"pp-cheap":""}" title="${pair.p1.name}">${pair.p1.name}</span>
-              <span class="pp-p2 ${cheaper==="right"?"pp-cheap":""}" title="${pair.p2.name}">${pair.p2.name}</span>
-            </div>
-            <div class="pp-line pp-values">
-              <span class="pp-v1 ${cheaper==="left"?"pp-cheap":""}">${fmt(v1)}</span>
-              <span class="pp-delta">${delta(v1, v2)}</span>
-              <span class="pp-v2 ${cheaper==="right"?"pp-cheap":""}">${fmt(v2)}</span>
-            </div>
-          </div>
-        `;
-      }).join("")}
-    </div>
   `;
 
-  if (hidden > 0) {
-    html += `<button id="popupToggleBtn" class="secondary pp-toggle">${expanded ? "Weniger anzeigen" : `Alle anzeigen (${total})`}</button>`;
-  }
-
+  // Bild (wenn vorhanden) VOR die Liste => Button bleibt immer in Sicht
   if (d.bild) {
     html += `
-      <img src="${d.bild}?t=${Date.now()}" class="pp-img">
-      <button id="bildLoeschenBtn" class="secondary" style="margin-bottom:.4em;">🗑️ Bild löschen</button>
+      <img src="${d.bild}?t=${Date.now()}" class="pp-img" alt="Beleg">
+      <button id="bildLoeschenBtn" class="secondary pp-btn">🗑️ Bild löschen</button>
     `;
   }
 
-  html += `<button id="bearbeitenBtn">Preise bearbeiten</button>`;
+  // Liste kompakt, mit Oberkategorie + Wertezeile
+  if (visible.length > 0) {
+    html += `<div class="pp-scroll">`;
+    html += visible.map(({ pair, v1, v2 }) => {
+      const cat = getPairCategory(pair);
+      const { l1, l2 } = getRowLabels(pair);
+      const cheaper = (typeof v1 === "number" && typeof v2 === "number")
+        ? (v1 < v2 ? "left" : (v2 < v1 ? "right" : "equal"))
+        : "unknown";
+      const delta = calcDelta(v1, v2);
+
+      return `
+        <div class="pp-row">
+          <div class="pp-cat">${cat}</div>
+          <div class="pp-values">
+            <span class="pp-pill ${cheaper==="left"?"pp-cheap":""}" title="${pair.p1.name}">${l1}: ${fmt(v1)}</span>
+            <span class="pp-delta">${delta}</span>
+            <span class="pp-pill ${cheaper==="right"?"pp-cheap":""}" title="${pair.p2.name}">${l2}: ${fmt(v2)}</span>
+          </div>
+        </div>
+      `;
+    }).join("");
+    html += `</div>`; // .pp-scroll
+
+    if (hidden > 0) {
+      html += `<button id="popupToggleBtn" class="secondary pp-btn">${expanded ? "Weniger anzeigen" : `Alle anzeigen (${total})`}</button>`;
+    }
+  } else {
+    html += `<p class="pp-empty">Noch keine Preise eingetragen.</p>`;
+  }
+
+  // Bearbeiten-Button zuletzt, außerhalb der Scroll-Area => immer sichtbar
+  html += `<button id="bearbeitenBtn" class="pp-btn">Preise bearbeiten</button>`;
   return html;
 }
 
@@ -699,12 +732,11 @@ if (toggleBtn) {
     const state = popupState[currentSupermarkt] || { expanded: false };
     state.expanded = !state.expanded;
     popupState[currentSupermarkt] = state;
+
     popup.setContent(setPopupContent(currentSupermarkt)).update();
     setPopupEventListeners();
   };
 }
-
-
 
   // ──────────────────────────────
   // 14) Firestore speichern
