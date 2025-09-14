@@ -93,23 +93,31 @@ document.addEventListener("DOMContentLoaded", () => {
     shadowSize: [41, 41]
   });
 
-  // Popup mit Auto-Pan und großzügigem Top-Padding, damit Marker oben nicht verdeckt sind
+// Popup: nicht schließen beim Klicken im Popup, großzügiges Auto-Pan
 const popup = L.popup({
   autoPan: true,
-  autoPanPaddingTopLeft: [20, 120],     // ↑ mehr Platz oben
+  autoPanPaddingTopLeft: [20, 120],
   autoPanPaddingBottomRight: [20, 40],
-  maxWidth: 280,
-  maxHeight: 260,
+  closeOnClick: false,   // bleibt offen
+  autoClose: false,      // nicht beim nächsten Popup schließen
+  maxWidth: 320,
   closeButton: true,
   className: "price-popup"
+});
+
+  // Beim Schließen Zustand zurücksetzen -> nächstes Öffnen wieder kompakt
+map.on("popupclose", () => {
+  if (currentSupermarkt) {
+    popupState[currentSupermarkt] = { expanded: false, showImage: false };
+  }
 });
 
   // ————————————————————
 // 5) Lokaler Speicher / App-State
 // ————————————————————
 let preisDaten = {}; // { markt: { preise: {...}, bild: url } }
-  // Popup-Zustand (eingeklappt/ausgeklappt)
-const popupState = {}; // { [marktName]: { expanded: boolean } }
+// Popup-Zustand pro Markt
+const popupState = {}; // { [marktName]: { expanded: boolean, showImage: boolean } }
 // Oberkategorie aus Produktnamen ableiten (oder pair.kategorie nutzen, wenn vorhanden)
 function getPairCategory(pair){
   if (pair.kategorie) return pair.kategorie;
@@ -126,11 +134,30 @@ function getPairCategory(pair){
   if (n.includes("hafer")) return "Haferdrink";
   return pair.vergleich || pair.typ || "Vergleich";
 }
-// Kleine Labels links/rechts (für Menge/Marke)
+  function buildPairRows(preise){
+  return produktPaare.map((pair, idx) => {
+    const v1 = preise[pair.p1.name];
+    const v2 = preise[pair.p2.name];
+    const hasAny = v1 != null || v2 != null;
+    const missing = (v1 == null) !== (v2 == null); // genau einer fehlt
+    const absDiff = (typeof v1 === "number" && typeof v2 === "number") ? Math.abs(v1 - v2) : -1;
+    return { idx, pair, v1, v2, hasAny, missing, absDiff };
+  }).filter(r => r.hasAny);
+}
+function selectCompactRow(rows){
+  // 1) Zeilen mit fehlendem Wert
+  const missing = rows.filter(r => r.missing);
+  if (missing.length) return missing[0];
+  // 2) größte Betragsabweichung
+  const withDiff = rows.filter(r => r.absDiff >= 0);
+  if (withDiff.length) return withDiff.sort((a,b)=> b.absDiff - a.absDiff)[0];
+  // 3) sonst erste aus Stepper-Reihenfolge
+  return rows[0];
+}
 function getRowLabels(pair){
   const v = (pair.vergleich || "").toLowerCase();
-  if (v.includes("menge")) return { l1: "Klein", l2: "Groß" };
-  if (v.includes("marke")) return { l1: "Marke", l2: "Eigenmarke" };
+  if (v.includes("menge")) return { l1: "Klein",  l2: "Groß" };
+  if (v.includes("marke")) return { l1: "Marke",  l2: "Eigen" };
   return { l1: "A", l2: "B" };
 }
 let currentMarker = null;            // Aktuell angeklickter Marker
@@ -598,6 +625,12 @@ nextBtn.onclick = async () => {
               .openOn(map);
 
             setPopupEventListeners();
+            // Klicks im Popup nicht an die Karte „durchreichen“
+setTimeout(() => {
+  const el = popup.getElement();
+  if (el) L.DomEvent.disableClickPropagation(el);
+}, 0);
+
           });
         });
       });
@@ -610,128 +643,140 @@ function setPopupContent(name) {
   const d = preisDaten[name] || {};
   const preise = d.preise || {};
 
-  // Reihenfolge wie im Stepper
-  const pairRows = produktPaare.map((pair, idx) => {
-    const v1 = preise[pair.p1.name];
-    const v2 = preise[pair.p2.name];
-    const hasAny = v1 != null || v2 != null;
-    return { idx, pair, v1, v2, hasAny };
-  }).filter(r => r.hasAny);
+  // Zustand initialisieren (kompakt + kein Bild)
+  if (!popupState[name]) popupState[name] = { expanded: false, showImage: false };
+  const { expanded, showImage } = popupState[name];
 
-  const expanded = popupState[name]?.expanded === true;
-  const total    = pairRows.length;
-  const limit    = 4;                      // <= kompakt: kein Scroll nötig
-  const visible  = expanded ? pairRows : pairRows.slice(0, limit);
-  const hidden   = Math.max(0, total - limit);
+  const rows = buildPairRows(preise);
+  const total = rows.length;
+
+  // Sichtbare Zeilen: 1 kompakt ODER alle
+  let visibleRows = [];
+  if (!expanded) {
+    const one = selectCompactRow(rows);
+    if (one) visibleRows = [one];
+  } else {
+    visibleRows = rows;
+  }
 
   const fmt = (v) => (typeof v === "number" ? v.toFixed(2).replace(".", ",") + " €" : "–");
-  const calcDelta = (a, b) => {
+  const delta = (a, b) => {
     if (typeof a !== "number" || typeof b !== "number") return "";
-    const diff = a - b;                   // a vs b
+    const diff = a - b;
+    if (!isFinite(diff)) return "";
     if (diff === 0) return "±0%";
     const pct = Math.round(Math.abs(diff / b * 100));
     return (diff < 0 ? "−" : "+") + pct + "%";
   };
 
-  let html = `
-    <div class="pp-head"><strong>${name}</strong></div>
-  `;
+  let html = `<div class="pp-head"><strong>${name}</strong></div>`;
 
-  // Bild (wenn vorhanden) VOR die Liste => Button bleibt immer in Sicht
+  // Bild-Button + optional Bild
   if (d.bild) {
-    html += `
-      <img src="${d.bild}?t=${Date.now()}" class="pp-img" alt="Beleg">
-      <button id="bildLoeschenBtn" class="secondary pp-btn">🗑️ Bild löschen</button>
-    `;
+    html += `<button id="popupImgBtn" class="secondary pp-btn">${showImage ? "Bild verbergen" : "Bild ansehen"}</button>`;
+    if (showImage) {
+      html += `<img src="${d.bild}?t=${Date.now()}" class="pp-img" alt="Bild">`;
+      html += `<button id="bildLoeschenBtn" class="secondary pp-btn">🗑️ Bild löschen</button>`;
+    }
   }
 
-  // Liste kompakt, mit Oberkategorie + Wertezeile
-  if (visible.length > 0) {
-    html += `<div class="pp-scroll">`;
-    html += visible.map(({ pair, v1, v2 }) => {
+  // Preis-Zeilen
+  if (visibleRows.length > 0) {
+    html += `<div class="pp-list ${expanded ? "pp-list--expanded" : ""}">`;
+    html += visibleRows.map(({ pair, v1, v2 }) => {
       const cat = getPairCategory(pair);
       const { l1, l2 } = getRowLabels(pair);
       const cheaper = (typeof v1 === "number" && typeof v2 === "number")
         ? (v1 < v2 ? "left" : (v2 < v1 ? "right" : "equal"))
         : "unknown";
-      const delta = calcDelta(v1, v2);
-
       return `
         <div class="pp-row">
           <div class="pp-cat">${cat}</div>
           <div class="pp-values">
             <span class="pp-pill ${cheaper==="left"?"pp-cheap":""}" title="${pair.p1.name}">${l1}: ${fmt(v1)}</span>
-            <span class="pp-delta">${delta}</span>
+            <span class="pp-delta">${delta(v1, v2)}</span>
             <span class="pp-pill ${cheaper==="right"?"pp-cheap":""}" title="${pair.p2.name}">${l2}: ${fmt(v2)}</span>
           </div>
         </div>
       `;
     }).join("");
-    html += `</div>`; // .pp-scroll
+    html += `</div>`;
 
-    if (hidden > 0) {
+    if (total > 1) {
       html += `<button id="popupToggleBtn" class="secondary pp-btn">${expanded ? "Weniger anzeigen" : `Alle anzeigen (${total})`}</button>`;
     }
   } else {
     html += `<p class="pp-empty">Noch keine Preise eingetragen.</p>`;
   }
 
-  // Bearbeiten-Button zuletzt, außerhalb der Scroll-Area => immer sichtbar
+  // Immer sichtbar
   html += `<button id="bearbeitenBtn" class="pp-btn">Preise bearbeiten</button>`;
   return html;
 }
+
 
 // ──────────────────────────────
 // 13) Popup-Event-Logik
 // ──────────────────────────────
 function setPopupEventListeners() {
+  // Preise bearbeiten
   const bearbeitenBtn = document.getElementById("bearbeitenBtn");
-  if (bearbeitenBtn) bearbeitenBtn.onclick = openStepper;
+  if (bearbeitenBtn) {
+    bearbeitenBtn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); openStepper(); };
+  }
 
-  const loeschenBtn = document.getElementById("bildLoeschenBtn");
-  if (loeschenBtn) {
-    loeschenBtn.onclick = async () => {
-      loeschenBtn.disabled = true;
-      loeschenBtn.textContent = "⏳ Löschen...";
-
-      const bildName = (preisDaten[currentSupermarkt].bild || "").split("/").pop();
-      if (!bildName) return;
-
-      await fetch("/api/delete-image", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fileName: bildName })
-      });
-
-      preisDaten[currentSupermarkt].bild = null;
-      await speicherePreisInFirestore(
-        currentSupermarkt,
-        preisDaten[currentSupermarkt].preise,
-        null
-      );
-
-      zuletztHochgeladenesBildURL = null;
-      zwischenBildFile = null;
-
-      popup.setContent(setPopupContent(currentSupermarkt)).openOn(map);
+  // Bild ansehen / verbergen
+  const imgBtn = document.getElementById("popupImgBtn");
+  if (imgBtn) {
+    imgBtn.onclick = (e) => {
+      e.preventDefault(); e.stopPropagation();
+      const state = popupState[currentSupermarkt] || { expanded:false, showImage:false };
+      state.showImage = !state.showImage;
+      popupState[currentSupermarkt] = state;
+      popup.setContent(setPopupContent(currentSupermarkt)).update();
       setPopupEventListeners();
     };
   }
 
-  // 👉 Toggle hier anbinden (nicht global)
+  // Bild löschen
+  const loeschenBtn = document.getElementById("bildLoeschenBtn");
+  if (loeschenBtn) {
+    loeschenBtn.onclick = async (e) => {
+      e.preventDefault(); e.stopPropagation();
+      loeschenBtn.disabled = true;
+      loeschenBtn.textContent = "⏳ Löschen...";
+
+      const bildName = (preisDaten[currentSupermarkt].bild || "").split("/").pop();
+      if (bildName) {
+        await fetch("/api/delete-image", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ fileName: bildName })
+        });
+      }
+      preisDaten[currentSupermarkt].bild = null;
+      await speicherePreisInFirestore(currentSupermarkt, preisDaten[currentSupermarkt].preise, null);
+
+      // State zurücksetzen & UI refreshen
+      popupState[currentSupermarkt].showImage = false;
+      popup.setContent(setPopupContent(currentSupermarkt)).update();
+      setPopupEventListeners();
+    };
+  }
+
+  // Alle anzeigen / Weniger anzeigen
   const toggleBtn = document.getElementById("popupToggleBtn");
   if (toggleBtn) {
-    toggleBtn.onclick = () => {
-      const state = popupState[currentSupermarkt] || { expanded: false };
+    toggleBtn.onclick = (e) => {
+      e.preventDefault(); e.stopPropagation();
+      const state = popupState[currentSupermarkt] || { expanded:false, showImage:false };
       state.expanded = !state.expanded;
       popupState[currentSupermarkt] = state;
-
       popup.setContent(setPopupContent(currentSupermarkt)).update();
       setPopupEventListeners();
     };
   }
 }
-
   // ──────────────────────────────
   // 14) Firestore speichern
   // ──────────────────────────────
