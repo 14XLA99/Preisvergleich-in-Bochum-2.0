@@ -98,8 +98,8 @@ const popup = L.popup({
   autoPan: true,
   autoPanPaddingTopLeft: [20, 120],
   autoPanPaddingBottomRight: [20, 40],
-+  closeOnClick: true,   // Klick auf Karte schließt Popup
-+  autoClose: true,
+  closeOnClick: true,   // Klick auf Karte schließt Popup
+  autoClose: true,
   maxWidth: 320,
   closeButton: true,
   className: "price-popup"
