@@ -161,9 +161,12 @@ function selectCompactRow(rows){
 }
 function getRowLabels(pair){
   const v = (pair.vergleich || "").toLowerCase();
-  if (v.includes("menge")) return { l1: "Klein",  l2: "Groß" };
-  if (v.includes("marke")) return { l1: "Marke",  l2: "Eigen" };
+  if (v.includes("marke")) return { l1: "Eigen", l2: "Marke" }; // ⬅️ Eigen links
+  if (v.includes("menge")) return { l1: "Klein", l2: "Groß" };
+  if (v.includes("qualität") || v.includes("bio")) return { l1: "Konventionell", l2: "Bio" };
   return { l1: "A", l2: "B" };
+}
+
 }
 let currentMarker = null;            // Aktuell angeklickter Marker
 let currentSupermarkt = "";          // Name des aktuellen Markts
@@ -187,8 +190,10 @@ function safeImg(url, label) {
 // Du kannst die bildUrl-Felder später mit echten URLs füllen.
 // Der Stepper funktioniert auch mit dem Fallback.
 const produktGruppen = [
+  // 1) Cola – Mengenvergleich
   {
-    vergleich: "Menge (mehr Inhalt)",
+    kategorie: "Cola",
+    vergleich: "Menge",
     p1: {
       name: "Coca-Cola 0,5l",
       beschreibung: "Einzelflasche, 0,5l",
@@ -201,22 +206,26 @@ const produktGruppen = [
     }
   },
 
+  // 2) Nuss-Nougat-Creme – Markenvergleich (Eigen links)
   {
-    vergleich: "Menge (große Packung)",
+    kategorie: "Nuss-Nougat-Creme",
+    vergleich: "Marke",
     p1: {
-      name: "Nutella 450g",
-      beschreibung: "Marke",
-      bildUrl: "https://img.rewe-static.de/0900852/22057934_digital-image.png?impolicy=s-products&imwidth=540"
-    },
-    p2: {
       name: "Nuss-Nougat-Creme 400g",
       beschreibung: "Eigenmarke",
       bildUrl: "https://img.rewe-static.de/5590736/2692860_digital-image.png?impolicy=s-products&imwidth=540"
+    },
+    p2: {
+      name: "Nutella 450g",
+      beschreibung: "Marke",
+      bildUrl: "https://img.rewe-static.de/0900852/22057934_digital-image.png?impolicy=s-products&imwidth=540"
     }
   },
 
+  // 3) Bananen – Qualität (Konventionell links, Bio rechts)
   {
-    vergleich: "Qualität / Mehrwert",
+    kategorie: "Bananen",
+    vergleich: "Qualität (Bio vs. Konventionell)",
     p1: {
       name: "Bananen lose (1 kg)",
       beschreibung: "Konventionell",
@@ -224,12 +233,14 @@ const produktGruppen = [
     },
     p2: {
       name: "Bio-Bananen lose (1 kg)",
-      beschreibung: "Bio-Qualität",
+      beschreibung: "Bio",
       bildUrl: "https://img.rewe-static.de/1930502/24568902_digital-image.png?impolicy=s-products&imwidth=540"
     }
   },
 
+  // 4) Reis – Menge
   {
+    kategorie: "Reis",
     vergleich: "Menge",
     p1: {
       name: "Basmatireis 500g",
@@ -238,12 +249,14 @@ const produktGruppen = [
     },
     p2: {
       name: "Basmatireis 1kg",
-      beschreibung: "Große Packung",
+      beschreibung: "Großpackung",
       bildUrl: "https://img.rewe-static.de/8928743/40161859_digital-image.png?impolicy=s-products&imwidth=540"
     }
   },
 
+  // 5) Margarine – Menge
   {
+    kategorie: "Margarine",
     vergleich: "Menge",
     p1: {
       name: "Margarine 250g",
@@ -252,54 +265,62 @@ const produktGruppen = [
     },
     p2: {
       name: "Margarine 400g",
-      beschreibung: "Große Packung",
+      beschreibung: "Großpackung",
       bildUrl: "https://img.rewe-static.de/1464289/21333031_digital-image.png?impolicy=s-products&imwidth=540"
     }
   },
 
+  // 6) Schokolade – Markenvergleich (Eigen links)
   {
+    kategorie: "Schokolade",
     vergleich: "Marke",
     p1: {
-      name: "Milka Alpenmilch 90 g",
-      beschreibung: "Markenschokolade",
-      bildUrl: "https://img.rewe-static.de/9891941/48587612_digital-image.png?impolicy=s-products&imwidth=540"
-    },
-    p2: {
       name: "Schokolade 90/100g",
       beschreibung: "Eigenmarke",
       bildUrl: "https://img.rewe-static.de/6790143/2480960_digital-image.png?impolicy=s-products&imwidth=540"
+    },
+    p2: {
+      name: "Milka Alpenmilch 90 g",
+      beschreibung: "Marke",
+      bildUrl: "https://img.rewe-static.de/9891941/48587612_digital-image.png?impolicy=s-products&imwidth=540"
     }
   },
 
+  // 7) Spaghetti – Markenvergleich (Eigen links)
   {
+    kategorie: "Spaghetti",
     vergleich: "Marke",
     p1: {
-      name: "Barilla Spaghetti 500 g",
-      beschreibung: "Markenpasta",
-      bildUrl: "https://img.rewe-static.de/1483021/20428098_digital-image.png?impolicy=s-products&imwidth=540"
-    },
-    p2: {
       name: "Spaghetti 500 g",
       beschreibung: "Eigenmarke",
       bildUrl: "https://img.rewe-static.de/0687999/37902543_digital-image.png?impolicy=s-products&imwidth=540"
+    },
+    p2: {
+      name: "Barilla Spaghetti 500 g",
+      beschreibung: "Marke",
+      bildUrl: "https://img.rewe-static.de/1483021/20428098_digital-image.png?impolicy=s-products&imwidth=540"
     }
   },
 
+  // 8) Chips – Markenvergleich (Eigen links)
   {
+    kategorie: "Chips",
     vergleich: "Marke",
     p1: {
-      name: "Pringles Paprika 200 g",
-      beschreibung: "Markenchips",
-      bildUrl: "https://img.rewe-static.de/9214490/45801461_digital-image.png?impolicy=s-products&imwidth=540"
-    },
-    p2: {
       name: "Stapelchips 175 g",
       beschreibung: "Eigenmarke",
       bildUrl: "https://img.rewe-static.de/7627894/41711909_digital-image.png?impolicy=s-products&imwidth=540"
+    },
+    p2: {
+      name: "Pringles Paprika 200 g",
+      beschreibung: "Marke",
+      bildUrl: "https://img.rewe-static.de/9214490/45801461_digital-image.png?impolicy=s-products&imwidth=540"
     }
   },
 
+  // 9) Fruchtgummi – Menge (zwei Größen derselben Marke)
   {
+    kategorie: "Fruchtgummi",
     vergleich: "Menge",
     p1: {
       name: "Haribo Goldbären 200 g",
@@ -307,27 +328,30 @@ const produktGruppen = [
       bildUrl: "https://img.rewe-static.de/9095631/43997869_digital-image.png?impolicy=s-products&imwidth=540"
     },
     p2: {
-      name: "Haribo Goldbären 340g",
-      beschreibung: "Große Packung",
+      name: "Haribo Goldbären 340 g",
+      beschreibung: "Großpackung",
       bildUrl: "https://img.rewe-static.de/9933528/46743550_digital-image.png?impolicy=s-products&imwidth=540"
     }
   },
 
+  // 10) Haferdrink – Markenvergleich (Eigen/Bio links)
   {
+    kategorie: "Haferdrink",
     vergleich: "Marke / Preis",
     p1: {
-      name: "Alpro Haferdrink 1 l",
-      beschreibung: "Marke",
-      bildUrl: "https://img.rewe-static.de/8358463/32623823_digital-image.png?impolicy=s-products&imwidth=540"
-    },
-    p2: {
       name: "Haferdrink 1 l",
       beschreibung: "Eigen-/Bio-Marke",
       bildUrl: "https://img.rewe-static.de/2587736/24675765_digital-image.png?impolicy=s-products&imwidth=540"
+    },
+    p2: {
+      name: "Alpro Haferdrink 1 l",
+      beschreibung: "Marke",
+      bildUrl: "https://img.rewe-static.de/8358463/32623823_digital-image.png?impolicy=s-products&imwidth=540"
     }
   }
 ];
-  const produktPaare = produktGruppen; // 🔧 Alias, damit alle Stellen funktionieren
+
+const produktPaare = produktGruppen; // Alias
 
 // Step-Zustand
 let currentStep = 0; // 0..9 sind Produktsteps, 10 ist Bild-Step
