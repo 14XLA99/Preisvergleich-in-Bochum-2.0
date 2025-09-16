@@ -115,9 +115,9 @@ map.on("popupclose", () => {
   // ————————————————————
 // 5) Lokaler Speicher / App-State
 // ————————————————————
-let preisDaten = {}; // { markt: { preise: {...}, bild: url } }
+let preisDaten = {}; // { markt: { preise: {...}, bild: url, groessen: {...} } }
 // Popup-Zustand pro Markt
-const popupState = {}; // { [marktName]: { expanded: boolean, showImage: boolean } }
+const popupState = {}; // { [marktName]: { expanded: boolean, showImage: boolean } }}
 // Oberkategorie aus Produktnamen ableiten (oder pair.kategorie nutzen, wenn vorhanden)
 function getPairCategory(pair){
   if (pair.kategorie) return pair.kategorie;
@@ -211,7 +211,23 @@ function getSizeOptions(pair, p) {
   // Fallback
   return ["Kleinere Menge", "Größere Menge"];
 }
+function getDisplayName(originalName) {
+  const m = preisDaten[currentSupermarkt];
+  return m?.groessen?.[originalName] || originalName;
+}
 
+function setSizeOverrideForCurrentMarket(originalName, newSizeLabel) {
+  if (!currentSupermarkt) return;
+  if (!preisDaten[currentSupermarkt]) {
+    preisDaten[currentSupermarkt] = { preise: {}, bild: null, groessen: {} };
+  }
+  if (!preisDaten[currentSupermarkt].groessen) {
+    preisDaten[currentSupermarkt].groessen = {};
+  }
+  // Schreibe nur die Anzeige-Variante („Produkt (neue Größe)“) für diesen Markt
+  const base = originalName.replace(/\s*\([\s\S]*?\)\s*$/,"");
+  preisDaten[currentSupermarkt].groessen[originalName] = `${base} (${newSizeLabel})`;
+}
   
 let currentMarker = null;            // Aktuell angeklickter Marker
 let currentSupermarkt = "";          // Name des aktuellen Markts
@@ -414,6 +430,9 @@ let currentStep = 0; // 0..9 sind Produktsteps, 10 ist Bild-Step
 // ————————————————————
 // 8) Step anzeigen
 // ————————————————————
+// ————————————————————
+// 8) Step anzeigen
+// ————————————————————
 function renderStep() {
   const istProduktStep = currentStep < produktPaare.length;
 
@@ -432,68 +451,66 @@ function renderStep() {
           const preset = (typeof p.preisErfasst === "number")
             ? p.preisErfasst
             : (p.preisErfasst ?? "");
+          const displayName = getDisplayName(p.name);
+
           return `
             <div class="product-card">
               <div class="image-wrapper">
                 <img
                   src="${safeImg(p.bildUrl, p.name)}"
-                  alt="${p.name}"
+                  alt="${displayName}"
                   onerror="this.onerror=null;this.src='${safeImg('', p.name)}';"
                 />
               </div>
               <div class="step-pane-text">
-                <h3>${p.name}</h3>
+                <h3>${displayName}</h3>
                 <p>${p.beschreibung || ""}</p>
-               <label>Preis (€):
-                <input id="${inputId}" type="number" step="0.01" inputmode="decimal" value="${preset}" />
+                <label>Preis (€):
+                  <input id="${inputId}" type="number" step="0.01" inputmode="decimal" value="${preset}" />
                 </label>
-            
-              <div class="size-row">
-                <button type="button" class="size-btn" data-side="${idx}">Größe ändern</button>
-                <div class="size-select hidden" id="sizeSelect_${idx}">
-                  <select id="sizeOption_${idx}">
-                    ${getSizeOptions(pair, p).map(opt => `<option value="${opt}">${opt}</option>`).join("")}
-                  </select>
-                  <button type="button" class="size-apply" data-side="${idx}">Übernehmen</button>
+
+                <div class="size-row">
+                  <button type="button" class="size-btn" data-side="${idx}">Größe ändern</button>
+                  <div class="size-select hidden" id="sizeSelect_${idx}">
+                    <select id="sizeOption_${idx}">
+                      ${getSizeOptions(pair, p).map(opt => `<option value="${opt}">${opt}</option>`).join("")}
+                    </select>
+                    <button type="button" class="size-apply" data-side="${idx}">Übernehmen</button>
+                  </div>
                 </div>
               </div>
+            </div>
           `;
         }).join("")}
       </div>
     `;
+
     // Größe ändern: Button → Select toggeln
-stepContent.querySelectorAll(".size-btn").forEach(btn => {
-  btn.addEventListener("click", (e) => {
-    e.preventDefault();
-    const side = btn.getAttribute("data-side");
-    const box = document.getElementById(`sizeSelect_${side}`);
-    if (box) box.classList.toggle("hidden");
-  });
-});
+    stepContent.querySelectorAll(".size-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        const side = btn.getAttribute("data-side");
+        const box  = document.getElementById(`sizeSelect_${side}`);
+        if (box) box.classList.toggle("hidden");
+      });
+    });
 
-// Größe ändern: Übernehmen → Name/Beschreibung anpassen
-stepContent.querySelectorAll(".size-apply").forEach(btn => {
-  btn.addEventListener("click", (e) => {
-    e.preventDefault();
-    const side = parseInt(btn.getAttribute("data-side"), 10);
-    const sel  = document.getElementById(`sizeOption_${side}`);
-    if (!sel) return;
+    // Größe ändern: nur markt-spezifische Anzeige überschreiben (kein globales Rename)
+    stepContent.querySelectorAll(".size-apply").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        const side = parseInt(btn.getAttribute("data-side"), 10);
+        const sel  = document.getElementById(`sizeOption_${side}`);
+        if (!sel) return;
 
-    const opt = sel.value;                // z. B. "1,25 l" oder "500 g"
-    const target = side === 0 ? pair.p1 : pair.p2;
+        const newLabel   = sel.value;                 // z. B. "1,25 l" oder "500 g"
+        const original   = side === 0 ? pair.p1.name : pair.p2.name;
 
-    // Name anreichern: "Produktname (1,25 l)"
-    // (so landet es auch so in Firestore – einfache Lösung)
-    const baseName = target.name.replace(/\s*\([\s\S]*?\)\s*$/,""); // evtl. alte Klammern ab
-    target.name = `${baseName} (${opt})`;
-    // Optional: Beschreibung kurz mitziehen, wenn leer
-    if (!target.beschreibung || /Eigenmarke|Marke|Packung|Bio|Konventionell/i.test(target.beschreibung)) {
-      target.beschreibung = target.beschreibung || opt;
-    }
+        setSizeOverrideForCurrentMarket(original, newLabel);
+        renderStep(); // UI sofort aktualisieren
+      });
+    });
 
-    renderStep(); // UI neu zeichnen (zeigt neue Namen)
-  });
-});
   } else {
     // Bild-Step in gleicher Optik wie die Produkt-Steps (2 Karten im Grid)
     stepContent.innerHTML = `
@@ -503,7 +520,6 @@ stepContent.querySelectorAll(".size-apply").forEach(btn => {
       </div>
 
       <div class="step-pane-content-grid">
-        <!-- Linke Karte: Upload + Vorschau -->
         <div class="product-card">
           <div class="image-wrapper" id="belegBox"></div>
           <div class="step-pane-text">
@@ -513,7 +529,6 @@ stepContent.querySelectorAll(".size-apply").forEach(btn => {
           </div>
         </div>
 
-        <!-- Rechte Karte: Hinweis -->
         <div class="product-card">
           <div class="step-pane-text">
             <h3>Hinweis</h3>
@@ -563,6 +578,7 @@ stepContent.querySelectorAll(".size-apply").forEach(btn => {
     indicators.appendChild(dot);
   }
 }
+
 
 // ──────────────────────────────
 // 9) Stepper öffnen / schließen / steuern (vollständig, mit Komprimierung und FormData)
@@ -690,19 +706,20 @@ nextBtn.onclick = async () => {
   // ──────────────────────────────
   // 10) Daten aus Firestore laden
   // ──────────────────────────────
-  async function ladePreiseAusFirestore() {
-    const snapshot = await getDocs(collection(db, "preise"));
-    snapshot.forEach(docSnap => {
-      const data = docSnap.data();
-      if (data.markt && data.preise) {
-        preisDaten[data.markt] = {
-          preise: data.preise,
-          bild: data.bild || null
-        };
-      }
-    });
-    ladeSupermarktMarker();
-  }
+async function ladePreiseAusFirestore() {
+  const snapshot = await getDocs(collection(db, "preise"));
+  snapshot.forEach(docSnap => {
+    const data = docSnap.data();
+    if (data.markt) {
+      preisDaten[data.markt] = {
+        preise: data.preise || {},
+        bild: data.bild || null,
+        groessen: data.groessen || {}   // ⬅️ NEU
+      };
+    }
+  });
+  ladeSupermarktMarker();
+}
 
   // ──────────────────────────────
   // 11) Marker für Supermärkte setzen
@@ -799,9 +816,9 @@ function setPopupContent(name) {
         <div class="pp-row">
           <div class="pp-cat">${cat}</div>
           <div class="pp-values">
-            <span class="pp-pill ${cheaper==="left"?"pp-cheap":""}" title="${pair.p1.name}">${l1}: ${fmt(v1)}</span>
+            <span class="pp-pill ${cheaper==="left"?"pp-cheap":""}" title="${getDisplayName(pair.p1.name)}">${l1}: ${fmt(v1)}</span>
             <span class="pp-delta">${delta(v1, v2)}</span>
-            <span class="pp-pill ${cheaper==="right"?"pp-cheap":""}" title="${pair.p2.name}">${l2}: ${fmt(v2)}</span>
+            <span class="pp-pill ${cheaper==="right"?"pp-cheap":""}"title="${getDisplayName(pair.p2.name)}">${l2}: ${fmt(v2)}</span>
           </div>
         </div>
       `;
@@ -894,21 +911,21 @@ function setPopupEventListeners() {
   // ──────────────────────────────
   // 14) Firestore speichern
   // ──────────────────────────────
-  async function speicherePreisInFirestore(markt, preise, bildURL = null) {
-    await setDoc(
-      doc(db, "preise", markt.replace(/\W+/g, "_")),
-      {
-        markt,
-        preise,
-        bild: bildURL || null,
-        zeitstempel: serverTimestamp()
-      }
-    );
-    preisDaten[markt] = { preise, bild: bildURL || null };
+ async function speicherePreisInFirestore(markt, preise, bildURL = null, groessen = null) {
+  const exist = preisDaten[markt] || {};
+  const payload = {
+    markt,
+    preise: preise || exist.preise || {},
+    bild: (bildURL !== null ? bildURL : (exist.bild || null)),
+    groessen: groessen || exist.groessen || {},   // ⬅️ NEU
+    zeitstempel: serverTimestamp()
+  };
 
-    // Marker-Icon ggf. grau einfärben
-    if (currentMarker) currentMarker.setIcon(greyIcon);
-  }
+  await setDoc(doc(db, "preise", markt.replace(/\W+/g, "_")), payload);
+  preisDaten[markt] = payload;
+
+  if (currentMarker) currentMarker.setIcon(greyIcon);
+}
  // ──────────────────────────────
 // 15) Datei komprimieren (JPEG)
 // ──────────────────────────────
