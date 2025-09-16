@@ -326,3 +326,44 @@ input:invalid:focus{ outline:1px solid red; }
 .btn-ghost:hover{
   background:#f5f9ff;
 }
+.size-row{
+  margin-top:6px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.size-btn{
+  background:#eef3f9;
+  color:#0b4a8e;
+  border:1px solid #c9d7ee;
+  border-radius:6px;
+  padding:4px 8px;
+  font-size:.85rem;
+  width:fit-content;
+}
+.size-btn:hover{ background:#e1ebf7; }
+
+.size-select{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+.size-select select{
+  flex:1;
+  padding:4px 6px;
+  border:1px solid #d7ddea;
+  border-radius:6px;
+  font-size:.9rem;
+}
+.size-apply{
+  background:#007bff;
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  padding:6px 10px;
+  font-size:.85rem;
+  cursor:pointer;
+}
+.size-apply:hover{ background:#0056b3; }
+
+.hidden{ display:none; }
