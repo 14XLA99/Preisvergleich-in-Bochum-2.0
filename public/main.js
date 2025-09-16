@@ -676,11 +676,12 @@ nextBtn.onclick = async () => {
       neuePreise[p1.name] = (typeof p1.preisErfasst === "number") ? p1.preisErfasst : (p1.preisErfasst ?? null);
       neuePreise[p2.name] = (typeof p2.preisErfasst === "number") ? p2.preisErfasst : (p2.preisErfasst ?? null);
     });
-
+  const groessenOverrides = preisDaten[currentSupermarkt]?.groessen || {};
     await speicherePreisInFirestore(
       currentSupermarkt,
       neuePreise,
-      finaleBildUrl
+      finaleBildUrl,
+      groessenOverrides   
     );
 
     zuletztHochgeladenesBildURL = finaleBildUrl;
