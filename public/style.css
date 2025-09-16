@@ -169,22 +169,29 @@ input:invalid:focus{ outline:1px solid red; }
   align-items:baseline;
   gap:1rem;
   margin-bottom:.5rem;
+  flex-wrap:wrap;                 /* darf umbrechen */
 }
 .step-header .step-type{
   font-weight:600;
   color:var(--brand);
+  font-size:.95em;
 }
 .step-header .step-compare{
   color:#555;
-  font-size:.95em;
+  font-size:.9em;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:100%;
 }
 
-/* Zwei Produkte nebeneinander (responsive) */
+/* Zwei Produkte nebeneinander (robust) */
 .step-pane-content-grid{
   display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:20px;
+  grid-template-columns: repeat(2, minmax(0, 1fr)); /* verhindert Umbruch durch breite Kinder */
+  gap:16px;
 }
+.step-pane-content-grid > *{ min-width:0; }         /* Kinder dürfen schrumpfen */
 
 .product-card{
   background:#fafafa;
@@ -193,6 +200,17 @@ input:invalid:focus{ outline:1px solid red; }
   padding:12px;
   box-shadow:0 2px 6px rgba(0,0,0,.05);
   min-height:360px; /* gleiche Höhe für Produkt- & Upload-Karte */
+  min-width:0;      /* verhindert Grid-Überlauf */
+}
+
+/* Titel in der Karte */
+.product-card h3{
+  font-size:1rem;
+  line-height:1.2;
+  margin:0 0 .25rem 0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap; /* bei Bedarf entfernen, wenn 2 Zeilen gewünscht */
 }
 
 /* Einheitliche Bildbox für alle Packshots */
@@ -228,6 +246,52 @@ input:invalid:focus{ outline:1px solid red; }
   border-radius:6px;
   padding:8px;
 }
+
+/* Größe ändern – Zeile */
+.size-row{
+  margin-top:6px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  width:100%;
+}
+.size-btn{
+  background:#eef3f9;
+  color:#0b4a8e;
+  border:1px solid #c9d7ee;
+  border-radius:6px;
+  padding:4px 8px;
+  font-size:.85rem;
+  width:fit-content;
+}
+.size-btn:hover{ background:#e1ebf7; }
+.size-select{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  width:100%;
+}
+.size-select select{
+  flex:1;
+  padding:4px 6px;
+  border:1px solid #d7ddea;
+  border-radius:6px;
+  font-size:.9rem;
+  max-width:100%;
+  min-width:0;        /* darf schrumpfen */
+}
+.size-apply{
+  background:#007bff;
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  padding:6px 10px;
+  font-size:.85rem;
+  cursor:pointer;
+}
+.size-apply:hover{ background:#0056b3; }
+
+.hidden{ display:none; }
 
 /* Mobil: einspaltig */
 @media (max-width:560px){
@@ -280,6 +344,7 @@ input:invalid:focus{ outline:1px solid red; }
   font-size:.92em;        /* kleiner -> € bricht nicht um */
   line-height:1.1;
   font-variant-numeric:tabular-nums;
+  white-space:nowrap;     /* in den Pills kein Umbruch */
 }
 
 .pp-pill{
@@ -287,12 +352,33 @@ input:invalid:focus{ outline:1px solid red; }
   color:#0b4a8e;
   border-radius:999px;
   padding:2px 8px;
-  white-space:nowrap;      /* nie umbrechen (inkl. €) */
 }
 
 .pp-cheap{ color:#0a7a2f; background:#e9f6ee; }
 .pp-delta{ color:#555; min-width:42px; text-align:center; white-space:nowrap; }
 .pp-empty{ margin:.25em 0 .6em; color:#555; }
+
+/* Expanded: nur die Liste scrollt */
+.pp-list--expanded{
+  max-height: 180px;
+  overflow: auto;
+  padding-right: 4px;
+}
+.pp-list--expanded::-webkit-scrollbar{ width:6px; }
+.pp-list--expanded::-webkit-scrollbar-thumb{
+  background:#cfd8e6;
+  border-radius:6px;
+}
+
+/* „Bild ansehen“ als Ghost-Button */
+.btn-ghost{
+  background:transparent;
+  color:#0b4a8e;
+  border:1px dashed #c9d7ee;
+}
+.btn-ghost:hover{
+  background:#f5f9ff;
+}
 
 /* ===========================
    Bezirks-Label
@@ -306,64 +392,4 @@ input:invalid:focus{ outline:1px solid red; }
   pointer-events:none;
   text-shadow:1px 1px 2px rgba(255,255,255,.8);
 }
-/* Expanded: nur die Liste scrollt */
-.pp-list--expanded{
-  max-height: 180px;
-  overflow: auto;
-  padding-right: 4px;
-}
-.pp-list--expanded::-webkit-scrollbar{ width:6px; }
-.pp-list--expanded::-webkit-scrollbar-thumb{
-  background:#cfd8e6;
-  border-radius:6px;
-}
-/* Ghost-Button für „Bild ansehen“ */
-.btn-ghost{
-  background:transparent;
-  color:#0b4a8e;
-  border:1px dashed #c9d7ee;
-}
-.btn-ghost:hover{
-  background:#f5f9ff;
-}
-.size-row{
-  margin-top:6px;
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-}
-.size-btn{
-  background:#eef3f9;
-  color:#0b4a8e;
-  border:1px solid #c9d7ee;
-  border-radius:6px;
-  padding:4px 8px;
-  font-size:.85rem;
-  width:fit-content;
-}
-.size-btn:hover{ background:#e1ebf7; }
 
-.size-select{
-  display:flex;
-  gap:8px;
-  align-items:center;
-}
-.size-select select{
-  flex:1;
-  padding:4px 6px;
-  border:1px solid #d7ddea;
-  border-radius:6px;
-  font-size:.9rem;
-}
-.size-apply{
-  background:#007bff;
-  color:#fff;
-  border:none;
-  border-radius:6px;
-  padding:6px 10px;
-  font-size:.85rem;
-  cursor:pointer;
-}
-.size-apply:hover{ background:#0056b3; }
-
-.hidden{ display:none; }
