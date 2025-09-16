@@ -98,8 +98,8 @@ const popup = L.popup({
   autoPan: true,
   autoPanPaddingTopLeft: [20, 120],
   autoPanPaddingBottomRight: [20, 40],
-  closeOnClick: false,   // bleibt offen
-  autoClose: false,      // nicht beim nächsten Popup schließen
++  closeOnClick: true,   // Klick auf Karte schließt Popup
++  autoClose: true,
   maxWidth: 320,
   closeButton: true,
   className: "price-popup"
@@ -121,18 +121,23 @@ const popupState = {}; // { [marktName]: { expanded: boolean, showImage: boolean
 // Oberkategorie aus Produktnamen ableiten (oder pair.kategorie nutzen, wenn vorhanden)
 function getPairCategory(pair){
   if (pair.kategorie) return pair.kategorie;
-  const n = (pair.p1?.name || "").toLowerCase();
-  if (n.includes("cola")) return "Cola";
-  if (n.includes("banan")) return "Bananen";
-  if (n.includes("joghurt")) return "Joghurt";
-  if (n.includes("reis")) return "Reis";
-  if (n.includes("margarine")) return "Margarine";
-  if (n.includes("schokolade")) return "Schokolade";
-  if (n.includes("spaghetti")) return "Spaghetti";
-  if (n.includes("chips") || n.includes("pringles") || n.includes("stapelchips")) return "Chips";
-  if (n.includes("goldb") || n.includes("gummi")) return "Gummibärchen";
-  if (n.includes("hafer")) return "Haferdrink";
-  return pair.vergleich || pair.typ || "Vergleich";
+  const ns = `${pair.p1?.name||""} ${pair.p2?.name||""}`.toLowerCase();
+
+  if (/cola|coke/.test(ns)) return "Cola";
+  if (/banan/.test(ns)) return "Bananen";
+  if (/joghurt|yogurt/.test(ns)) return "Joghurt";
+  if (/reis|basmati/.test(ns)) return "Reis";
+  if (/margarine|rama/.test(ns)) return "Margarine";
+
+  if (/nutella|nougat|nuss.*nougat/.test(ns)) return "Nuss-Nougat-Creme";
+  if (/schoko|schokolade|milka/.test(ns)) return "Schokolade";
+
+  if (/spaghetti|pasta/.test(ns)) return "Spaghetti";
+  if (/chips|pringles|stapelchips|crisps/.test(ns)) return "Chips";
+  if (/haribo|goldb|gummi|fruchtgummi/.test(ns)) return "Fruchtgummi";
+  if (/hafer|oat.*drink|oatmilk/.test(ns)) return "Haferdrink";
+
+  return "Produkte";
 }
   function buildPairRows(preise){
   return produktPaare.map((pair, idx) => {
@@ -671,15 +676,6 @@ function setPopupContent(name) {
 
   let html = `<div class="pp-head"><strong>${name}</strong></div>`;
 
-  // Bild-Button + optional Bild
-  if (d.bild) {
-    html += `<button id="popupImgBtn" class="secondary pp-btn">${showImage ? "Bild verbergen" : "Bild ansehen"}</button>`;
-    if (showImage) {
-      html += `<img src="${d.bild}?t=${Date.now()}" class="pp-img" alt="Bild">`;
-      html += `<button id="bildLoeschenBtn" class="secondary pp-btn">🗑️ Bild löschen</button>`;
-    }
-  }
-
   // Preis-Zeilen
   if (visibleRows.length > 0) {
     html += `<div class="pp-list ${expanded ? "pp-list--expanded" : ""}">`;
@@ -709,11 +705,19 @@ function setPopupContent(name) {
     html += `<p class="pp-empty">Noch keine Preise eingetragen.</p>`;
   }
 
+  // Bild-Button NACH den Preisen
+  if (d.bild) {
+    html += `<button id="popupImgBtn" class="btn-ghost pp-btn">${showImage ? "Bild verbergen" : "🖼️ Bild ansehen"}</button>`;
+    if (showImage) {
+      html += `<img src="${d.bild}?t=${Date.now()}" class="pp-img" alt="Bild">`;
+      html += `<button id="bildLoeschenBtn" class="secondary pp-btn">🗑️ Bild löschen</button>`;
+    }
+  }
+
   // Immer sichtbar
   html += `<button id="bearbeitenBtn" class="pp-btn">Preise bearbeiten</button>`;
   return html;
 }
-
 
 // ──────────────────────────────
 // 13) Popup-Event-Logik
