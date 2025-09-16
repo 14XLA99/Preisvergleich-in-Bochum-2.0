@@ -166,7 +166,53 @@ function getRowLabels(pair){
   if (v.includes("qualität") || v.includes("bio")) return { l1: "Konventionell", l2: "Bio" };
   return { l1: "A", l2: "B" };
 }
+// Vorschläge für alternative Größen/Varianten pro Produkt
+function getSizeOptions(pair, p) {
+  const base = (p.name || "").toLowerCase();
+  const inPair = `${pair.kategorie || ""} ${pair.vergleich || ""}`.toLowerCase();
 
+  // Cola
+  if (/cola/.test(base) || /cola/.test(inPair)) {
+    return ["0,33 l", "0,5 l", "1,0 l", "1,25 l", "1,5 l", "2,0 l"];
+  }
+  // Bananen
+  if (/banan/.test(base) || /banan/.test(inPair)) {
+    return ["500 g", "1 kg", "Bio 1 kg", "Fairtrade 1 kg"];
+  }
+  // Reis
+  if (/reis|basmati/.test(base) || /reis|basmati/.test(inPair)) {
+    return ["500 g", "1 kg", "2 kg"];
+  }
+  // Margarine / Butter-like
+  if (/margarine|butter/.test(base) || /margarine|butter/.test(inPair)) {
+    return ["250 g", "400 g", "500 g"];
+  }
+  // Schokolade
+  if (/schoko|milka/.test(base) || /schoko|milka/.test(inPair)) {
+    return ["90 g", "100 g", "200 g"];
+  }
+  // Spaghetti / Pasta
+  if (/spaghetti|pasta/.test(base) || /spaghetti|pasta/.test(inPair)) {
+    return ["500 g", "1 kg"];
+  }
+  // Chips
+  if (/chips|pringles|stapelchips/.test(base) || /chips|pringles|stapelchips/.test(inPair)) {
+    return ["165 g", "175 g", "200 g"];
+  }
+  // Fruchtgummi
+  if (/haribo|gummi|fruchtgummi/.test(base) || /haribo|gummi|fruchtgummi/.test(inPair)) {
+    return ["175 g", "200 g", "340 g"];
+  }
+  // Haferdrink
+  if (/hafer|oat/.test(base) || /hafer|oat/.test(inPair)) {
+    return ["0,75 l", "1,0 l", "1,5 l (Mehrpack)"];
+  }
+
+  // Fallback
+  return ["Kleinere Menge", "Größere Menge"];
+}
+
+  
 let currentMarker = null;            // Aktuell angeklickter Marker
 let currentSupermarkt = "";          // Name des aktuellen Markts
 let zwischenBildFile = null; // Neu gewähltes, noch nicht hochgeladenes Bild
@@ -398,15 +444,56 @@ function renderStep() {
               <div class="step-pane-text">
                 <h3>${p.name}</h3>
                 <p>${p.beschreibung || ""}</p>
-                <label>Preis (€):
-                  <input id="${inputId}" type="number" step="0.01" inputmode="decimal" value="${preset}" />
+               <label>Preis (€):
+                <input id="${inputId}" type="number" step="0.01" inputmode="decimal" value="${preset}" />
                 </label>
+            
+              <div class="size-row">
+                <button type="button" class="size-btn" data-side="${idx}">Größe ändern</button>
+                <div class="size-select hidden" id="sizeSelect_${idx}">
+                  <select id="sizeOption_${idx}">
+                    ${getSizeOptions(pair, p).map(opt => `<option value="${opt}">${opt}</option>`).join("")}
+                  </select>
+                  <button type="button" class="size-apply" data-side="${idx}">Übernehmen</button>
+                </div>
               </div>
-            </div>
           `;
         }).join("")}
       </div>
     `;
+    // Größe ändern: Button → Select toggeln
+stepContent.querySelectorAll(".size-btn").forEach(btn => {
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+    const side = btn.getAttribute("data-side");
+    const box = document.getElementById(`sizeSelect_${side}`);
+    if (box) box.classList.toggle("hidden");
+  });
+});
+
+// Größe ändern: Übernehmen → Name/Beschreibung anpassen
+stepContent.querySelectorAll(".size-apply").forEach(btn => {
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+    const side = parseInt(btn.getAttribute("data-side"), 10);
+    const sel  = document.getElementById(`sizeOption_${side}`);
+    if (!sel) return;
+
+    const opt = sel.value;                // z. B. "1,25 l" oder "500 g"
+    const target = side === 0 ? pair.p1 : pair.p2;
+
+    // Name anreichern: "Produktname (1,25 l)"
+    // (so landet es auch so in Firestore – einfache Lösung)
+    const baseName = target.name.replace(/\s*\([\s\S]*?\)\s*$/,""); // evtl. alte Klammern ab
+    target.name = `${baseName} (${opt})`;
+    // Optional: Beschreibung kurz mitziehen, wenn leer
+    if (!target.beschreibung || /Eigenmarke|Marke|Packung|Bio|Konventionell/i.test(target.beschreibung)) {
+      target.beschreibung = target.beschreibung || opt;
+    }
+
+    renderStep(); // UI neu zeichnen (zeigt neue Namen)
+  });
+});
   } else {
     // Bild-Step in gleicher Optik wie die Produkt-Steps (2 Karten im Grid)
     stepContent.innerHTML = `
