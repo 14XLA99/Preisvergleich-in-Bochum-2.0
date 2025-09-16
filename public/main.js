@@ -167,7 +167,6 @@ function getRowLabels(pair){
   return { l1: "A", l2: "B" };
 }
 
-}
 let currentMarker = null;            // Aktuell angeklickter Marker
 let currentSupermarkt = "";          // Name des aktuellen Markts
 let zwischenBildFile = null; // Neu gewähltes, noch nicht hochgeladenes Bild
