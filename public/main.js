@@ -309,9 +309,7 @@ let zuletztHochgeladenesBildURL = null;
   const indicators    = document.getElementById("stepIndicators");
   const closeStepper  = document.getElementById("stepperCloseBtn");
 
-// ————————————————————
-// 8) Step anzeigen
-// ————————————————————
+
 // ————————————————————
 // 8) Step anzeigen
 // ————————————————————
@@ -323,8 +321,11 @@ function renderStep() {
 
     stepContent.innerHTML = `
       <div class="step-header">
-        <div class="step-type">${pair.typ || ""}</div>
-        <div class="step-compare">Vergleich: ${pair.vergleich || ""}</div>
+        <div>
+          <div class="step-category">${pair.kategorie || "Produkt"}</div>
+          <div class="step-subtitle">${formatVergleichLabel(pair)}</div>
+        </div>
+        <div class="step-compare">Schritt ${currentStep + 1} von ${produktPaare.length}</div>
       </div>
 
       <div class="step-pane-content-grid">
@@ -334,19 +335,20 @@ function renderStep() {
             ? p.preisErfasst
             : (p.preisErfasst ?? "");
           const displayName = getDisplayName(p.name);
+          const roleLabel = getRoleLabel(pair, p);
 
           return `
             <div class="product-card">
+              <div class="product-role-badge">${roleLabel}</div>
+
               <div class="image-wrapper">
-                <img
-                  src="${safeImg(p.bildUrl, p.name)}"
-                  alt="${displayName}"
-                  onerror="this.onerror=null;this.src='${safeImg('', p.name)}';"
-                />
+                ${renderProductImage(pair, p, displayName)}
               </div>
+
               <div class="step-pane-text">
                 <h3>${displayName}</h3>
                 <p>${p.beschreibung || ""}</p>
+
                 <label>Preis (€):
                   <input id="${inputId}" type="number" step="0.01" inputmode="decimal" value="${preset}" />
                 </label>
@@ -367,7 +369,6 @@ function renderStep() {
       </div>
     `;
 
-    // Größe ändern: Button → Select toggeln
     stepContent.querySelectorAll(".size-btn").forEach(btn => {
       btn.addEventListener("click", (e) => {
         e.preventDefault();
@@ -377,7 +378,6 @@ function renderStep() {
       });
     });
 
-    // Größe ändern: nur markt-spezifische Anzeige überschreiben (kein globales Rename)
     stepContent.querySelectorAll(".size-apply").forEach(btn => {
       btn.addEventListener("click", (e) => {
         e.preventDefault();
@@ -385,20 +385,22 @@ function renderStep() {
         const sel  = document.getElementById(`sizeOption_${side}`);
         if (!sel) return;
 
-        const newLabel   = sel.value;                 // z. B. "1,25 l" oder "500 g"
-        const original   = side === 0 ? pair.p1.name : pair.p2.name;
+        const newLabel = sel.value;
+        const original = side === 0 ? pair.p1.name : pair.p2.name;
 
         setSizeOverrideForCurrentMarket(original, newLabel);
-        renderStep(); // UI sofort aktualisieren
+        renderStep();
       });
     });
 
   } else {
-    // Bild-Step in gleicher Optik wie die Produkt-Steps (2 Karten im Grid)
     stepContent.innerHTML = `
       <div class="step-header">
-        <div class="step-type">Beleg</div>
-        <div class="step-compare">Optionales Foto hochladen</div>
+        <div>
+          <div class="step-category">Belegfoto</div>
+          <div class="step-subtitle">Optionaler Nachweis</div>
+        </div>
+        <div class="step-compare">Letzter Schritt</div>
       </div>
 
       <div class="step-pane-content-grid">
@@ -437,7 +439,7 @@ function renderStep() {
       box.innerHTML = `<img src="${zuletztHochgeladenesBildURL}?t=${Date.now()}" alt="Beleg" />`;
       hint.textContent = "";
     } else {
-      box.innerHTML = ""; // leere weiße Box (durch .image-wrapper)
+      box.innerHTML = `<div class="product-icon-fallback">📷</div>`;
       hint.textContent = "(Kein Bild vorhanden)";
     }
 
@@ -450,7 +452,6 @@ function renderStep() {
     }
   }
 
-  // Indikatoren: N Produkt-Steps + 1 Bild-Step
   indicators.innerHTML = "";
   const total = produktPaare.length + 1;
   for (let i = 0; i < total; i++) {
