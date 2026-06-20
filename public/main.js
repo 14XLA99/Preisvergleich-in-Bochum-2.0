@@ -241,23 +241,63 @@ let zuletztHochgeladenesBildURL = null;
   // 6) Produktdefinition (Stepper)
   // ──────────────────────────────
 
-  // Hilfsfunktion: sicheres Bild (Fallback, wenn URL leer/ungültig)
-  function safeImg(url, label) {
-    const clean = (url || "").trim();
 
-    if (!clean || clean === "...") {
-      return `https://via.placeholder.com/480x300?text=${encodeURIComponent(label || "Produkt")}`;
-    }
-
-    return clean;
+  function formatVergleichLabel(pair) {
+    if (pair.typ === "marke_vs_handelsmarke") return "Marke vs. Handelsmarke";
+    if (pair.typ === "packungsgroesse") return "Packungsgrößenvergleich";
+    return pair.vergleich || "Vergleich";
   }
 
-  // Produktpaare werden jetzt dynamisch je Supermarkt-Kette erzeugt.
-  // Beispiel: LIDL zeigt Milbona/Combino/Crownfield, REWE zeigt ja!/REWE Bio usw.
+  function getRoleLabel(pair, produkt) {
+    if (pair.typ === "marke_vs_handelsmarke") {
+      return produkt.rolle === "handelsmarke" ? "Handelsmarke" : "Markenprodukt";
+    }
+
+    if (pair.typ === "packungsgroesse") {
+      return produkt.rolle === "klein" ? "Kleine Packung" : "Große Packung";
+    }
+
+    return produkt.rolle || "";
+  }
+
+  function getCategoryIcon(pair) {
+    const id = (pair.id || pair.kategorie || "").toLowerCase();
+
+    if (id.includes("milch")) return "🥛";
+    if (id.includes("butter")) return "🧈";
+    if (id.includes("spaghetti")) return "🍝";
+    if (id.includes("cornflakes")) return "🥣";
+    if (id.includes("hafer")) return "🌾";
+    if (id.includes("cola")) return "🥤";
+    if (id.includes("nutella")) return "🍫";
+    if (id.includes("haribo") || id.includes("frucht")) return "🍬";
+    if (id.includes("pringles") || id.includes("chips")) return "🥔";
+    if (id.includes("kaffee")) return "☕";
+
+    return "🛒";
+  }
+
+  function renderProductImage(pair, produkt, displayName) {
+    const clean = (produkt.bildUrl || "").trim();
+
+    if (clean && clean !== "...") {
+      return `
+        <img
+          src="${clean}"
+          alt="${displayName}"
+          onerror="this.style.display='none'; this.parentElement.classList.add('has-icon-fallback'); this.parentElement.innerHTML='<div class=&quot;product-icon-fallback&quot;>${getCategoryIcon(pair)}</div>';"
+        />
+      `;
+    }
+
+    return `<div class="product-icon-fallback">${getCategoryIcon(pair)}</div>`;
+  }
+
+  // Produktpaare werden dynamisch je Supermarkt-Kette erzeugt.
   let produktPaare = [];
 
   // Step-Zustand
-  let currentStep = 0; // 0..9 sind Produktsteps, letzter Step ist Bild-Step
+  let currentStep = 0;
 
   // ──────────────────────────────
   // 7) Stepper-Referenzen (DOM)
