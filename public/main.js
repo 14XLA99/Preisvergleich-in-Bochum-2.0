@@ -6,6 +6,7 @@ import {
 import {
   getAuth, signInAnonymously
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getProduktVergleicheFuerMarkt } from "./produktmatrix.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   // ──────────────────────────────
@@ -231,191 +232,32 @@ function setSizeOverrideForCurrentMarket(originalName, newSizeLabel) {
   
 let currentMarker = null;            // Aktuell angeklickter Marker
 let currentSupermarkt = "";          // Name des aktuellen Markts
+let currentChain = "";               // Kette des aktuellen Markts, z. B. rewe, lidl, aldi
 let zwischenBildFile = null; // Neu gewähltes, noch nicht hochgeladenes Bild
 let zuletztHochgeladenesBildURL = null;
 
-
-  // ──────────────────────────────
+ 
+   // ──────────────────────────────
   // 6) Produktdefinition (Stepper)
   // ──────────────────────────────
- // Hilfsfunktion: sicheres Bild (Fallback, wenn URL leer/ungültig)
-function safeImg(url, label) {
-  const clean = (url || "").trim();
-  if (!clean || clean === "..." ) {
-    return `https://via.placeholder.com/480x300?text=${encodeURIComponent(label || "Produkt")}`;
+
+  // Hilfsfunktion: sicheres Bild (Fallback, wenn URL leer/ungültig)
+  function safeImg(url, label) {
+    const clean = (url || "").trim();
+
+    if (!clean || clean === "...") {
+      return `https://via.placeholder.com/480x300?text=${encodeURIComponent(label || "Produkt")}`;
+    }
+
+    return clean;
   }
-  return clean;
-}
 
-// Genau 10 Paare (je 2 Produkte pro Step) + Vergleichsart
-// Du kannst die bildUrl-Felder später mit echten URLs füllen.
-// Der Stepper funktioniert auch mit dem Fallback.
-const produktGruppen = [
-  // 1) Cola – Mengenvergleich
-  {
-    kategorie: "Cola",
-    vergleich: "Menge",
-    p1: {
-      name: "Coca-Cola 0,5l",
-      beschreibung: "Einzelflasche, 0,5l",
-      bildUrl: "https://img.rewe-static.de/0734457/24847371_digital-image.png?impolicy=s-products&imwidth=540"
-    },
-    p2: {
-      name: "Coca-Cola 1l",
-      beschreibung: "Familienflasche, 1l",
-      bildUrl: "https://img.rewe-static.de/8002630/6079040_digital-image.png?impolicy=s-products&imwidth=540"
-    }
-  },
+  // Produktpaare werden jetzt dynamisch je Supermarkt-Kette erzeugt.
+  // Beispiel: LIDL zeigt Milbona/Combino/Crownfield, REWE zeigt ja!/REWE Bio usw.
+  let produktPaare = [];
 
-  // 2) Nuss-Nougat-Creme – Markenvergleich (Eigen links)
-  {
-    kategorie: "Nuss-Nougat-Creme",
-    vergleich: "Marke",
-    p1: {
-      name: "Nuss-Nougat-Creme 400g",
-      beschreibung: "Eigenmarke",
-      bildUrl: "https://img.rewe-static.de/5590736/2692860_digital-image.png?impolicy=s-products&imwidth=540"
-    },
-    p2: {
-      name: "Nutella 450g",
-      beschreibung: "Marke",
-      bildUrl: "https://img.rewe-static.de/0900852/22057934_digital-image.png?impolicy=s-products&imwidth=540"
-    }
-  },
-
-  // 3) Bananen – Qualität (Konventionell links, Bio rechts)
-  {
-    kategorie: "Bananen",
-    vergleich: "Qualität (Bio vs. Konventionell)",
-    p1: {
-      name: "Bananen lose (1 kg)",
-      beschreibung: "Konventionell",
-      bildUrl: "https://img.rewe-static.de/1028378/21012012_digital-image.png?impolicy=s-products&imwidth=540"
-    },
-    p2: {
-      name: "Bio-Bananen lose (1 kg)",
-      beschreibung: "Bio",
-      bildUrl: "https://img.rewe-static.de/1930502/24568902_digital-image.png?impolicy=s-products&imwidth=540"
-    }
-  },
-
-  // 4) Reis – Menge
-  {
-    kategorie: "Reis",
-    vergleich: "Menge",
-    p1: {
-      name: "Basmatireis 500g",
-      beschreibung: "Standardpackung",
-      bildUrl: "https://img.rewe-static.de/0276692/4774470_digital-image.png?impolicy=s-products&imwidth=540"
-    },
-    p2: {
-      name: "Basmatireis 1kg",
-      beschreibung: "Großpackung",
-      bildUrl: "https://img.rewe-static.de/8928743/40161859_digital-image.png?impolicy=s-products&imwidth=540"
-    }
-  },
-
-  // 5) Margarine – Menge
-  {
-    kategorie: "Margarine",
-    vergleich: "Menge",
-    p1: {
-      name: "Margarine 250g",
-      beschreibung: "Normale Packung",
-      bildUrl: "https://img.rewe-static.de/0793853/5586440_digital-image.png?impolicy=s-products&imwidth=540"
-    },
-    p2: {
-      name: "Margarine 400g",
-      beschreibung: "Großpackung",
-      bildUrl: "https://img.rewe-static.de/1464289/21333031_digital-image.png?impolicy=s-products&imwidth=540"
-    }
-  },
-
-  // 6) Schokolade – Markenvergleich (Eigen links)
-  {
-    kategorie: "Schokolade",
-    vergleich: "Marke",
-    p1: {
-      name: "Schokolade 90/100g",
-      beschreibung: "Eigenmarke",
-      bildUrl: "https://img.rewe-static.de/6790143/2480960_digital-image.png?impolicy=s-products&imwidth=540"
-    },
-    p2: {
-      name: "Milka Alpenmilch 90 g",
-      beschreibung: "Marke",
-      bildUrl: "https://img.rewe-static.de/9891941/48587612_digital-image.png?impolicy=s-products&imwidth=540"
-    }
-  },
-
-  // 7) Spaghetti – Markenvergleich (Eigen links)
-  {
-    kategorie: "Spaghetti",
-    vergleich: "Marke",
-    p1: {
-      name: "Spaghetti 500 g",
-      beschreibung: "Eigenmarke",
-      bildUrl: "https://img.rewe-static.de/0687999/37902543_digital-image.png?impolicy=s-products&imwidth=540"
-    },
-    p2: {
-      name: "Barilla Spaghetti 500 g",
-      beschreibung: "Marke",
-      bildUrl: "https://img.rewe-static.de/1483021/20428098_digital-image.png?impolicy=s-products&imwidth=540"
-    }
-  },
-
-  // 8) Chips – Markenvergleich (Eigen links)
-  {
-    kategorie: "Chips",
-    vergleich: "Marke",
-    p1: {
-      name: "Stapelchips 175 g",
-      beschreibung: "Eigenmarke",
-      bildUrl: "https://img.rewe-static.de/7627894/41711909_digital-image.png?impolicy=s-products&imwidth=540"
-    },
-    p2: {
-      name: "Pringles Paprika 200 g",
-      beschreibung: "Marke",
-      bildUrl: "https://img.rewe-static.de/9214490/45801461_digital-image.png?impolicy=s-products&imwidth=540"
-    }
-  },
-
-  // 9) Fruchtgummi – Menge (zwei Größen derselben Marke)
-  {
-    kategorie: "Fruchtgummi",
-    vergleich: "Menge",
-    p1: {
-      name: "Haribo Goldbären 200 g",
-      beschreibung: "Normale Packung",
-      bildUrl: "https://img.rewe-static.de/9095631/43997869_digital-image.png?impolicy=s-products&imwidth=540"
-    },
-    p2: {
-      name: "Haribo Goldbären 340 g",
-      beschreibung: "Großpackung",
-      bildUrl: "https://img.rewe-static.de/9933528/46743550_digital-image.png?impolicy=s-products&imwidth=540"
-    }
-  },
-
-  // 10) Haferdrink – Markenvergleich (Eigen/Bio links)
-  {
-    kategorie: "Haferdrink",
-    vergleich: "Marke / Preis",
-    p1: {
-      name: "Haferdrink 1 l",
-      beschreibung: "Eigen-/Bio-Marke",
-      bildUrl: "https://img.rewe-static.de/2587736/24675765_digital-image.png?impolicy=s-products&imwidth=540"
-    },
-    p2: {
-      name: "Alpro Haferdrink 1 l",
-      beschreibung: "Marke",
-      bildUrl: "https://img.rewe-static.de/8358463/32623823_digital-image.png?impolicy=s-products&imwidth=540"
-    }
-  }
-];
-
-const produktPaare = produktGruppen; // Alias
-
-// Step-Zustand
-let currentStep = 0; // 0..9 sind Produktsteps, 10 ist Bild-Step
+  // Step-Zustand
+  let currentStep = 0; // 0..9 sind Produktsteps, letzter Step ist Bild-Step
 
   // ──────────────────────────────
   // 7) Stepper-Referenzen (DOM)
@@ -735,9 +577,12 @@ async function ladePreiseAusFirestore() {
 
           const marker = L.marker(markt.coords, { icon }).addTo(map);
 
-          marker.on("click", () => {
-            currentSupermarkt = markt.name;
-            currentMarker     = marker;
+     marker.on("click", () => {
+  currentSupermarkt = markt.name;
+  currentChain      = markt.chain || "";
+  currentMarker     = marker;
+
+  produktPaare = getProduktVergleicheFuerMarkt(currentChain);
 
           // Werte vorbefüllen
               const daten = preisDaten[markt.name] || {};
