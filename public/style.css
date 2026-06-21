@@ -382,10 +382,53 @@ input:invalid:focus{ outline:1px solid red; }
 
 .hidden{ display:none; }
 
-/* Mobil: einspaltig */
-@media (max-width:560px){
-  .step-pane-content-grid{ grid-template-columns:1fr; }
-  #stepperModal .modal-content{ width:95%; }
+/* Mobil & Tablet: einspaltig und flexibel */
+@media (max-width:900px){
+  #stepperModal .modal-content{
+    width:95%;
+    max-height:95vh;
+    padding:1rem;
+  }
+
+  #stepperModal #step-content{
+    height:auto;
+    min-height:0;
+    max-height:calc(95vh - 130px);
+    flex:1 1 auto;
+    overflow-y:auto;
+    padding-right:0;
+  }
+
+  .category-image-wrapper{
+    height:160px;
+    margin-bottom:12px;
+  }
+
+  .step-pane-content-grid{
+    grid-template-columns:1fr;
+    gap:12px;
+  }
+
+  .product-card{
+    padding:10px;
+  }
+
+  .product-card h3{
+    white-space:normal;
+  }
+
+  .step-controls{
+    margin-top:.5rem;
+  }
+
+  .step-indicators{
+    gap:4px;
+  }
+
+  .step-dot{
+    width:9px;
+    height:9px;
+  }
 }
 
 /* ===========================
