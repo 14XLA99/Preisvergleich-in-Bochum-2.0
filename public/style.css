@@ -268,7 +268,7 @@ input:invalid:focus{ outline:1px solid red; }
 }
 
 .product-card--compact{
-  min-height:160px;
+  min-height:0;
 }
 
 .product-card--compact .step-pane-text h3{
@@ -289,8 +289,7 @@ input:invalid:focus{ outline:1px solid red; }
   border-radius:10px;
   padding:12px;
   box-shadow:0 2px 6px rgba(0,0,0,.05);
-  min-height:360px; /* gleiche Höhe für Produkt- & Upload-Karte */
-  min-width:0;      /* verhindert Grid-Überlauf */
+  min-width:0;
 }
 
 /* Titel in der Karte */
