@@ -127,12 +127,14 @@ input:invalid:focus{ outline:1px solid red; }
 
 /* Stepper: Inhalt */
 #stepperModal #step-content{
-  flex:1;
+  height:500px;
+  min-height:500px;
+  max-height:500px;
   overflow-y:auto;
-  margin-bottom:1em;
   overflow-x:hidden;
+  margin-bottom:1em;
   padding-right:1em;
-  min-height:500px;      /* konstante Höhe -> Buttons springen nicht */
+  flex:0 0 500px;
 }
 
 /* Stepper-Steuerung & Dots */
