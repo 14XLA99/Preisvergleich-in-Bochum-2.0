@@ -203,12 +203,33 @@ input:invalid:focus{ outline:1px solid red; }
 .product-role-badge{
   display:inline-block;
   margin-bottom:8px;
-  padding:4px 10px;
+  padding:5px 12px;
   border-radius:999px;
-  background:#eef3f9;
-  color:#0b4a8e;
   font-size:.82rem;
-  font-weight:600;
+  font-weight:700;
+}
+
+/* Marke vs Handelsmarke */
+.product-role-badge.handelsmarke{
+  background:#e9f8ee;
+  color:#0b7a35;
+}
+
+.product-role-badge.marke{
+  background:#e8f1ff;
+  color:#0050c7;
+}
+
+/* Mengenvergleich */
+.product-role-badge.klein{
+  background:#fff4d6;
+  color:#9a6700;
+}
+
+.product-role-badge.gross{
+  background:#f3e8ff;
+  color:#6b21a8;
+}
 }
 
 .product-icon-fallback{
