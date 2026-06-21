@@ -248,7 +248,7 @@ input:invalid:focus{ outline:1px solid red; }
 }
 .category-image-wrapper{
   width:100%;
-  height:190px;
+  height:240px;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -268,7 +268,7 @@ input:invalid:focus{ outline:1px solid red; }
 }
 
 .product-card--compact{
-  min-height:220px;
+  min-height:160px;
 }
 
 .product-card--compact .step-pane-text h3{
