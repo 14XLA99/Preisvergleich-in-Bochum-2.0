@@ -318,16 +318,25 @@ function renderStep() {
 
   if (istProduktStep) {
     const pair = produktPaare[currentStep];
+    const categoryImage = (pair.bildUrl || "").trim();
 
     stepContent.innerHTML = `
       <div class="step-header">
         <div>
           <div class="step-category">
-  ${getCategoryIcon(pair)} ${pair.kategorie || "Produkt"}
-</div>
+            ${getCategoryIcon(pair)} ${pair.kategorie || "Produkt"}
+          </div>
           <div class="step-subtitle">${formatVergleichLabel(pair)}</div>
         </div>
         <div class="step-compare">Schritt ${currentStep + 1} von ${produktPaare.length}</div>
+      </div>
+
+      <div class="category-image-wrapper">
+        ${
+          categoryImage
+            ? `<img src="${categoryImage}" alt="${pair.kategorie || "Produkt"}" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=&quot;product-icon-fallback&quot;>${getCategoryIcon(pair)}</div>';" />`
+            : `<div class="product-icon-fallback">${getCategoryIcon(pair)}</div>`
+        }
       </div>
 
       <div class="step-pane-content-grid">
@@ -340,13 +349,9 @@ function renderStep() {
           const roleLabel = getRoleLabel(pair, p);
 
           return `
-            <div class="product-card">
-            <div class="product-role-badge ${p.rolle}">
-  ${roleLabel}
-</div>
-
-              <div class="image-wrapper">
-                ${renderProductImage(pair, p, displayName)}
+            <div class="product-card product-card--compact">
+              <div class="product-role-badge ${p.rolle}">
+                ${roleLabel}
               </div>
 
               <div class="step-pane-text">
@@ -465,7 +470,6 @@ function renderStep() {
     indicators.appendChild(dot);
   }
 }
-
 
 // ──────────────────────────────
 // 9) Stepper öffnen / schließen / steuern (vollständig, mit Komprimierung und FormData)
