@@ -127,12 +127,13 @@ input:invalid:focus{ outline:1px solid red; }
 
 /* Stepper: Inhalt */
 #stepperModal #step-content{
-  flex:1;
-  overflow-y:auto;
+  height:560px;
+  min-height:560px;
+  max-height:560px;
+  overflow:hidden;
   margin-bottom:1em;
-  overflow-x:hidden;
-  padding-right:1em;
-  min-height:520px;      /* konstante Höhe -> Buttons springen nicht */
+  padding-right:0;
+  flex:0 0 560px;
 }
 
 /* Stepper-Steuerung & Dots */
@@ -230,7 +231,7 @@ input:invalid:focus{ outline:1px solid red; }
   background:#f3e8ff;
   color:#6b21a8;
 }
-}
+
 
 .product-icon-fallback{
   width:100%;
@@ -245,6 +246,34 @@ input:invalid:focus{ outline:1px solid red; }
 
 .image-wrapper.has-icon-fallback{
   background:#f8fafc;
+}
+.category-image-wrapper{
+  width:100%;
+  height:210px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 0 16px 0;
+  padding:12px;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+}
+
+.category-image-wrapper img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}
+
+.product-card--compact{
+  min-height:0;
+}
+
+.product-card--compact .step-pane-text h3{
+  white-space:normal;
 }
 
 /* Zwei Produkte nebeneinander (robust) */
@@ -261,8 +290,7 @@ input:invalid:focus{ outline:1px solid red; }
   border-radius:10px;
   padding:12px;
   box-shadow:0 2px 6px rgba(0,0,0,.05);
-  min-height:360px; /* gleiche Höhe für Produkt- & Upload-Karte */
-  min-width:0;      /* verhindert Grid-Überlauf */
+  min-width:0;
 }
 
 /* Titel in der Karte */
@@ -298,11 +326,10 @@ input:invalid:focus{ outline:1px solid red; }
 
 /* Fallback für generische Bilder im Stepper-Content */
 #step-content img{
-  width:100%;
-  height:220px;
+  max-width:100%;
+  max-height:100%;
   object-fit:contain;
   display:block;
-  margin-bottom:1em;
   background:#fff;
   border:none;
   border-radius:6px;
