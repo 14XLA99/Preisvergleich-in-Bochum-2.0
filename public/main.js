@@ -322,7 +322,9 @@ function renderStep() {
     stepContent.innerHTML = `
       <div class="step-header">
         <div>
-          <div class="step-category">${pair.kategorie || "Produkt"}</div>
+          <div class="step-category">
+  ${getCategoryIcon(pair)} ${pair.kategorie || "Produkt"}
+</div>
           <div class="step-subtitle">${formatVergleichLabel(pair)}</div>
         </div>
         <div class="step-compare">Schritt ${currentStep + 1} von ${produktPaare.length}</div>
@@ -339,7 +341,9 @@ function renderStep() {
 
           return `
             <div class="product-card">
-              <div class="product-role-badge">${roleLabel}</div>
+            <div class="product-role-badge ${p.rolle}">
+  ${roleLabel}
+</div>
 
               <div class="image-wrapper">
                 ${renderProductImage(pair, p, displayName)}
