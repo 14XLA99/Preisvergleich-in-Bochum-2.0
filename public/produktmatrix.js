@@ -68,7 +68,6 @@ export const handelsmarken = {
 };
 
 export const produktVergleiche = [
-  // 1) Milch – Marke vs. Handelsmarke
   {
     id: "milch",
     kategorie: "Milch",
@@ -78,18 +77,17 @@ export const produktVergleiche = [
     p1: {
       rolle: "handelsmarke",
       nameTemplate: "{handelsmarke} Frischmilch 1,5 %, 1 l",
-      beschreibung: "Handelsmarke, 1 l",
+      beschreibung: "Frischmilch, 1,5 % Fett, 1 Liter",
       bildUrl: ""
     },
     p2: {
       rolle: "marke",
       name: "Weihenstephan Frischmilch 1,5 %, 1 l",
-      beschreibung: "Markenprodukt, 1 l",
+      beschreibung: "Frischmilch, 1,5 % Fett, 1 Liter",
       bildUrl: ""
     }
   },
 
-  // 2) Butter – Marke vs. Handelsmarke
   {
     id: "butter",
     kategorie: "Butter",
@@ -99,18 +97,17 @@ export const produktVergleiche = [
     p1: {
       rolle: "handelsmarke",
       nameTemplate: "{handelsmarke} Deutsche Markenbutter 250 g",
-      beschreibung: "Handelsmarke, 250 g",
+      beschreibung: "Deutsche Markenbutter, 250 g",
       bildUrl: ""
     },
     p2: {
       rolle: "marke",
       name: "Kerrygold Butter 250 g",
-      beschreibung: "Markenprodukt, 250 g",
+      beschreibung: "Butter, 250 g",
       bildUrl: ""
     }
   },
 
-  // 3) Spaghetti – Marke vs. Handelsmarke
   {
     id: "spaghetti",
     kategorie: "Spaghetti",
@@ -120,18 +117,17 @@ export const produktVergleiche = [
     p1: {
       rolle: "handelsmarke",
       nameTemplate: "{handelsmarke} Spaghetti 500 g",
-      beschreibung: "Handelsmarke, 500 g",
+      beschreibung: "Hartweizengrießnudeln, 500 g",
       bildUrl: ""
     },
     p2: {
       rolle: "marke",
       name: "Barilla Spaghetti 500 g",
-      beschreibung: "Markenprodukt, 500 g",
+      beschreibung: "Hartweizengrießnudeln, 500 g",
       bildUrl: ""
     }
   },
 
-  // 4) Cornflakes – Marke vs. Handelsmarke
   {
     id: "cornflakes",
     kategorie: "Cornflakes",
@@ -141,18 +137,17 @@ export const produktVergleiche = [
     p1: {
       rolle: "handelsmarke",
       nameTemplate: "{handelsmarke} Cornflakes",
-      beschreibung: "Handelsmarke",
+      beschreibung: "Klassische Cornflakes",
       bildUrl: ""
     },
     p2: {
       rolle: "marke",
       name: "Kellogg's Cornflakes",
-      beschreibung: "Markenprodukt",
+      beschreibung: "Klassische Cornflakes",
       bildUrl: ""
     }
   },
 
-  // 5) Haferdrink – Marke vs. Handelsmarke
   {
     id: "haferdrink",
     kategorie: "Haferdrink",
@@ -162,18 +157,17 @@ export const produktVergleiche = [
     p1: {
       rolle: "handelsmarke",
       nameTemplate: "{handelsmarke} Haferdrink 1 l",
-      beschreibung: "Handelsmarke, 1 l",
+      beschreibung: "Haferdrink, 1 Liter",
       bildUrl: ""
     },
     p2: {
       rolle: "marke",
       name: "Alpro Haferdrink 1 l",
-      beschreibung: "Markenprodukt, 1 l",
+      beschreibung: "Haferdrink, 1 Liter",
       bildUrl: ""
     }
   },
 
-  // 6) Coca-Cola – Packungsgrößenvergleich
   {
     id: "cola",
     kategorie: "Cola",
@@ -182,18 +176,17 @@ export const produktVergleiche = [
     p1: {
       rolle: "klein",
       name: "Coca-Cola 0,5 l",
-      beschreibung: "kleine Flasche, 0,5 l",
+      beschreibung: "Coca-Cola, kleine Flasche, 0,5 Liter",
       bildUrl: ""
     },
     p2: {
       rolle: "gross",
       name: "Coca-Cola 1,0 l",
-      beschreibung: "große Flasche, 1,0 l",
+      beschreibung: "Coca-Cola, große Flasche, 1 Liter",
       bildUrl: ""
     }
   },
 
-  // 7) Nutella – Packungsgrößenvergleich
   {
     id: "nutella",
     kategorie: "Nutella",
@@ -202,18 +195,17 @@ export const produktVergleiche = [
     p1: {
       rolle: "klein",
       name: "Nutella 450 g",
-      beschreibung: "kleines Glas",
+      beschreibung: "Nuss-Nougat-Creme, kleines Glas",
       bildUrl: ""
     },
     p2: {
       rolle: "gross",
       name: "Nutella 750 g",
-      beschreibung: "großes Glas",
+      beschreibung: "Nuss-Nougat-Creme, großes Glas",
       bildUrl: ""
     }
   },
 
-  // 8) Haribo – Packungsgrößenvergleich
   {
     id: "haribo",
     kategorie: "Fruchtgummi",
@@ -222,18 +214,17 @@ export const produktVergleiche = [
     p1: {
       rolle: "klein",
       name: "Haribo Goldbären 175/200 g",
-      beschreibung: "kleine Packung",
+      beschreibung: "Fruchtgummi, kleine Packung",
       bildUrl: ""
     },
     p2: {
       rolle: "gross",
       name: "Haribo Goldbären 340 g",
-      beschreibung: "große Packung",
+      beschreibung: "Fruchtgummi, große Packung",
       bildUrl: ""
     }
   },
 
-  // 9) Pringles – Packungsgrößenvergleich
   {
     id: "pringles",
     kategorie: "Chips",
@@ -242,18 +233,17 @@ export const produktVergleiche = [
     p1: {
       rolle: "klein",
       name: "Pringles Paprika kleine Packung",
-      beschreibung: "kleinere Packung",
+      beschreibung: "Stapelchips Paprika, kleinere Packung",
       bildUrl: ""
     },
     p2: {
       rolle: "gross",
       name: "Pringles Paprika große Packung",
-      beschreibung: "größere Packung",
+      beschreibung: "Stapelchips Paprika, größere Packung",
       bildUrl: ""
     }
   },
 
-  // 10) Kaffee – Packungsgrößenvergleich
   {
     id: "kaffee",
     kategorie: "Kaffee",
@@ -262,13 +252,13 @@ export const produktVergleiche = [
     p1: {
       rolle: "klein",
       name: "Jacobs Krönung Kaffee 250 g",
-      beschreibung: "kleine Packung",
+      beschreibung: "Filterkaffee, gemahlen, kleine Packung",
       bildUrl: ""
     },
     p2: {
       rolle: "gross",
       name: "Jacobs Krönung Kaffee 500 g",
-      beschreibung: "große Packung",
+      beschreibung: "Filterkaffee, gemahlen, große Packung",
       bildUrl: ""
     }
   }
