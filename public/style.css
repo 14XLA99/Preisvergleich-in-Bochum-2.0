@@ -230,7 +230,7 @@ input:invalid:focus{ outline:1px solid red; }
   background:#f3e8ff;
   color:#6b21a8;
 }
-}
+
 
 .product-icon-fallback{
   width:100%;
@@ -245,6 +245,34 @@ input:invalid:focus{ outline:1px solid red; }
 
 .image-wrapper.has-icon-fallback{
   background:#f8fafc;
+}
+.category-image-wrapper{
+  width:100%;
+  height:190px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 0 16px 0;
+  padding:12px;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+}
+
+.category-image-wrapper img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}
+
+.product-card--compact{
+  min-height:220px;
+}
+
+.product-card--compact .step-pane-text h3{
+  white-space:normal;
 }
 
 /* Zwei Produkte nebeneinander (robust) */
