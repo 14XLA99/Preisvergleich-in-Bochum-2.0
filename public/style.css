@@ -127,14 +127,13 @@ input:invalid:focus{ outline:1px solid red; }
 
 /* Stepper: Inhalt */
 #stepperModal #step-content{
-  height:500px;
-  min-height:500px;
-  max-height:500px;
-  overflow-y:auto;
-  overflow-x:hidden;
+  height:560px;
+  min-height:560px;
+  max-height:560px;
+  overflow:hidden;
   margin-bottom:1em;
-  padding-right:1em;
-  flex:0 0 500px;
+  padding-right:0;
+  flex:0 0 560px;
 }
 
 /* Stepper-Steuerung & Dots */
@@ -250,7 +249,7 @@ input:invalid:focus{ outline:1px solid red; }
 }
 .category-image-wrapper{
   width:100%;
-  height:240px;
+  height:210px;
   display:flex;
   align-items:center;
   justify-content:center;
