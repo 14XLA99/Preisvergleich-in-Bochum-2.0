@@ -892,10 +892,11 @@ function setPopupEventListeners() {
     zeitstempel: serverTimestamp()
   };
 
-  await setDoc(doc(db, "preise", markt.replace(/\W+/g, "_")), payload);
-  preisDaten[markt] = payload;
+ await setDoc(doc(db, "preise", markt.replace(/\W+/g, "_")), payload);
+preisDaten[markt] = payload;
 
-  if (currentMarker) currentMarker.setIcon(greyIcon);
+if (currentMarker) {
+  currentMarker.setIcon(getMarkerIconForMarkt(markt, currentChain));
 }
  // ──────────────────────────────
 // 15) Datei komprimieren (JPEG)
