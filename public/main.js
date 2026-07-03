@@ -293,19 +293,27 @@ function getDisplayName(originalName) {
 
 function setSizeOverrideForCurrentMarket(originalName, newSizeLabel) {
   if (!currentSupermarkt) return;
+
   if (!preisDaten[currentSupermarkt]) {
-    preisDaten[currentSupermarkt] = { preise: {}, angebote: {}, bild: null, groessen: {} };
+    preisDaten[currentSupermarkt] = {
+      preise: {},
+      angebote: {},
+      bild: null,
+      groessen: {}
+    };
   }
+
   if (!preisDaten[currentSupermarkt].groessen) {
     preisDaten[currentSupermarkt].groessen = {};
   }
 
   const cleanLabel = (newSizeLabel || "").trim();
-if (!cleanLabel) return;
+  if (!cleanLabel) return;
 
-preisDaten[currentSupermarkt].groessen[originalName] = cleanLabel;
+  preisDaten[currentSupermarkt].groessen[originalName] = cleanLabel;
+}
 
-  function getBaseSizeLabel(produkt) {
+function getBaseSizeLabel(produkt) {
   return produkt?.groesse || "";
 }
 
