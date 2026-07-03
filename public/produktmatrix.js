@@ -1,108 +1,160 @@
 // produktmatrix.js
-// Zentrale Produkt- und Handelsmarkenlogik
+// Zentrale Produkt- und Vergleichslogik
 
 export const handelsmarken = {
   rewe: {
-    milch: "ja!",
-    butter: "ja!",
     spaghetti: "ja!",
-    cornflakes: "ja!",
-    haferdrink: "REWE Bio"
+    haferdrink: "REWE Bio",
+    stapelchips: "ja!",
+    kaffee: "ja!",
+    jodsalz: "ja!"
   },
 
   edeka: {
-    milch: "Gut & Günstig",
-    butter: "Gut & Günstig",
     spaghetti: "Gut & Günstig",
-    cornflakes: "Gut & Günstig",
-    haferdrink: "EDEKA Bio"
+    haferdrink: "EDEKA Bio",
+    stapelchips: "Gut & Günstig",
+    kaffee: "Gut & Günstig",
+    jodsalz: "Gut & Günstig"
   },
 
   aldi: {
-    milch: "Milsani",
-    butter: "Milsani",
     spaghetti: "Cucina Nobile",
-    cornflakes: "Knusperone",
-    haferdrink: "Gut Bio"
+    haferdrink: "Gut Bio",
+    stapelchips: "Sun Snacks",
+    kaffee: "Barissimo Classic",
+    jodsalz: "Le Gusto"
   },
 
   kaufland: {
-    milch: "K-Classic",
-    butter: "K-Classic",
     spaghetti: "K-Classic",
-    cornflakes: "K-Classic",
-    haferdrink: "K-Take it veggie"
+    haferdrink: "K-Take it veggie",
+    stapelchips: "K-Classic",
+    kaffee: "K-Classic",
+    jodsalz: "K-Classic"
   },
 
   netto: {
-    milch: "Gutes Land",
-    butter: "Gutes Land",
     spaghetti: "Mondo Italiano",
-    cornflakes: "Korneck",
-    haferdrink: "BioBio"
+    haferdrink: "BioBio",
+    stapelchips: "Clarkys",
+    kaffee: "Cafèt",
+    jodsalz: "Carat"
   },
 
   penny: {
-    milch: "Penny.",
-    butter: "Penny.",
     spaghetti: "San Fabio",
-    cornflakes: "Penny.",
-    haferdrink: "Naturgut"
+    haferdrink: "Naturgut",
+    stapelchips: "Bravo",
+    kaffee: "San Fabio",
+    jodsalz: "Penny"
   },
 
   lidl: {
-    milch: "Milbona",
-    butter: "Milbona",
     spaghetti: "Combino",
-    cornflakes: "Crownfield",
-    haferdrink: "Vemondo"
+    haferdrink: "Vemondo",
+    stapelchips: "Snack Day",
+    kaffee: "Bellarom",
+    jodsalz: "Kania"
   },
 
   globus: {
-    milch: "Globus",
-    butter: "Globus",
-    spaghetti: "Globus",
-    cornflakes: "Globus",
-    haferdrink: "Globus"
+    spaghetti: "Jeden Tag",
+    haferdrink: "Jeden Tag",
+    stapelchips: "Jeden Tag",
+    kaffee: "Jeden Tag",
+    jodsalz: "Jeden Tag"
   }
 };
 
 export const produktVergleiche = [
   {
-    id: "milch",
-    kategorie: "Milch",
-    vergleich: "Marke",
-    typ: "marke_vs_handelsmarke",
-    handelsmarkeKey: "milch",
-    bildUrl: "/img/Milch.png",
+    id: "volvic",
+    kategorie: "Wasser",
+    vergleich: "Menge",
+    typ: "packungsgroesse",
+    bildUrl: "/img/wasser.png",
     p1: {
-      rolle: "handelsmarke",
-      nameTemplate: "{handelsmarke} Frischmilch 1,5 %, 1 l",
-      beschreibung: "Frischmilch, 1,5 % Fett, 1 Liter"
+      rolle: "klein",
+      name: "Volvic Wasser kleine Flasche",
+      beschreibung: "Volvic, kleinere verfügbare Flasche"
     },
     p2: {
-      rolle: "marke",
-      name: "Weihenstephan Frischmilch 1,5 %, 1 l",
-      beschreibung: "Frischmilch, 1,5 % Fett, 1 Liter"
+      rolle: "gross",
+      name: "Volvic Wasser große Flasche",
+      beschreibung: "Volvic, größere verfügbare Flasche"
     }
   },
 
   {
-    id: "butter",
-    kategorie: "Butter",
-    vergleich: "Marke",
-    typ: "marke_vs_handelsmarke",
-    handelsmarkeKey: "butter",
-    bildUrl: "/img/butter.png",
+    id: "nutella",
+    kategorie: "Nuss-Nougat-Creme",
+    vergleich: "Menge",
+    typ: "packungsgroesse",
+    bildUrl: "/img/nutella.png",
     p1: {
-      rolle: "handelsmarke",
-      nameTemplate: "{handelsmarke} Deutsche Markenbutter 250 g",
-      beschreibung: "Deutsche Markenbutter, 250 g"
+      rolle: "klein",
+      name: "Nutella kleines Glas",
+      beschreibung: "Nutella, kleinere verfügbare Glasgröße"
     },
     p2: {
-      rolle: "marke",
-      name: "Kerrygold Butter 250 g",
-      beschreibung: "Butter, 250 g"
+      rolle: "gross",
+      name: "Nutella großes Glas",
+      beschreibung: "Nutella, größere verfügbare Glasgröße"
+    }
+  },
+
+  {
+    id: "cola",
+    kategorie: "Cola",
+    vergleich: "Menge",
+    typ: "packungsgroesse",
+    bildUrl: "/img/cola.png",
+    p1: {
+      rolle: "klein",
+      name: "Coca-Cola kleine Flasche/Dose",
+      beschreibung: "Coca-Cola, kleinere verfügbare Größe"
+    },
+    p2: {
+      rolle: "gross",
+      name: "Coca-Cola große Flasche",
+      beschreibung: "Coca-Cola, größere verfügbare Größe"
+    }
+  },
+
+  {
+    id: "haribo",
+    kategorie: "Fruchtgummi",
+    vergleich: "Menge",
+    typ: "packungsgroesse",
+    bildUrl: "/img/haribo.png",
+    p1: {
+      rolle: "klein",
+      name: "Haribo kleine Packung",
+      beschreibung: "Haribo, kleinere verfügbare Packung"
+    },
+    p2: {
+      rolle: "gross",
+      name: "Haribo große Packung",
+      beschreibung: "Haribo, größere verfügbare Packung"
+    }
+  },
+
+  {
+    id: "h_milch_fett",
+    kategorie: "H-Milch",
+    vergleich: "Fettgehalt",
+    typ: "fettgehalt",
+    bildUrl: "/img/Milch.png",
+    p1: {
+      rolle: "fettarm",
+      name: "Weihenstephan H-Milch 1,5 %, 1 l",
+      beschreibung: "H-Milch, fettarm, 1,5 % Fett, 1 Liter"
+    },
+    p2: {
+      rolle: "vollmilch",
+      name: "Weihenstephan H-Milch 3,5 %, 1 l",
+      beschreibung: "H-Milch, Vollmilch, 3,5 % Fett, 1 Liter"
     }
   },
 
@@ -126,25 +178,6 @@ export const produktVergleiche = [
   },
 
   {
-    id: "cornflakes",
-    kategorie: "Cornflakes",
-    vergleich: "Marke",
-    typ: "marke_vs_handelsmarke",
-    handelsmarkeKey: "cornflakes",
-    bildUrl: "/img/cornflakes.png",
-    p1: {
-      rolle: "handelsmarke",
-      nameTemplate: "{handelsmarke} Cornflakes",
-      beschreibung: "Klassische Cornflakes"
-    },
-    p2: {
-      rolle: "marke",
-      name: "Kellogg's Cornflakes",
-      beschreibung: "Klassische Cornflakes"
-    }
-  },
-
-  {
     id: "haferdrink",
     kategorie: "Haferdrink",
     vergleich: "Marke",
@@ -164,92 +197,59 @@ export const produktVergleiche = [
   },
 
   {
-    id: "cola",
-    kategorie: "Cola",
-    vergleich: "Menge",
-    typ: "packungsgroesse",
-    bildUrl: "/img/cola.png",
-    p1: {
-      rolle: "klein",
-      name: "Coca-Cola 0,5 l",
-      beschreibung: "Coca-Cola, kleine Flasche, 0,5 Liter"
-    },
-    p2: {
-      rolle: "gross",
-      name: "Coca-Cola 1,0 l",
-      beschreibung: "Coca-Cola, große Flasche, 1 Liter"
-    }
-  },
-
-  {
-    id: "nutella",
-    kategorie: "Nutella",
-    vergleich: "Menge",
-    typ: "packungsgroesse",
-    bildUrl: "/img/nutella.png",
-    p1: {
-      rolle: "klein",
-      name: "Nutella 450 g",
-      beschreibung: "Nuss-Nougat-Creme, kleines Glas"
-    },
-    p2: {
-      rolle: "gross",
-      name: "Nutella 750 g",
-      beschreibung: "Nuss-Nougat-Creme, großes Glas"
-    }
-  },
-
-  {
-    id: "haribo",
-    kategorie: "Fruchtgummi",
-    vergleich: "Menge",
-    typ: "packungsgroesse",
-    bildUrl: "/img/haribo.png",
-    p1: {
-      rolle: "klein",
-      name: "Haribo Goldbären 175/200 g",
-      beschreibung: "Fruchtgummi, kleine Packung"
-    },
-    p2: {
-      rolle: "gross",
-      name: "Haribo Goldbären 340 g",
-      beschreibung: "Fruchtgummi, große Packung"
-    }
-  },
-
-  {
-    id: "pringles",
-    kategorie: "Chips",
-    vergleich: "Menge",
-    typ: "packungsgroesse",
+    id: "stapelchips",
+    kategorie: "Stapelchips",
+    vergleich: "Marke",
+    typ: "marke_vs_handelsmarke",
+    handelsmarkeKey: "stapelchips",
     bildUrl: "/img/chips.png",
     p1: {
-      rolle: "klein",
-      name: "Pringles Paprika kleine Packung",
-      beschreibung: "Stapelchips Paprika, kleinere Packung"
+      rolle: "handelsmarke",
+      nameTemplate: "{handelsmarke} Stapelchips",
+      beschreibung: "Stapelchips, möglichst gleiche Sorte"
     },
     p2: {
-      rolle: "gross",
-      name: "Pringles Paprika große Packung",
-      beschreibung: "Stapelchips Paprika, größere Packung"
+      rolle: "marke",
+      name: "Pringles Stapelchips",
+      beschreibung: "Pringles, möglichst gleiche Sorte"
     }
   },
 
   {
     id: "kaffee",
     kategorie: "Kaffee",
-    vergleich: "Menge",
-    typ: "packungsgroesse",
+    vergleich: "Marke",
+    typ: "marke_vs_handelsmarke",
+    handelsmarkeKey: "kaffee",
     bildUrl: "/img/kaffee.png",
     p1: {
-      rolle: "klein",
-      name: "Jacobs Krönung Kaffee 250 g",
-      beschreibung: "Filterkaffee, gemahlen, kleine Packung"
+      rolle: "handelsmarke",
+      nameTemplate: "{handelsmarke} Kaffee gemahlen 500 g",
+      beschreibung: "Filterkaffee, gemahlen, 500 g"
     },
     p2: {
-      rolle: "gross",
-      name: "Jacobs Krönung Kaffee 500 g",
-      beschreibung: "Filterkaffee, gemahlen, große Packung"
+      rolle: "marke",
+      name: "Jacobs Krönung Kaffee gemahlen 500 g",
+      beschreibung: "Filterkaffee, gemahlen, 500 g"
+    }
+  },
+
+  {
+    id: "jodsalz",
+    kategorie: "Jodsalz",
+    vergleich: "Marke",
+    typ: "marke_vs_handelsmarke",
+    handelsmarkeKey: "jodsalz",
+    bildUrl: "/img/salz.png",
+    p1: {
+      rolle: "handelsmarke",
+      nameTemplate: "{handelsmarke} Jodsalz",
+      beschreibung: "Jodsalz / jodiertes Speisesalz"
+    },
+    p2: {
+      rolle: "marke",
+      name: "Bad Reichenhaller Jodsalz",
+      beschreibung: "Jodsalz / jodiertes Speisesalz"
     }
   }
 ];
