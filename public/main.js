@@ -394,7 +394,13 @@ function getRoleLabel(pair, produkt) {
   const nextBtn       = document.getElementById("nextStep");
   const indicators    = document.getElementById("stepIndicators");
   const closeStepper  = document.getElementById("stepperCloseBtn");
+  const sizeModal = document.getElementById("sizeModal");
+  const sizeModalInput = document.getElementById("sizeModalInput");
+  const sizeModalApply = document.getElementById("sizeModalApply");
+  const sizeModalClose = document.getElementById("sizeModalClose");
 
+  let pendingSizeSide = null;
+  let pendingSizePair = null;
 
 // ————————————————————
 // 8) Step anzeigen
