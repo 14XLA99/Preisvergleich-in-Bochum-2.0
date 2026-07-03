@@ -177,47 +177,61 @@ function getRowLabels(pair){
 }
 // Vorschläge für alternative Größen/Varianten pro Produkt
 function getSizeOptions(pair, p) {
-  const base = (p.name || "").toLowerCase();
-  const inPair = `${pair.kategorie || ""} ${pair.vergleich || ""}`.toLowerCase();
+  const id = (pair.id || "").toLowerCase();
+  const kat = (pair.kategorie || "").toLowerCase();
+  const name = (p.name || "").toLowerCase();
+  const text = `${id} ${kat} ${name}`;
 
-  // Cola
-  if (/cola/.test(base) || /cola/.test(inPair)) {
+  // Volvic / Wasser
+  if (/volvic|wasser/.test(text)) {
+    return ["0,5 l", "0,75 l", "1,0 l", "1,5 l", "2,0 l"];
+  }
+
+  // Coca-Cola
+  if (/cola|coke/.test(text)) {
     return ["0,33 l", "0,5 l", "1,0 l", "1,25 l", "1,5 l", "2,0 l"];
   }
-  // Bananen
-  if (/banan/.test(base) || /banan/.test(inPair)) {
-    return ["500 g", "1 kg", "Bio 1 kg", "Fairtrade 1 kg"];
-  }
-  // Reis
-  if (/reis|basmati/.test(base) || /reis|basmati/.test(inPair)) {
-    return ["500 g", "1 kg", "2 kg"];
-  }
-  // Margarine / Butter-like
-  if (/margarine|butter/.test(base) || /margarine|butter/.test(inPair)) {
-    return ["250 g", "400 g", "500 g"];
-  }
-  // Schokolade
-  if (/schoko|milka/.test(base) || /schoko|milka/.test(inPair)) {
-    return ["90 g", "100 g", "200 g"];
-  }
-  // Spaghetti / Pasta
-  if (/spaghetti|pasta/.test(base) || /spaghetti|pasta/.test(inPair)) {
-    return ["500 g", "1 kg"];
-  }
-  // Chips
-  if (/chips|pringles|stapelchips/.test(base) || /chips|pringles|stapelchips/.test(inPair)) {
-    return ["165 g", "175 g", "200 g"];
-  }
-  // Fruchtgummi
-  if (/haribo|gummi|fruchtgummi/.test(base) || /haribo|gummi|fruchtgummi/.test(inPair)) {
-    return ["175 g", "200 g", "340 g"];
-  }
-  // Haferdrink
-  if (/hafer|oat/.test(base) || /hafer|oat/.test(inPair)) {
-    return ["0,75 l", "1,0 l", "1,5 l (Mehrpack)"];
+
+  // Nutella / Nuss-Nougat-Creme
+  if (/nutella|nougat|nuss/.test(text)) {
+    return ["400 g", "450 g", "500 g", "750 g", "825 g", "1 kg"];
   }
 
-  // Fallback
+  // Haribo / Fruchtgummi
+  if (/haribo|fruchtgummi|gummi/.test(text)) {
+    return ["160 g", "175 g", "200 g", "300 g", "340 g", "360 g"];
+  }
+
+  // H-Milch / Fettgehalt
+  if (/milch|h-milch/.test(text)) {
+    return ["1 l", "0,5 l", "1,5 l"];
+  }
+
+  // Spaghetti
+  if (/spaghetti|pasta/.test(text)) {
+    return ["500 g", "1 kg"];
+  }
+
+  // Haferdrink
+  if (/hafer|oat/.test(text)) {
+    return ["1 l", "0,75 l", "1,5 l"];
+  }
+
+  // Stapelchips / Pringles
+  if (/chips|pringles|stapelchips/.test(text)) {
+    return ["165 g", "175 g", "185 g", "200 g"];
+  }
+
+  // Kaffee
+  if (/kaffee|jacobs/.test(text)) {
+    return ["500 g", "250 g", "1 kg"];
+  }
+
+  // Salz
+  if (/salz|jodsalz/.test(text)) {
+    return ["500 g", "1 kg"];
+  }
+
   return ["Kleinere Menge", "Größere Menge"];
 }
 function getDisplayName(originalName) {
