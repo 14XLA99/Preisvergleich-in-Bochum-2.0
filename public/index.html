@@ -59,7 +59,7 @@
     </div>
   </div>
 
-  <!-- Modal: Größe ändern -->
+<!-- Modal: Größe ändern -->
 <div id="sizeModal" class="modal hidden" role="dialog" aria-modal="true">
   <div class="modal-content size-modal-content">
     <button id="sizeModalClose" class="close-btn" aria-label="Größenänderung schließen">×</button>
@@ -77,7 +77,12 @@
       placeholder="z. B. 1,25 l oder 500 g"
     />
 
-    <button id="sizeModalApply" type="button">Übernehmen</button>
+    <div id="sizeModalStatus" class="size-modal-status"></div>
+
+    <div class="size-modal-actions">
+      <button id="sizeModalApply" type="button">Übernehmen</button>
+      <button id="sizeModalReset" type="button" class="secondary">Standard wiederherstellen</button>
+    </div>
   </div>
 </div>
 
