@@ -401,6 +401,21 @@ input:invalid:focus{ outline:1px solid red; }
 }
 .size-apply:hover{ background:#0056b3; }
 
+.size-hint{
+  margin:4px 0 8px 0;
+  font-size:.85rem;
+  line-height:1.35;
+  color:#555;
+}
+
+.size-input{
+  width:100%;
+  padding:6px 8px;
+  border:1px solid #d7ddea;
+  border-radius:6px;
+  font-size:.9rem;
+}
+
 .hidden{ display:none; }
 
 /* Mobil & Tablet: einspaltig und flexibel */
