@@ -751,11 +751,18 @@ produktPaare.forEach((pair) => {
   const key1 = getProduktKey(pair, "p1");
   const key2 = getProduktKey(pair, "p2");
 
-  pair.p1.preisErfasst = vorhandene[key1] ?? null;
-  pair.p2.preisErfasst = vorhandene[key2] ?? null;
+  neuePreise[key1] =
+    typeof pair.p1.preisErfasst === "number"
+      ? pair.p1.preisErfasst
+      : (pair.p1.preisErfasst ?? null);
 
-  pair.p1.angebot = vorhandeneAngebote[key1] === true;
-  pair.p2.angebot = vorhandeneAngebote[key2] === true;
+  neuePreise[key2] =
+    typeof pair.p2.preisErfasst === "number"
+      ? pair.p2.preisErfasst
+      : (pair.p2.preisErfasst ?? null);
+
+  neueAngebote[key1] = pair.p1.angebot === true;
+  neueAngebote[key2] = pair.p2.angebot === true;
 });
 
 const groessenOverrides = preisDaten[currentSupermarkt]?.groessen || {};
