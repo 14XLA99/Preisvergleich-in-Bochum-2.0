@@ -551,9 +551,16 @@ function renderStep() {
   const total = produktPaare.length + 1;
   for (let i = 0; i < total; i++) {
     const dot = document.createElement("div");
-    dot.className = "step-dot" + (i === currentStep ? " active" : "");
-    dot.onclick = () => goToStep(i);
-    indicators.appendChild(dot);
+   const isFinalStep = i === produktPaare.length;
+
+dot.className =
+  (isFinalStep ? "step-dot step-dot-final" : "step-dot") +
+  (i === currentStep ? " active" : "");
+
+dot.title = isFinalStep ? "Übernehmen" : `Schritt ${i + 1}`;
+dot.onclick = () => goToStep(i);
+
+indicators.appendChild(dot);
   }
 }
 
