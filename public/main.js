@@ -77,9 +77,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }).addTo(map);
     });
 
-  // ──────────────────────────────
-  // 4) Marker-Icons (Standard & Grau)
-  // ──────────────────────────────
  // ──────────────────────────────
 // 4) Marker-Icons (Blau / Grau / Grün)
 // ──────────────────────────────
@@ -190,14 +187,20 @@ function getMarkerIconForMarkt(marktName, chain = "") {
   if (status === "partial") return greyIcon;
   return normalIcon;
 }
-  function buildPairRows(preise){
+function buildPairRows(preise, angebote = {}){
   return produktPaare.map((pair, idx) => {
     const v1 = preise[pair.p1.name];
     const v2 = preise[pair.p2.name];
+    const a1 = angebote[pair.p1.name] === true;
+    const a2 = angebote[pair.p2.name] === true;
+
     const hasAny = v1 != null || v2 != null;
-    const missing = (v1 == null) !== (v2 == null); // genau einer fehlt
-    const absDiff = (typeof v1 === "number" && typeof v2 === "number") ? Math.abs(v1 - v2) : -1;
-    return { idx, pair, v1, v2, hasAny, missing, absDiff };
+    const missing = (v1 == null) !== (v2 == null);
+    const absDiff = (typeof v1 === "number" && typeof v2 === "number")
+      ? Math.abs(v1 - v2)
+      : -1;
+
+    return { idx, pair, v1, v2, a1, a2, hasAny, missing, absDiff };
   }).filter(r => r.hasAny);
 }
 function selectCompactRow(rows){
