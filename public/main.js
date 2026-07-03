@@ -550,8 +550,8 @@ ${getSizeMetaHTML(pair, sideKey, p)}
     stepContent.innerHTML = `
       <div class="step-header">
         <div>
-          <div class="step-category">Belegfoto</div>
-          <div class="step-subtitle">Optionaler Nachweis</div>
+            <div class="step-category">📸 Gruppenselfie</div>
+        <div class="step-subtitle">Foto vor dem Supermarkt</div>
         </div>
         <div class="step-compare">Letzter Schritt</div>
       </div>
@@ -560,7 +560,7 @@ ${getSizeMetaHTML(pair, sideKey, p)}
         <div class="product-card">
           <div class="image-wrapper" id="belegBox"></div>
           <div class="step-pane-text">
-            <h3>Belegfoto (optional)</h3>
+        <h3>Gruppenselfie vor dem Supermarkt</h3>
             <input type="file" id="belegInput" accept="image/*" />
             <p id="belegHint" style="font-size:0.9em;color:#666;margin-top:6px;"></p>
           </div>
@@ -569,7 +569,7 @@ ${getSizeMetaHTML(pair, sideKey, p)}
         <div class="product-card">
           <div class="step-pane-text">
             <h3>Hinweis</h3>
-            <p>Du kannst ein Foto vom Kassenbeleg hochladen. Das hilft, Preise zu verifizieren.</p>
+     <p>Bitte ladet ein Gruppenselfie vor dem besuchten Supermarkt hoch. Das Foto dient als Nachweis, dass eure Gruppe vor Ort war.</p>
             <ul style="margin:0.5em 0 0 1.25em; padding:0; font-size:0.95em; color:#555;">
               <li>Max. 1 Bild pro Markt-Eintrag</li>
               <li>Das Bild wird beim Speichern komprimiert</li>
