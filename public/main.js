@@ -295,8 +295,20 @@ function getDisplayName(originalName) {
 function setSizeOverrideForCurrentMarket(originalName, newSizeLabel) {
   if (!currentSupermarkt) return;
   if (!preisDaten[currentSupermarkt]) {
-    preisDaten[currentSupermarkt] = { preise: {}, bild: null, groessen: {} };
+    preisDaten[currentSupermarkt] = { preise: {}, angebote: {}, bild: null, groessen: {} };
   }
+  if (!preisDaten[currentSupermarkt].groessen) {
+    preisDaten[currentSupermarkt].groessen = {};
+  }
+
+  const base = originalName.replace(/\s*\([\s\S]*?\)\s*$/,"");
+  const cleanLabel = (newSizeLabel || "").trim();
+
+  if (!cleanLabel) return;
+
+  preisDaten[currentSupermarkt].groessen[originalName] = `${base} (${cleanLabel})`;
+}
+  
   if (!preisDaten[currentSupermarkt].groessen) {
     preisDaten[currentSupermarkt].groessen = {};
   }
