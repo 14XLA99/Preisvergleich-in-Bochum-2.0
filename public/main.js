@@ -547,20 +547,25 @@ function renderStep() {
     }
   }
 
-  indicators.innerHTML = "";
-  const total = produktPaare.length + 1;
-  for (let i = 0; i < total; i++) {
-    const dot = document.createElement("div");
-   const isFinalStep = i === produktPaare.length;
+ indicators.innerHTML = "";
+const total = produktPaare.length + 1;
 
-dot.className =
-  (isFinalStep ? "step-dot step-dot-final" : "step-dot") +
-  (i === currentStep ? " active" : "");
+for (let i = 0; i < total; i++) {
+  const dot = document.createElement("div");
+  const isFinalStep = i === produktPaare.length;
 
-dot.title = isFinalStep ? "Übernehmen" : `Schritt ${i + 1}`;
-dot.onclick = () => goToStep(i);
+  dot.className =
+    (isFinalStep ? "step-dot step-dot-final" : "step-dot") +
+    (i === currentStep ? " active" : "");
 
-indicators.appendChild(dot);
+  dot.title = isFinalStep ? "Übernehmen" : `Schritt ${i + 1}`;
+  dot.onclick = () => goToStep(i);
+
+  indicators.appendChild(dot);
+}
+
+nextBtn.textContent =
+  currentStep === produktPaare.length ? "Übernehmen" : "Weiter";
   }
 }
 
