@@ -581,13 +581,16 @@ nextBtn.onclick = async () => {
   if (istProduktStep) {
     // beide Preise auslesen & zwischenspeichern
     const pair = produktPaare[currentStep];
-    [pair.p1, pair.p2].forEach((p, idx) => {
-      const el = document.getElementById(`preisInput_${idx}`);
-      const raw = el ? ("" + el.value).replace(",", ".") : "";
-      const val = parseFloat(raw);
-      p.preisErfasst = Number.isFinite(val) ? val : null;
-    });
+   [pair.p1, pair.p2].forEach((p, idx) => {
+  const preisEl = document.getElementById(`preisInput_${idx}`);
+  const angebotEl = document.getElementById(`angebotInput_${idx}`);
 
+  const raw = preisEl ? ("" + preisEl.value).replace(",", ".") : "";
+  const val = parseFloat(raw);
+
+  p.preisErfasst = Number.isFinite(val) ? val : null;
+  p.angebot = angebotEl ? angebotEl.checked === true : false;
+});
     currentStep++;
     renderStep();
     return;
