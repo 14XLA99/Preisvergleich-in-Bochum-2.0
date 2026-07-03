@@ -470,26 +470,31 @@ function renderStep() {
     const pair = produktPaare[currentStep];
     const categoryImage = (pair.bildUrl || "").trim();
 
-    stepContent.innerHTML = `
-      <div class="step-header">
-        <div>
-          <div class="step-category">
-            ${getCategoryIcon(pair)} ${pair.kategorie || "Produkt"}
-          </div>
-          <div class="step-subtitle">${formatVergleichLabel(pair)}</div>
-        </div>
-        <div class="step-compare">Schritt ${currentStep + 1} von ${produktPaare.length}</div>
+   stepContent.innerHTML = `
+  <div class="step-header step-header--with-image">
+    <div class="step-header-main">
+      <div class="step-category">
+        ${getCategoryIcon(pair)} ${pair.kategorie || "Produkt"}
       </div>
+      <div class="step-subtitle">${formatVergleichLabel(pair)}</div>
+    </div>
 
-      <div class="category-image-wrapper">
-        ${
-          categoryImage
-            ? `<img src="${categoryImage}" alt="${pair.kategorie || "Produkt"}" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=&quot;product-icon-fallback&quot;>${getCategoryIcon(pair)}</div>';" />`
-            : `<div class="product-icon-fallback">${getCategoryIcon(pair)}</div>`
-        }
-      </div>
+    <div class="step-header-visual">
+      ${
+        categoryImage
+          ? `<img
+               src="${categoryImage}"
+               alt="${pair.kategorie || "Produkt"}"
+               onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=&quot;product-icon-fallback step-header-fallback&quot;>${getCategoryIcon(pair)}</div>';"
+             />`
+          : `<div class="product-icon-fallback step-header-fallback">${getCategoryIcon(pair)}</div>`
+      }
+    </div>
 
-      <div class="step-pane-content-grid">
+    <div class="step-compare">Schritt ${currentStep + 1} von ${produktPaare.length}</div>
+  </div>
+
+  <div class="step-pane-content-grid">
         ${[pair.p1, pair.p2].map((p, idx) => {
           const inputId = `preisInput_${idx}`;
           const preset = (typeof p.preisErfasst === "number")
