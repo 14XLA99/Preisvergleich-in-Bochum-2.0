@@ -831,13 +831,18 @@ async function ladePreiseAusFirestore() {
               zwischenBildFile = null; // Reset für Stepper
               
               // Preise aus Firestore in die Paare mappen
-              produktPaare.forEach(pair => {
-                const preis1 = daten.preise?.[pair.p1.name];
-                const preis2 = daten.preise?.[pair.p2.name];
-                pair.p1.preisErfasst = (typeof preis1 === "number") ? preis1 : (preis1 ?? null);
-                pair.p2.preisErfasst = (typeof preis2 === "number") ? preis2 : (preis2 ?? null);
-                pair.p1.angebot = daten.angebote?.[pair.p1.name] === true;
-                pair.p2.angebot = daten.angebote?.[pair.p2.name] === true;
+                produktPaare.forEach((pair) => {
+                const key1 = getProduktKey(pair, "p1");
+                const key2 = getProduktKey(pair, "p2");
+              
+                const preis1 = daten.preise?.[key1];
+                const preis2 = daten.preise?.[key2];
+              
+                pair.p1.preisErfasst = typeof preis1 === "number" ? preis1 : (preis1 ?? null);
+                pair.p2.preisErfasst = typeof preis2 === "number" ? preis2 : (preis2 ?? null);
+              
+                pair.p1.angebot = daten.angebote?.[key1] === true;
+                pair.p2.angebot = daten.angebote?.[key2] === true;
               });
             // Popup anzeigen
             popup
