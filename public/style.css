@@ -232,6 +232,16 @@ input:invalid:focus{ outline:1px solid red; }
   color:#6b21a8;
 }
 
+/* Fettgehaltsvergleich */
+.product-role-badge.fettarm{
+  background:#e0f2fe;
+  color:#0369a1;
+}
+
+.product-role-badge.vollmilch{
+  background:#fef3c7;
+  color:#92400e;
+}
 
 .product-icon-fallback{
   width:100%;
