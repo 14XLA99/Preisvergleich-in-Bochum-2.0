@@ -701,10 +701,11 @@ async function ladePreiseAusFirestore() {
     const data = docSnap.data();
     if (data.markt) {
       preisDaten[data.markt] = {
-        preise: data.preise || {},
-        bild: data.bild || null,
-        groessen: data.groessen || {}   // ⬅️ NEU
-      };
+  preise: data.preise || {},
+  angebote: data.angebote || {},
+  bild: data.bild || null,
+  groessen: data.groessen || {}
+};
     }
   });
   ladeSupermarktMarker();
