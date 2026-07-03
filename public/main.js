@@ -698,11 +698,9 @@ async function ladePreiseAusFirestore() {
     fetch("/supermaerkte.json")
       .then(res => res.json())
       .then(supermaerkte => {
-        supermaerkte.forEach(markt => {
-          const datenVorhanden = preisDaten[markt.name];
-          const icon = datenVorhanden ? greyIcon : normalIcon;
-
-          const marker = L.marker(markt.coords, { icon }).addTo(map);
+ supermaerkte.forEach(markt => {
+  const icon = getMarkerIconForMarkt(markt.name, markt.chain || "");
+  const marker = L.marker(markt.coords, { icon }).addTo(map);
 
      marker.on("click", () => {
   currentSupermarkt = markt.name;
