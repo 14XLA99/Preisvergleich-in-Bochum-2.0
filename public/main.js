@@ -460,15 +460,25 @@ function renderStep() {
   Angebotspreis
 </label>
 
-                <div class="size-row">
-                  <button type="button" class="size-btn" data-side="${idx}">Größe ändern</button>
-                  <div class="size-select hidden" id="sizeSelect_${idx}">
-                    <select id="sizeOption_${idx}">
-                      ${getSizeOptions(pair, p).map(opt => `<option value="${opt}">${opt}</option>`).join("")}
-                    </select>
-                    <button type="button" class="size-apply" data-side="${idx}">Übernehmen</button>
-                  </div>
-                </div>
+               <div class="size-row">
+  <button type="button" class="size-btn" data-side="${idx}">Größe ändern</button>
+
+  <div class="size-select hidden" id="sizeSelect_${idx}">
+    <p class="size-hint">
+      Wenn eine der abgefragten Produktgrößen nicht verfügbar ist, ändern Sie bitte die Größenangabe.
+      Tun Sie das aber bitte nur dann, wenn die vorgegebene Größe tatsächlich nicht verfügbar ist.
+    </p>
+
+    <input
+      id="sizeOption_${idx}"
+      class="size-input"
+      type="text"
+      placeholder="z. B. 1,25 l oder 500 g"
+    />
+
+    <button type="button" class="size-apply" data-side="${idx}">Übernehmen</button>
+  </div>
+</div>
               </div>
             </div>
           `;
@@ -492,7 +502,8 @@ function renderStep() {
         const sel  = document.getElementById(`sizeOption_${side}`);
         if (!sel) return;
 
-        const newLabel = sel.value;
+        const newLabel = sel.value.trim();
+        if (!newLabel) return;
         const original = side === 0 ? pair.p1.name : pair.p2.name;
 
         setSizeOverrideForCurrentMarket(original, newLabel);
