@@ -357,14 +357,15 @@ input:invalid:focus{ outline:1px solid red; }
   padding:8px;
 }
 
-/* Größe ändern – Zeile */
+/* Größe ändern – kompakte Hinweis-/Eingabebox */
 .size-row{
-  margin-top:6px;
+  margin-top:8px;
   display:flex;
   flex-direction:column;
-  gap:6px;
+  gap:8px;
   width:100%;
 }
+
 .size-btn{
   background:#eef3f9;
   color:#0b4a8e;
@@ -374,23 +375,60 @@ input:invalid:focus{ outline:1px solid red; }
   font-size:.85rem;
   width:fit-content;
 }
-.size-btn:hover{ background:#e1ebf7; }
+
+.size-btn:hover{
+  background:#e1ebf7;
+}
+
 .size-select{
   display:flex;
+  flex-direction:column;
   gap:8px;
-  align-items:center;
   width:100%;
+  margin-top:2px;
+  padding:10px;
+  background:#f8fbff;
+  border:1px solid #dbe7f6;
+  border-radius:10px;
 }
-.size-select select{
-  flex:1;
-  padding:4px 6px;
+
+.size-hint-box{
+  background:#fff8e8;
+  border:1px solid #f0d9a6;
+  border-radius:8px;
+  padding:8px 10px;
+}
+
+.size-hint-title{
+  font-size:.82rem;
+  font-weight:700;
+  color:#8a5a00;
+  margin-bottom:4px;
+}
+
+.size-hint-text{
+  font-size:.82rem;
+  line-height:1.35;
+  color:#5f4a1b;
+}
+
+.size-input{
+  width:100%;
+  padding:8px 10px;
   border:1px solid #d7ddea;
   border-radius:6px;
   font-size:.9rem;
-  max-width:100%;
-  min-width:0;        /* darf schrumpfen */
+  background:#fff;
 }
+
+.size-input:focus{
+  outline:none;
+  border-color:#7aa7e0;
+  box-shadow:0 0 0 2px rgba(0,123,255,.12);
+}
+
 .size-apply{
+  align-self:flex-start;
   background:#007bff;
   color:#fff;
   border:none;
@@ -399,7 +437,10 @@ input:invalid:focus{ outline:1px solid red; }
   font-size:.85rem;
   cursor:pointer;
 }
-.size-apply:hover{ background:#0056b3; }
+
+.size-apply:hover{
+  background:#0056b3;
+}
 
 .size-hint{
   margin:4px 0 8px 0;
