@@ -161,10 +161,18 @@ function selectCompactRow(rows){
   return rows[0];
 }
 function getRowLabels(pair){
-  const v = (pair.vergleich || "").toLowerCase();
-  if (v.includes("marke")) return { l1: "Eigen", l2: "Marke" }; // ⬅️ Eigen links
-  if (v.includes("menge")) return { l1: "Klein", l2: "Groß" };
-  if (v.includes("qualität") || v.includes("bio")) return { l1: "Konventionell", l2: "Bio" };
+  if (pair.typ === "marke_vs_handelsmarke") {
+    return { l1: "Eigen", l2: "Marke" };
+  }
+
+  if (pair.typ === "packungsgroesse") {
+    return { l1: "Klein", l2: "Groß" };
+  }
+
+  if (pair.typ === "fettgehalt") {
+    return { l1: "1,5 %", l2: "3,5 %" };
+  }
+
   return { l1: "A", l2: "B" };
 }
 // Vorschläge für alternative Größen/Varianten pro Produkt
