@@ -767,12 +767,13 @@ setTimeout(() => {
 function setPopupContent(name) {
   const d = preisDaten[name] || {};
   const preise = d.preise || {};
+  const angebote = d.angebote || {};
 
   // Zustand initialisieren (kompakt + kein Bild)
   if (!popupState[name]) popupState[name] = { expanded: false, showImage: false };
   const { expanded, showImage } = popupState[name];
 
-  const rows = buildPairRows(preise);
+  const rows = buildPairRows(preise, angebote);
   const total = rows.length;
 
   // Sichtbare Zeilen: 1 kompakt ODER alle
@@ -799,7 +800,7 @@ function setPopupContent(name) {
   // Preis-Zeilen
   if (visibleRows.length > 0) {
     html += `<div class="pp-list ${expanded ? "pp-list--expanded" : ""}">`;
-    html += visibleRows.map(({ pair, v1, v2 }) => {
+    html += visibleRows.map(({ pair, v1, v2, a1, a2 }) => {
       const cat = getPairCategory(pair);
       const { l1, l2 } = getRowLabels(pair);
       const cheaper = (typeof v1 === "number" && typeof v2 === "number")
