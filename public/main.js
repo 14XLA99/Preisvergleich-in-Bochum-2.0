@@ -566,7 +566,6 @@ for (let i = 0; i < total; i++) {
 
 nextBtn.textContent =
   currentStep === produktPaare.length ? "Übernehmen" : "Weiter";
-  }
 }
 
 // ──────────────────────────────
