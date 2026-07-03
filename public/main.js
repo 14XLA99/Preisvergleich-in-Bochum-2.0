@@ -810,9 +810,13 @@ function setPopupContent(name) {
         <div class="pp-row">
           <div class="pp-cat">${cat}</div>
           <div class="pp-values">
-            <span class="pp-pill ${cheaper==="left"?"pp-cheap":""}" title="${getDisplayName(pair.p1.name)}">${l1}: ${fmt(v1)}</span>
-            <span class="pp-delta">${delta(v1, v2)}</span>
-            <span class="pp-pill ${cheaper==="right"?"pp-cheap":""}"title="${getDisplayName(pair.p2.name)}">${l2}: ${fmt(v2)}</span>
+           <span class="pp-pill ${cheaper==="left"?"pp-cheap":""}" title="${getDisplayName(pair.p1.name)}">
+  ${l1}: ${fmt(v1)}${a1 ? " 🔖" : ""}
+</span>
+<span class="pp-delta">${delta(v1, v2)}</span>
+<span class="pp-pill ${cheaper==="right"?"pp-cheap":""}" title="${getDisplayName(pair.p2.name)}">
+  ${l2}: ${fmt(v2)}${a2 ? " 🔖" : ""}
+</span>
           </div>
         </div>
       `;
