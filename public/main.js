@@ -264,40 +264,46 @@ let zuletztHochgeladenesBildURL = null;
   // ──────────────────────────────
 
 
-  function formatVergleichLabel(pair) {
-    if (pair.typ === "marke_vs_handelsmarke") return "Marke vs. Handelsmarke";
-    if (pair.typ === "packungsgroesse") return "Packungsgrößenvergleich";
-    return pair.vergleich || "Vergleich";
+ function formatVergleichLabel(pair) {
+  if (pair.typ === "marke_vs_handelsmarke") return "Marke vs. Handelsmarke";
+  if (pair.typ === "packungsgroesse") return "Packungsgrößenvergleich";
+  if (pair.typ === "fettgehalt") return "Fettgehaltsvergleich";
+  return pair.vergleich || "Vergleich";
+}
+
+function getRoleLabel(pair, produkt) {
+  if (pair.typ === "marke_vs_handelsmarke") {
+    return produkt.rolle === "handelsmarke" ? "Handelsmarke" : "Markenprodukt";
   }
 
-  function getRoleLabel(pair, produkt) {
-    if (pair.typ === "marke_vs_handelsmarke") {
-      return produkt.rolle === "handelsmarke" ? "Handelsmarke" : "Markenprodukt";
-    }
-
-    if (pair.typ === "packungsgroesse") {
-      return produkt.rolle === "klein" ? "Kleine Packung" : "Große Packung";
-    }
-
-    return produkt.rolle || "";
+  if (pair.typ === "packungsgroesse") {
+    return produkt.rolle === "klein" ? "Kleine Packung" : "Große Packung";
   }
 
-  function getCategoryIcon(pair) {
-    const id = (pair.id || pair.kategorie || "").toLowerCase();
-
-    if (id.includes("milch")) return "🥛";
-    if (id.includes("butter")) return "🧈";
-    if (id.includes("spaghetti")) return "🍝";
-    if (id.includes("cornflakes")) return "🥣";
-    if (id.includes("hafer")) return "🌾";
-    if (id.includes("cola")) return "🥤";
-    if (id.includes("nutella")) return "🍫";
-    if (id.includes("haribo") || id.includes("frucht")) return "🍬";
-    if (id.includes("pringles") || id.includes("chips")) return "🥔";
-    if (id.includes("kaffee")) return "☕";
-
-    return "🛒";
+  if (pair.typ === "fettgehalt") {
+    if (produkt.rolle === "fettarm") return "1,5 % Fett";
+    if (produkt.rolle === "vollmilch") return "3,5 % Fett";
   }
+
+  return produkt.rolle || "";
+}
+
+ function getCategoryIcon(pair) {
+  const id = (pair.id || pair.kategorie || "").toLowerCase();
+
+  if (id.includes("milch")) return "🥛";
+  if (id.includes("wasser") || id.includes("volvic")) return "💧";
+  if (id.includes("spaghetti")) return "🍝";
+  if (id.includes("hafer")) return "🌾";
+  if (id.includes("cola")) return "🥤";
+  if (id.includes("nutella") || id.includes("nougat")) return "🍫";
+  if (id.includes("haribo") || id.includes("frucht")) return "🍬";
+  if (id.includes("stapelchips") || id.includes("pringles") || id.includes("chips")) return "🥔";
+  if (id.includes("kaffee")) return "☕";
+  if (id.includes("salz") || id.includes("jodsalz")) return "🧂";
+
+  return "🛒";
+}
 
   function renderProductImage(pair, produkt, displayName) {
     const clean = (produkt.bildUrl || "").trim();
