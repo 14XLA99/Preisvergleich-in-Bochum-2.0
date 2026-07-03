@@ -156,6 +156,40 @@ function getPairCategory(pair){
 
   return "Produkte";
 }
+  function getMarkerStatusForMarkt(marktName, chain = "") {
+  const daten = preisDaten[marktName];
+
+  // Noch gar keine Daten vorhanden
+  if (!daten || !daten.preise) {
+    return "empty";
+  }
+
+  // Produktpaare für diese Kette holen
+  const paare = getProduktVergleicheFuerMarkt(chain);
+
+  let filledCount = 0;
+  const totalCount = paare.length * 2; // pro Vergleich 2 Preise
+
+  paare.forEach((pair) => {
+    const v1 = daten.preise[pair.p1.name];
+    const v2 = daten.preise[pair.p2.name];
+
+    if (typeof v1 === "number" && !Number.isNaN(v1)) filledCount++;
+    if (typeof v2 === "number" && !Number.isNaN(v2)) filledCount++;
+  });
+
+  if (filledCount === 0) return "empty";
+  if (filledCount >= totalCount) return "complete";
+  return "partial";
+}
+
+function getMarkerIconForMarkt(marktName, chain = "") {
+  const status = getMarkerStatusForMarkt(marktName, chain);
+
+  if (status === "complete") return greenIcon;
+  if (status === "partial") return greyIcon;
+  return normalIcon;
+}
   function buildPairRows(preise){
   return produktPaare.map((pair, idx) => {
     const v1 = preise[pair.p1.name];
