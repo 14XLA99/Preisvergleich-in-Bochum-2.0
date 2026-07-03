@@ -155,6 +155,17 @@ input:invalid:focus{ outline:1px solid red; }
   cursor:pointer;
   transition:background .2s;
 }
+
+.step-dot-final{
+  width:14px;
+  height:14px;
+  border-radius:3px;
+}
+
+.step-dot-final.active{
+  background:#0a7a2f;
+}
+
 .step-dot.active{ background:#007bff; }
 
 /* Next-Button visuell hervorheben */
