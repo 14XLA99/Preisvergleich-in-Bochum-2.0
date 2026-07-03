@@ -290,6 +290,9 @@ function getSizeOptions(pair, p) {
 function getDisplayName(originalName) {
   return originalName;
 }
+  function getProduktKey(pair, side) {
+  return `${pair.id}__${side}`;
+}
 
 function setSizeOverrideForCurrentMarket(originalName, newSizeLabel) {
   if (!currentSupermarkt) return;
