@@ -453,29 +453,8 @@ function renderStep() {
   Angebotspreis
 </label>
                 
-                  <div class="size-row">
-                  <button type="button" class="size-btn" data-side="${idx}">Größe ändern</button>
-                
-                  <div class="size-select hidden" id="sizeSelect_${idx}">
-                    <div class="size-hint-box">
-                      <div class="size-hint-title">Hinweis zur Größenänderung</div>
-                      <div class="size-hint-text">
-                        Wenn eine der abgefragten Produktgrößen nicht verfügbar ist, ändern Sie bitte die Größenangabe.
-                        Tun Sie das aber nur dann, wenn die vorgegebene Größe tatsächlich nicht verfügbar ist.
-                      </div>
-                    </div>
-                
-                    <input
-                      id="sizeOption_${idx}"
-                      class="size-input"
-                      type="text"
-                      placeholder="z. B. 1,25 l oder 500 g"
-                    />
-                
-                    <button type="button" class="size-apply" data-side="${idx}">
-                      Übernehmen
-                    </button>
-                  </div>
+                <div class="size-row">
+                <button type="button" class="size-btn" data-side="${idx}">Größe ändern</button>
                 </div>
               </div>
             </div>
