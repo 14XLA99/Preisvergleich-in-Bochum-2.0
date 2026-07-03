@@ -288,8 +288,7 @@ function getSizeOptions(pair, p) {
   return ["Kleinere Menge", "Größere Menge"];
 }
 function getDisplayName(originalName) {
-  const m = preisDaten[currentSupermarkt];
-  return m?.groessen?.[originalName] || originalName;
+  return originalName;
 }
 
 function setSizeOverrideForCurrentMarket(originalName, newSizeLabel) {
@@ -301,12 +300,54 @@ function setSizeOverrideForCurrentMarket(originalName, newSizeLabel) {
     preisDaten[currentSupermarkt].groessen = {};
   }
 
-  const base = originalName.replace(/\s*\([\s\S]*?\)\s*$/,"");
   const cleanLabel = (newSizeLabel || "").trim();
+if (!cleanLabel) return;
 
-  if (!cleanLabel) return;
+preisDaten[currentSupermarkt].groessen[originalName] = cleanLabel;
 
-  preisDaten[currentSupermarkt].groessen[originalName] = `${base} (${cleanLabel})`;
+  function getBaseSizeLabel(produkt) {
+  return produkt?.groesse || "";
+}
+
+function getCurrentSizeLabel(originalName, produkt) {
+  const markt = preisDaten[currentSupermarkt];
+  const override = markt?.groessen?.[originalName];
+
+  if (override && typeof override === "string") {
+    return override;
+  }
+
+  return getBaseSizeLabel(produkt);
+}
+
+function hasSizeOverride(originalName, produkt) {
+  const aktuelle = getCurrentSizeLabel(originalName, produkt);
+  const basis = getBaseSizeLabel(produkt);
+  return !!aktuelle && !!basis && aktuelle !== basis;
+}
+
+function getSizeMetaHTML(originalName, produkt) {
+  const basis = getBaseSizeLabel(produkt);
+  const aktuell = getCurrentSizeLabel(originalName, produkt);
+
+  if (!basis && !aktuell) return "";
+
+  const overrideAktiv = hasSizeOverride(originalName, produkt);
+
+  if (overrideAktiv) {
+    return `
+      <div class="product-size-meta">
+        <span class="size-badge size-badge--changed">Angepasste Größe: ${aktuell}</span>
+        <div class="size-meta-hint">Vorgegeben war: ${basis}</div>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="product-size-meta">
+      <span class="size-badge">Größe: ${aktuell || basis}</span>
+    </div>
+  `;
 }
   
   
@@ -447,12 +488,13 @@ function renderStep() {
               </div>
 
               <div class="step-pane-text">
-                <h3>${displayName}</h3>
-                <p>${p.beschreibung || ""}</p>
+  <h3>${displayName}</h3>
+  ${getSizeMetaHTML(p.name, p)}
+  <p>${p.beschreibung || ""}</p>
 
-         <label>Preis (€):
-  <input id="${inputId}" type="number" step="0.01" inputmode="decimal" value="${preset}" />
-</label>
+  <label>Preis (€):
+    <input id="${inputId}" type="number" step="0.01" inputmode="decimal" value="${preset}" />
+  </label>
 
 <label class="angebot-check">
   <input id="angebotInput_${idx}" type="checkbox" ${p.angebot === true ? "checked" : ""} />
