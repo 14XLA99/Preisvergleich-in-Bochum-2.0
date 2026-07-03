@@ -59,6 +59,28 @@
     </div>
   </div>
 
+  <!-- Modal: Größe ändern -->
+<div id="sizeModal" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="modal-content size-modal-content">
+    <button id="sizeModalClose" class="close-btn" aria-label="Größenänderung schließen">×</button>
+
+    <h3>Größe ändern</h3>
+
+    <p>
+      Wenn eine der abgefragten Produktgrößen nicht verfügbar ist, ändern Sie bitte die Größenangabe.
+      Tun Sie das aber bitte nur dann, wenn die vorgegebene Größe tatsächlich nicht verfügbar ist.
+    </p>
+
+    <input
+      id="sizeModalInput"
+      type="text"
+      placeholder="z. B. 1,25 l oder 500 g"
+    />
+
+    <button id="sizeModalApply" type="button">Übernehmen</button>
+  </div>
+</div>
+
   <!-- Haupt-Skript -->
   <script type="module" src="./main.js"></script>
 </body>
