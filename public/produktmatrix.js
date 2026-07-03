@@ -76,13 +76,15 @@ export const produktVergleiche = [
     bildUrl: "/img/wasser.png",
     p1: {
       rolle: "klein",
-      name: "Volvic Wasser kleine Flasche",
-      beschreibung: "Volvic, kleinere verfügbare Flasche"
+      name: "Volvic Natürliches Mineralwasser",
+      groesse: "0,5 l",
+      beschreibung: "Volvic Mineralwasser in der kleinen PET-Flasche."
     },
     p2: {
       rolle: "gross",
-      name: "Volvic Wasser große Flasche",
-      beschreibung: "Volvic, größere verfügbare Flasche"
+      name: "Volvic Natürliches Mineralwasser",
+      groesse: "1,5 l",
+      beschreibung: "Volvic Mineralwasser in der großen PET-Flasche."
     }
   },
 
@@ -94,13 +96,15 @@ export const produktVergleiche = [
     bildUrl: "/img/nutella.png",
     p1: {
       rolle: "klein",
-      name: "Nutella kleines Glas",
-      beschreibung: "Nutella, kleinere verfügbare Glasgröße"
+      name: "Nutella Nuss-Nougat-Creme",
+      groesse: "500 g",
+      beschreibung: "Nutella im kleineren Glas."
     },
     p2: {
       rolle: "gross",
-      name: "Nutella großes Glas",
-      beschreibung: "Nutella, größere verfügbare Glasgröße"
+      name: "Nutella Nuss-Nougat-Creme",
+      groesse: "750 g",
+      beschreibung: "Nutella im größeren Glas."
     }
   },
 
@@ -112,13 +116,15 @@ export const produktVergleiche = [
     bildUrl: "/img/cola.png",
     p1: {
       rolle: "klein",
-      name: "Coca-Cola kleine Flasche/Dose",
-      beschreibung: "Coca-Cola, kleinere verfügbare Größe"
+      name: "Coca-Cola Classic PET-Flasche",
+      groesse: "0,33 l",
+      beschreibung: "Coca-Cola Classic in der kleinen PET-Flasche. Keine Dose verwenden."
     },
     p2: {
       rolle: "gross",
-      name: "Coca-Cola große Flasche",
-      beschreibung: "Coca-Cola, größere verfügbare Größe"
+      name: "Coca-Cola Classic PET-Flasche",
+      groesse: "1,25 l",
+      beschreibung: "Coca-Cola Classic in der großen PET-Flasche. Keine Dose verwenden."
     }
   },
 
@@ -130,13 +136,15 @@ export const produktVergleiche = [
     bildUrl: "/img/haribo.png",
     p1: {
       rolle: "klein",
-      name: "Haribo kleine Packung",
-      beschreibung: "Haribo, kleinere verfügbare Packung"
+      name: "Haribo Fruchtgummi",
+      groesse: "175 g",
+      beschreibung: "Haribo-Fruchtgummi in einer kleinen Packung. Wenn möglich gleiche Sorte wie bei der großen Packung verwenden."
     },
     p2: {
       rolle: "gross",
-      name: "Haribo große Packung",
-      beschreibung: "Haribo, größere verfügbare Packung"
+      name: "Haribo Fruchtgummi",
+      groesse: "340 g",
+      beschreibung: "Haribo-Fruchtgummi in einer großen Packung. Wenn möglich gleiche Sorte wie bei der kleinen Packung verwenden."
     }
   },
 
@@ -148,13 +156,15 @@ export const produktVergleiche = [
     bildUrl: "/img/Milch.png",
     p1: {
       rolle: "fettarm",
-      name: "Weihenstephan H-Milch 1,5 %, 1 l",
-      beschreibung: "H-Milch, fettarm, 1,5 % Fett, 1 Liter"
+      name: "Weihenstephan H-Milch 1,5 %",
+      groesse: "1 l",
+      beschreibung: "Weihenstephan haltbare Milch mit 1,5 % Fett."
     },
     p2: {
       rolle: "vollmilch",
-      name: "Weihenstephan H-Milch 3,5 %, 1 l",
-      beschreibung: "H-Milch, Vollmilch, 3,5 % Fett, 1 Liter"
+      name: "Weihenstephan H-Milch 3,5 %",
+      groesse: "1 l",
+      beschreibung: "Weihenstephan haltbare Milch mit 3,5 % Fett."
     }
   },
 
@@ -167,13 +177,15 @@ export const produktVergleiche = [
     bildUrl: "/img/spaghetti.png",
     p1: {
       rolle: "handelsmarke",
-      nameTemplate: "{handelsmarke} Spaghetti 500 g",
-      beschreibung: "Hartweizengrießnudeln, 500 g"
+      nameTemplate: "{handelsmarke} Spaghetti",
+      groesse: "500 g",
+      beschreibung: "Spaghetti der Handelsmarke."
     },
     p2: {
       rolle: "marke",
-      name: "Barilla Spaghetti 500 g",
-      beschreibung: "Hartweizengrießnudeln, 500 g"
+      name: "Barilla Spaghetti Nr. 5",
+      groesse: "500 g",
+      beschreibung: "Barilla Spaghetti."
     }
   },
 
@@ -186,13 +198,15 @@ export const produktVergleiche = [
     bildUrl: "/img/haferdrink.png",
     p1: {
       rolle: "handelsmarke",
-      nameTemplate: "{handelsmarke} Haferdrink 1 l",
-      beschreibung: "Haferdrink, 1 Liter"
+      nameTemplate: "{handelsmarke} Haferdrink",
+      groesse: "1 l",
+      beschreibung: "Haferdrink der Handelsmarke, möglichst ungekühlt und natur/klassisch."
     },
     p2: {
       rolle: "marke",
-      name: "Alpro Haferdrink 1 l",
-      beschreibung: "Haferdrink, 1 Liter"
+      name: "Alpro Haferdrink",
+      groesse: "1 l",
+      beschreibung: "Alpro Haferdrink, möglichst natur/klassisch."
     }
   },
 
@@ -206,12 +220,14 @@ export const produktVergleiche = [
     p1: {
       rolle: "handelsmarke",
       nameTemplate: "{handelsmarke} Stapelchips",
-      beschreibung: "Stapelchips, möglichst gleiche Sorte"
+      groesse: "175 g",
+      beschreibung: "Stapelchips der Handelsmarke. Möglichst gleiche Sorte wie Pringles verwenden."
     },
     p2: {
       rolle: "marke",
       name: "Pringles Stapelchips",
-      beschreibung: "Pringles, möglichst gleiche Sorte"
+      groesse: "185 g",
+      beschreibung: "Pringles Stapelchips. Möglichst gleiche Sorte wie die Handelsmarke verwenden."
     }
   },
 
@@ -224,13 +240,15 @@ export const produktVergleiche = [
     bildUrl: "/img/kaffee.png",
     p1: {
       rolle: "handelsmarke",
-      nameTemplate: "{handelsmarke} Kaffee gemahlen 500 g",
-      beschreibung: "Filterkaffee, gemahlen, 500 g"
+      nameTemplate: "{handelsmarke} Kaffee gemahlen",
+      groesse: "500 g",
+      beschreibung: "Gemahlener Filterkaffee der Handelsmarke."
     },
     p2: {
       rolle: "marke",
-      name: "Jacobs Krönung Kaffee gemahlen 500 g",
-      beschreibung: "Filterkaffee, gemahlen, 500 g"
+      name: "Jacobs Krönung Kaffee gemahlen",
+      groesse: "500 g",
+      beschreibung: "Jacobs Krönung Filterkaffee, gemahlen."
     }
   },
 
@@ -244,12 +262,14 @@ export const produktVergleiche = [
     p1: {
       rolle: "handelsmarke",
       nameTemplate: "{handelsmarke} Jodsalz",
-      beschreibung: "Jodsalz / jodiertes Speisesalz"
+      groesse: "500 g",
+      beschreibung: "Jodiertes Speisesalz der Handelsmarke."
     },
     p2: {
       rolle: "marke",
       name: "Bad Reichenhaller Jodsalz",
-      beschreibung: "Jodsalz / jodiertes Speisesalz"
+      groesse: "500 g",
+      beschreibung: "Bad Reichenhaller jodiertes Speisesalz."
     }
   }
 ];
