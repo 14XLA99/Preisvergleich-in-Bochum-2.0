@@ -630,17 +630,15 @@ sizeModalApply.onclick = () => {
   const newLabel = sizeModalInput.value.trim();
   if (!newLabel) return;
 
- const sideKey = pendingSizeSide === 0 ? "p1" : "p2";
-setSizeOverrideForCurrentMarket(pendingSizePair, sideKey, newLabel);
-
-  setSizeOverrideForCurrentMarket(original, newLabel);
+  const sideKey = pendingSizeSide === 0 ? "p1" : "p2";
+  setSizeOverrideForCurrentMarket(pendingSizePair, sideKey, newLabel);
 
   sizeModal.classList.add("hidden");
   pendingSizeSide = null;
   pendingSizePair = null;
 
   renderStep();
-};
+}
 
 sizeModalClose.onclick = () => {
   sizeModal.classList.add("hidden");
