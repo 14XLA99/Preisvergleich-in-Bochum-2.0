@@ -298,7 +298,7 @@ function getDisplayName(originalName) {
   return `${pair.id}__${side}`;
 }
 
-function setSizeOverrideForCurrentMarket(originalName, newSizeLabel) {
+function setSizeOverrideForCurrentMarket(pair, side, newSizeLabel) {
   if (!currentSupermarkt) return;
 
   if (!preisDaten[currentSupermarkt]) {
@@ -317,16 +317,18 @@ function setSizeOverrideForCurrentMarket(originalName, newSizeLabel) {
   const cleanLabel = (newSizeLabel || "").trim();
   if (!cleanLabel) return;
 
-  preisDaten[currentSupermarkt].groessen[originalName] = cleanLabel;
+  const key = getProduktKey(pair, side);
+  preisDaten[currentSupermarkt].groessen[key] = cleanLabel;
 }
 
 function getBaseSizeLabel(produkt) {
   return produkt?.groesse || "";
 }
 
-function getCurrentSizeLabel(originalName, produkt) {
+function getCurrentSizeLabel(pair, side, produkt) {
   const markt = preisDaten[currentSupermarkt];
-  const override = markt?.groessen?.[originalName];
+  const key = getProduktKey(pair, side);
+  const override = markt?.groessen?.[key];
 
   if (override && typeof override === "string") {
     return override;
@@ -335,19 +337,19 @@ function getCurrentSizeLabel(originalName, produkt) {
   return getBaseSizeLabel(produkt);
 }
 
-function hasSizeOverride(originalName, produkt) {
-  const aktuelle = getCurrentSizeLabel(originalName, produkt);
+function hasSizeOverride(pair, side, produkt) {
+  const aktuelle = getCurrentSizeLabel(pair, side, produkt);
   const basis = getBaseSizeLabel(produkt);
   return !!aktuelle && !!basis && aktuelle !== basis;
 }
 
-function getSizeMetaHTML(originalName, produkt) {
+function getSizeMetaHTML(pair, side, produkt) {
   const basis = getBaseSizeLabel(produkt);
-  const aktuell = getCurrentSizeLabel(originalName, produkt);
+  const aktuell = getCurrentSizeLabel(pair, side, produkt);
 
   if (!basis && !aktuell) return "";
 
-  const overrideAktiv = hasSizeOverride(originalName, produkt);
+  const overrideAktiv = hasSizeOverride(pair, side, produkt);
 
   if (overrideAktiv) {
     return `
@@ -493,6 +495,7 @@ function renderStep() {
           const preset = (typeof p.preisErfasst === "number")
             ? p.preisErfasst
             : (p.preisErfasst ?? "");
+          const sideKey = idx === 0 ? "p1" : "p2";
           const displayName = getDisplayName(p.name);
           const roleLabel = getRoleLabel(pair, p);
 
@@ -504,7 +507,7 @@ function renderStep() {
 
               <div class="step-pane-text">
   <h3>${displayName}</h3>
-  ${getSizeMetaHTML(p.name, p)}
+${getSizeMetaHTML(pair, sideKey, p)}
   <p>${p.beschreibung || ""}</p>
 
   <label>Preis (€):
@@ -627,8 +630,8 @@ sizeModalApply.onclick = () => {
   const newLabel = sizeModalInput.value.trim();
   if (!newLabel) return;
 
-  const original =
-    pendingSizeSide === 0 ? pendingSizePair.p1.name : pendingSizePair.p2.name;
+ const sideKey = pendingSizeSide === 0 ? "p1" : "p2";
+setSizeOverrideForCurrentMarket(pendingSizePair, sideKey, newLabel);
 
   setSizeOverrideForCurrentMarket(original, newLabel);
 
