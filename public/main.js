@@ -673,6 +673,8 @@ prevBtn.onclick = () => {
 };
 
 nextBtn.onclick = async () => {
+  saveCurrentProductStepInputs();
+
   const istProduktStep = currentStep < produktPaare.length;
 
  if (istProduktStep) {
@@ -768,11 +770,11 @@ await speicherePreisInFirestore(
       setPopupEventListeners();
     }
 
-    stepperModal.classList.add("hidden");
-    nextBtn.textContent = "Weiter";
+  stepperModal.classList.add("hidden");
+nextBtn.textContent = "Weiter →";
   } catch (err) {
     console.error("❌ Fehler beim Speichern:", err);
-    nextBtn.textContent = "Weiter";
+    nextBtn.textContent = currentStep === produktPaare.length ? "Übernehmen" : "Weiter →";
   }
 };
 
