@@ -323,6 +323,32 @@ input:invalid:focus{ outline:1px solid red; }
   text-overflow:ellipsis;
   white-space:nowrap; /* bei Bedarf entfernen, wenn 2 Zeilen gewünscht */
 }
+.product-size-meta{
+  margin:0 0 .55rem 0;
+}
+
+.size-badge{
+  display:inline-block;
+  padding:4px 10px;
+  border-radius:999px;
+  background:#eef3f9;
+  color:#0b4a8e;
+  font-size:.82rem;
+  font-weight:600;
+  line-height:1.2;
+}
+
+.size-badge--changed{
+  background:#fff4d6;
+  color:#9a6700;
+}
+
+.size-meta-hint{
+  margin-top:4px;
+  font-size:.8rem;
+  color:#666;
+  line-height:1.25;
+}
 
 /* Einheitliche Bildbox für alle Packshots */
 .product-card .image-wrapper{
