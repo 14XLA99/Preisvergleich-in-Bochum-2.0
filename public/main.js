@@ -439,9 +439,14 @@ function renderStep() {
                 <h3>${displayName}</h3>
                 <p>${p.beschreibung || ""}</p>
 
-                <label>Preis (€):
-                  <input id="${inputId}" type="number" step="0.01" inputmode="decimal" value="${preset}" />
-                </label>
+         <label>Preis (€):
+  <input id="${inputId}" type="number" step="0.01" inputmode="decimal" value="${preset}" />
+</label>
+
+<label class="angebot-check">
+  <input id="angebotInput_${idx}" type="checkbox" ${p.angebot === true ? "checked" : ""} />
+  Angebotspreis
+</label>
 
                 <div class="size-row">
                   <button type="button" class="size-btn" data-side="${idx}">Größe ändern</button>
