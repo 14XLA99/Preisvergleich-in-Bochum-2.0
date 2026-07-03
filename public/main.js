@@ -905,11 +905,12 @@ function setPopupEventListeners() {
   // ──────────────────────────────
   // 14) Firestore speichern
   // ──────────────────────────────
- async function speicherePreisInFirestore(markt, preise, bildURL = null, groessen = null) {
+async function speicherePreisInFirestore(markt, preise, bildURL = null, groessen = null, angebote = null) {
   const exist = preisDaten[markt] || {};
   const payload = {
     markt,
     preise: preise || exist.preise || {},
+    angebote: angebote || exist.angebote || {},
     bild: (bildURL !== null ? bildURL : (exist.bild || null)),
     groessen: groessen || exist.groessen || {},   // ⬅️ NEU
     zeitstempel: serverTimestamp()
