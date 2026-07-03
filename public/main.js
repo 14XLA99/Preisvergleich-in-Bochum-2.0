@@ -898,6 +898,7 @@ preisDaten[markt] = payload;
 if (currentMarker) {
   currentMarker.setIcon(getMarkerIconForMarkt(markt, currentChain));
 }
+ }
  // ──────────────────────────────
 // 15) Datei komprimieren (JPEG)
 // ──────────────────────────────
