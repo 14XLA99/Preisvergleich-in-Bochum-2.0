@@ -153,23 +153,24 @@ function getPairCategory(pair){
 
   return "Produkte";
 }
-  function getMarkerStatusForMarkt(marktName, chain = "") {
+ function getMarkerStatusForMarkt(marktName, chain = "") {
   const daten = preisDaten[marktName];
 
-  // Noch gar keine Daten vorhanden
   if (!daten || !daten.preise) {
     return "empty";
   }
 
-  // Produktpaare für diese Kette holen
   const paare = getProduktVergleicheFuerMarkt(chain);
 
   let filledCount = 0;
-  const totalCount = paare.length * 2; // pro Vergleich 2 Preise
+  const totalCount = paare.length * 2;
 
   paare.forEach((pair) => {
-    const v1 = daten.preise[pair.p1.name];
-    const v2 = daten.preise[pair.p2.name];
+    const key1 = getProduktKey(pair, "p1");
+    const key2 = getProduktKey(pair, "p2");
+
+    const v1 = daten.preise[key1];
+    const v2 = daten.preise[key2];
 
     if (typeof v1 === "number" && !Number.isNaN(v1)) filledCount++;
     if (typeof v2 === "number" && !Number.isNaN(v2)) filledCount++;
@@ -189,10 +190,13 @@ function getMarkerIconForMarkt(marktName, chain = "") {
 }
 function buildPairRows(preise, angebote = {}){
   return produktPaare.map((pair, idx) => {
-    const v1 = preise[pair.p1.name];
-    const v2 = preise[pair.p2.name];
-    const a1 = angebote[pair.p1.name] === true;
-    const a2 = angebote[pair.p2.name] === true;
+    const key1 = getProduktKey(pair, "p1");
+    const key2 = getProduktKey(pair, "p2");
+
+    const v1 = preise[key1];
+    const v2 = preise[key2];
+    const a1 = angebote[key1] === true;
+    const a2 = angebote[key2] === true;
 
     const hasAny = v1 != null || v2 != null;
     const missing = (v1 == null) !== (v2 == null);
@@ -743,12 +747,15 @@ nextBtn.onclick = async () => {
    const neuePreise = {};
 const neueAngebote = {};
 
-produktPaare.forEach(({ p1, p2 }) => {
-  neuePreise[p1.name] = (typeof p1.preisErfasst === "number") ? p1.preisErfasst : (p1.preisErfasst ?? null);
-  neuePreise[p2.name] = (typeof p2.preisErfasst === "number") ? p2.preisErfasst : (p2.preisErfasst ?? null);
+produktPaare.forEach((pair) => {
+  const key1 = getProduktKey(pair, "p1");
+  const key2 = getProduktKey(pair, "p2");
 
-  neueAngebote[p1.name] = p1.angebot === true;
-  neueAngebote[p2.name] = p2.angebot === true;
+  pair.p1.preisErfasst = vorhandene[key1] ?? null;
+  pair.p2.preisErfasst = vorhandene[key2] ?? null;
+
+  pair.p1.angebot = vorhandeneAngebote[key1] === true;
+  pair.p2.angebot = vorhandeneAngebote[key2] === true;
 });
 
 const groessenOverrides = preisDaten[currentSupermarkt]?.groessen || {};
