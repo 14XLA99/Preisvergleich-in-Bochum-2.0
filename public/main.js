@@ -740,6 +740,8 @@ async function ladePreiseAusFirestore() {
                 const preis2 = daten.preise?.[pair.p2.name];
                 pair.p1.preisErfasst = (typeof preis1 === "number") ? preis1 : (preis1 ?? null);
                 pair.p2.preisErfasst = (typeof preis2 === "number") ? preis2 : (preis2 ?? null);
+                pair.p1.angebot = daten.angebote?.[pair.p1.name] === true;
+                pair.p2.angebot = daten.angebote?.[pair.p2.name] === true;
               });
             // Popup anzeigen
             popup
