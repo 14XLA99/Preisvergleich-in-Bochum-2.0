@@ -309,13 +309,6 @@ function setSizeOverrideForCurrentMarket(originalName, newSizeLabel) {
   preisDaten[currentSupermarkt].groessen[originalName] = `${base} (${cleanLabel})`;
 }
   
-  if (!preisDaten[currentSupermarkt].groessen) {
-    preisDaten[currentSupermarkt].groessen = {};
-  }
-  // Schreibe nur die Anzeige-Variante („Produkt (neue Größe)“) für diesen Markt
-  const base = originalName.replace(/\s*\([\s\S]*?\)\s*$/,"");
-  preisDaten[currentSupermarkt].groessen[originalName] = `${base} (${newSizeLabel})`;
-}
   
 let currentMarker = null;            // Aktuell angeklickter Marker
 let currentSupermarkt = "";          // Name des aktuellen Markts
