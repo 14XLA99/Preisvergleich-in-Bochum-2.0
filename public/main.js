@@ -469,30 +469,17 @@ function renderStep() {
       </div>
     `;
 
-    stepContent.querySelectorAll(".size-btn").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        const side = btn.getAttribute("data-side");
-        const box  = document.getElementById(`sizeSelect_${side}`);
-        if (box) box.classList.toggle("hidden");
-      });
-    });
+ stepContent.querySelectorAll(".size-btn").forEach(btn => {
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
 
-    stepContent.querySelectorAll(".size-apply").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        const side = parseInt(btn.getAttribute("data-side"), 10);
-        const sel  = document.getElementById(`sizeOption_${side}`);
-        if (!sel) return;
+    pendingSizeSide = parseInt(btn.getAttribute("data-side"), 10);
+    pendingSizePair = produktPaare[currentStep];
 
-        const newLabel = sel.value.trim();
-        if (!newLabel) return;
-        const original = side === 0 ? pair.p1.name : pair.p2.name;
-
-        setSizeOverrideForCurrentMarket(original, newLabel);
-        renderStep();
-      });
-    });
+    sizeModalInput.value = "";
+    sizeModal.classList.remove("hidden");
+  });
+});
 
   } else {
     stepContent.innerHTML = `
@@ -577,7 +564,28 @@ nextBtn.textContent =
 // ──────────────────────────────
 // 9) Stepper öffnen / schließen / steuern (vollständig, mit Komprimierung und FormData)
 // ──────────────────────────────
-function saveCurrentProductStepInputs() {
+sizeModalApply.onclick = () => {
+  if (!pendingSizePair || pendingSizeSide == null) return;
+
+  const newLabel = sizeModalInput.value.trim();
+  if (!newLabel) return;
+
+  const original =
+    pendingSizeSide === 0 ? pendingSizePair.p1.name : pendingSizePair.p2.name;
+
+  setSizeOverrideForCurrentMarket(original, newLabel);
+
+  sizeModal.classList.add("hidden");
+  pendingSizeSide = null;
+  pendingSizePair = null;
+
+  renderStep();
+};
+
+sizeModalClose.onclick = () => {
+  sizeModal.classList.add("hidden");
+};
+  function saveCurrentProductStepInputs() {
   const istProduktStep = currentStep < produktPaare.length;
   if (!istProduktStep) return;
 
