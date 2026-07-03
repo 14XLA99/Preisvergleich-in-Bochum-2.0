@@ -314,10 +314,15 @@ function setSizeOverrideForCurrentMarket(pair, side, newSizeLabel) {
     preisDaten[currentSupermarkt].groessen = {};
   }
 
-  const cleanLabel = (newSizeLabel || "").trim();
-  if (!cleanLabel) return;
-
   const key = getProduktKey(pair, side);
+  const cleanLabel = (newSizeLabel || "").trim();
+
+  // leer = Standard wiederherstellen
+  if (!cleanLabel) {
+    delete preisDaten[currentSupermarkt].groessen[key];
+    return;
+  }
+
   preisDaten[currentSupermarkt].groessen[key] = cleanLabel;
 }
 
@@ -456,6 +461,8 @@ function getRoleLabel(pair, produkt) {
   const sizeModalInput = document.getElementById("sizeModalInput");
   const sizeModalApply = document.getElementById("sizeModalApply");
   const sizeModalClose = document.getElementById("sizeModalClose");
+  const sizeModalStatus = document.getElementById("sizeModalStatus");
+  const sizeModalReset = document.getElementById("sizeModalReset");
 
   let pendingSizeSide = null;
   let pendingSizePair = null;
@@ -534,14 +541,28 @@ ${getSizeMetaHTML(pair, sideKey, p)}
       </div>
     `;
 
- stepContent.querySelectorAll(".size-btn").forEach(btn => {
+stepContent.querySelectorAll(".size-btn").forEach(btn => {
   btn.addEventListener("click", (e) => {
     e.preventDefault();
 
     pendingSizeSide = parseInt(btn.getAttribute("data-side"), 10);
     pendingSizePair = produktPaare[currentStep];
 
-    sizeModalInput.value = "";
+    const sideKey = pendingSizeSide === 0 ? "p1" : "p2";
+    const produkt = pendingSizeSide === 0 ? pendingSizePair.p1 : pendingSizePair.p2;
+
+    const basis = getBaseSizeLabel(produkt);
+    const aktuell = getCurrentSizeLabel(pendingSizePair, sideKey, produkt);
+    const istAngepasst = !!aktuell && !!basis && aktuell !== basis;
+
+    sizeModalInput.value = aktuell || "";
+
+    if (sizeModalStatus) {
+      sizeModalStatus.innerHTML = istAngepasst
+        ? `Aktuell angepasst: <strong>${aktuell}</strong><br>Standard: ${basis}`
+        : `Aktuell Standardgröße: <strong>${basis || aktuell || "-"}</strong>`;
+    }
+
     sizeModal.classList.remove("hidden");
   });
 });
@@ -644,6 +665,18 @@ sizeModalApply.onclick = () => {
 
   renderStep();
 }
+  sizeModalReset.onclick = () => {
+  if (!pendingSizePair || pendingSizeSide == null) return;
+
+  const sideKey = pendingSizeSide === 0 ? "p1" : "p2";
+  setSizeOverrideForCurrentMarket(pendingSizePair, sideKey, "");
+
+  sizeModal.classList.add("hidden");
+  pendingSizeSide = null;
+  pendingSizePair = null;
+
+  renderStep();
+};
 
 sizeModalClose.onclick = () => {
   sizeModal.classList.add("hidden");
