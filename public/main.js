@@ -552,7 +552,7 @@ function renderStep() {
   for (let i = 0; i < total; i++) {
     const dot = document.createElement("div");
     dot.className = "step-dot" + (i === currentStep ? " active" : "");
-    dot.onclick = () => { currentStep = i; renderStep(); };
+    dot.onclick = () => goToStep(i);
     indicators.appendChild(dot);
   }
 }
@@ -560,7 +560,30 @@ function renderStep() {
 // ──────────────────────────────
 // 9) Stepper öffnen / schließen / steuern (vollständig, mit Komprimierung und FormData)
 // ──────────────────────────────
-function openStepper() {
+function saveCurrentProductStepInputs() {
+  const istProduktStep = currentStep < produktPaare.length;
+  if (!istProduktStep) return;
+
+  const pair = produktPaare[currentStep];
+
+  [pair.p1, pair.p2].forEach((p, idx) => {
+    const preisEl = document.getElementById(`preisInput_${idx}`);
+    const angebotEl = document.getElementById(`angebotInput_${idx}`);
+
+    const raw = preisEl ? ("" + preisEl.value).replace(",", ".") : "";
+    const val = parseFloat(raw);
+
+    p.preisErfasst = Number.isFinite(val) ? val : null;
+    p.angebot = angebotEl ? angebotEl.checked === true : false;
+  });
+}
+
+function goToStep(targetStep) {
+  saveCurrentProductStepInputs();
+  currentStep = targetStep;
+  renderStep();
+}
+  function openStepper() {
   currentStep = 0;
   renderStep();
   stepperModal.classList.remove("hidden");
@@ -570,31 +593,17 @@ closeStepper.onclick = () => stepperModal.classList.add("hidden");
 
 prevBtn.onclick = () => {
   if (currentStep > 0) {
-    currentStep--;
-    renderStep();
+    goToStep(currentStep - 1);
   }
 };
 
 nextBtn.onclick = async () => {
   const istProduktStep = currentStep < produktPaare.length;
 
-  if (istProduktStep) {
-    // beide Preise auslesen & zwischenspeichern
-    const pair = produktPaare[currentStep];
-   [pair.p1, pair.p2].forEach((p, idx) => {
-  const preisEl = document.getElementById(`preisInput_${idx}`);
-  const angebotEl = document.getElementById(`angebotInput_${idx}`);
-
-  const raw = preisEl ? ("" + preisEl.value).replace(",", ".") : "";
-  const val = parseFloat(raw);
-
-  p.preisErfasst = Number.isFinite(val) ? val : null;
-  p.angebot = angebotEl ? angebotEl.checked === true : false;
-});
-    currentStep++;
-    renderStep();
-    return;
-  }
+ if (istProduktStep) {
+  goToStep(currentStep + 1);
+  return;
+}
 
   // Bild-Step: Upload (falls neu) + Firestore speichern
   let finaleBildUrl = zuletztHochgeladenesBildURL;
