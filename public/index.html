@@ -91,14 +91,17 @@
   <div class="modal-content group-modal-content">
     <h2>Gruppe auswählen</h2>
 
-    <label for="groupQuickInput">Gruppennummer eingeben</label>
-    <input id="groupQuickInput" type="number" min="1" placeholder="z. B. 1" />
+    <label for="groupInput">Gruppe auswählen</label>
+<input
+  id="groupInput"
+  list="groupOptions"
+  placeholder="z. B. 1 oder Gruppe 1"
+  autocomplete="off"
+/>
 
-    <label for="groupSelect">oder Gruppe auswählen</label>
-    <select id="groupSelect">
-      <option value="">Bitte auswählen</option>
-      <option value="Freie Ansicht">Freie Ansicht / alle Supermärkte</option>
-    </select>
+<datalist id="groupOptions">
+  <option value="Freie Ansicht"></option>
+</datalist>
 
     <button id="groupStartBtn" type="button">Karte öffnen</button>
   </div>
