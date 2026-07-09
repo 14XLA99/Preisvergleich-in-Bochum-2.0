@@ -2,397 +2,711 @@
   {
     "name": "EDEKA Driller Bochum, Castroper Straße",
     "chain": "kaufland",
-    "coords": [51.491500060320874, 7.243451928260085]
+    "coords": [
+      51.491500060320874,
+      7.243451928260085
+    ],
+    "gruppe": "Gruppe 1"
   },
   {
     "name": "ALDI Bochum-Querenburg, Markstraße",
     "chain": "aldi",
-    "coords": [51.453954640333684, 7.247884782228865]
+    "coords": [
+      51.453954640333684,
+      7.247884782228865
+    ],
+    "gruppe": "Gruppe 28"
   },
   {
     "name": "Kaufland Bochum-Wattenscheid, Alter Markt",
     "chain": "kaufland",
-    "coords": [51.48158381101198, 7.130271139901687]
+    "coords": [
+      51.48158381101198,
+      7.130271139901687
+    ],
+    "gruppe": "Gruppe 10"
   },
   {
     "name": "Kaufland Bochum-Langendreer, Ümminger Straße",
     "chain": "kaufland",
-    "coords": [51.469838722614696, 7.293968133810787]
+    "coords": [
+      51.469838722614696,
+      7.293968133810787
+    ],
+    "gruppe": "Gruppe 35"
   },
   {
     "name": "Netto Marken-Discount Bochum, Herner Straße",
     "chain": "netto",
-    "coords": [51.51332613368576, 7.21178629757473]
+    "coords": [
+      51.51332613368576,
+      7.21178629757473
+    ],
+    "gruppe": "Gruppe 31"
   },
   {
     "name": "ALDI Bochum-Dahlhausen, Dr.C.-Otto-Straße",
     "chain": "aldi",
-    "coords": [51.42955407197658, 7.137342245989761]
+    "coords": [
+      51.42955407197658,
+      7.137342245989761
+    ],
+    "gruppe": "Gruppe 20"
   },
   {
     "name": "Penny Markt Bochum-Hiltrop, Wiescherstraße",
     "chain": "penny",
-    "coords": [51.515766542885245, 7.257246815891912]
+    "coords": [
+      51.515766542885245,
+      7.257246815891912
+    ],
+    "gruppe": "Gruppe 4"
   },
   {
     "name": "EDEKA Mader Bochum, Wasserstraße",
     "chain": "edeka",
-    "coords": [51.46400712198588, 7.2370509055134775]
+    "coords": [
+      51.46400712198588,
+      7.2370509055134775
+    ],
+    "gruppe": "Gruppe 32"
   },
   {
     "name": "REWE Bochum, Nörenbergstraße",
     "chain": "rewe",
-    "coords": [51.49197931296453, 7.305008974289657]
+    "coords": [
+      51.49197931296453,
+      7.305008974289657
+    ],
+    "gruppe": "Gruppe 18"
   },
   {
     "name": "REWE Bochum, Hattinger Straße",
     "chain": "rewe",
-    "coords": [51.46233950537871, 7.203820616616776]
+    "coords": [
+      51.46233950537871,
+      7.203820616616776
+    ],
+    "gruppe": "Gruppe 3"
   },
   {
     "name": "Kaufland Bochum-Wattenscheid, Ottostraße",
     "chain": "kaufland",
-    "coords": [51.47225647244444, 7.1196812417518744]
+    "coords": [
+      51.47225647244444,
+      7.1196812417518744
+    ],
+    "gruppe": "Gruppe 34"
   },
   {
     "name": "ALDI Bochum-Langendreer, Unter Straße",
     "chain": "aldi",
-    "coords": [51.47353424395204, 7.317872482229749]
+    "coords": [
+      51.47353424395204,
+      7.317872482229749
+    ],
+    "gruppe": "Gruppe 19"
   },
   {
     "name": "ALDI Bochum-Höntrop, Höntroper Straße",
     "chain": "aldi",
-    "coords": [51.45945322810038, 7.157632746169381]
+    "coords": [
+      51.45945322810038,
+      7.157632746169381
+    ],
+    "gruppe": "Gruppe 27"
   },
   {
     "name": "Lidl Bochum-Langendreer, Ümminger Straße",
     "chain": "lidl",
-    "coords": [51.47697361662983, 7.30105708222991]
+    "coords": [
+      51.47697361662983,
+      7.30105708222991
+    ],
+    "gruppe": "Gruppe 9"
   },
   {
     "name": "ALDI Bochum-Mitte, Blumenstraße",
     "chain": "aldi",
-    "coords": [51.48409725426936, 7.225220351543858]
+    "coords": [
+      51.48409725426936,
+      7.225220351543858
+    ],
+    "gruppe": "Gruppe 36"
   },
   {
     "name": "Penny Markt Bochum-Höntrop, Ginsterweg",
     "chain": "penny",
-    "coords": [51.454633682070494, 7.148135753393125]
+    "coords": [
+      51.454633682070494,
+      7.148135753393125
+    ],
+    "gruppe": "Gruppe 25"
   },
   {
     "name": "Globus Bochum-Riemke, Riemker Straße",
     "chain": "globus",
-    "coords": [51.508137913739915, 7.193420455246089]
+    "coords": [
+      51.508137913739915,
+      7.193420455246089
+    ],
+    "gruppe": "Gruppe 13"
   },
   {
     "name": "EDEKA M & H Bochum-Wiemelhausen, Brenscheder Straße",
     "chain": "edeka",
-    "coords": [51.45063332295118, 7.2309381399003145]
+    "coords": [
+      51.45063332295118,
+      7.2309381399003145
+    ],
+    "gruppe": "Gruppe 39"
   },
   {
     "name": "Penny Markt Bochum, Alleestraße",
     "chain": "penny",
-    "coords": [51.47964896898365, 7.206676012916365]
+    "coords": [
+      51.47964896898365,
+      7.206676012916365
+    ],
+    "gruppe": "Gruppe 16"
   },
   {
     "name": "REWE Bochum-Ehrenfeld, Königsallee",
     "chain": "rewe",
-    "coords": [51.47104018465704, 7.216962028259181]
+    "coords": [
+      51.47104018465704,
+      7.216962028259181
+    ],
+    "gruppe": "Gruppe 29"
   },
   {
     "name": "EDEKA Center Burkowski Bochum, Alleestraße",
     "chain": "edeka",
-    "coords": [51.48159284845633, 7.209556690171068]
+    "coords": [
+      51.48159284845633,
+      7.209556690171068
+    ],
+    "gruppe": "Gruppe 16"
   },
   {
     "name": "EDEKA Foodservice Bochum, Speicherstraße",
     "chain": "edeka",
-    "coords": [51.49834075622298, 7.20391080127518]
+    "coords": [
+      51.49834075622298,
+      7.20391080127518
+    ],
+    "gruppe": "Gruppe 14"
   },
   {
     "name": "REWE Bochum-Innenstadt, Kortumstraße",
     "chain": "rewe",
-    "coords": [51.48243008617802, 7.217686855244958]
+    "coords": [
+      51.48243008617802,
+      7.217686855244958
+    ],
+    "gruppe": "Gruppe 15"
   },
   {
     "name": "REWE Bochum, Am Thie",
     "chain": "rewe",
-    "coords": [51.45764451800997, 7.174575714765981]
+    "coords": [
+      51.45764451800997,
+      7.174575714765981
+    ],
+    "gruppe": "Gruppe 38"
   },
   {
     "name": "REWE Bochum, Hochstraße",
     "chain": "rewe",
-    "coords": [51.48034152500561, 7.140389012916425]
+    "coords": [
+      51.48034152500561,
+      7.140389012916425
+    ],
+    "gruppe": "Gruppe 24"
   },
   {
     "name": "REWE Bochum, Wattenscheider Hellweg",
     "chain": "rewe",
-    "coords": [51.46004460515246, 7.1430833822291815
-]
+    "coords": [
+      51.46004460515246,
+      7.1430833822291815
+    ],
+    "gruppe": "Gruppe 25"
   },
   {
     "name": "EDEKA Mavrici Bochum, Hattinger Straße",
     "chain": "edeka",
-    "coords": [51.4429844631398, 7.193855316330505
-]
+    "coords": [
+      51.4429844631398,
+      7.193855316330505
+    ],
+    "gruppe": "Gruppe 30"
   },
   {
     "name": "EDEKA Mehr Bochum, Zechenstraße",
     "chain": "edeka",
-    "coords": [51.49035519713163, 7.207968341752659]
+    "coords": [
+      51.49035519713163,
+      7.207968341752659
+    ],
+    "gruppe": "Gruppe 22"
   },
   {
     "name": "REWE Bochum, Wittener Straße",
     "chain": "rewe",
-    "coords": [51.4719346651052, 7.250639562491889]
+    "coords": [
+      51.4719346651052,
+      7.250639562491889
+    ],
+    "gruppe": "Gruppe 32"
   },
   {
     "name": "REWE Bochum, Hiltroper Straße",
     "chain": "rewe",
-    "coords": [51.51246867349712, 7.257392780101878]
+    "coords": [
+      51.51246867349712,
+      7.257392780101878
+    ],
+    "gruppe": "Gruppe 37"
   },
   {
     "name": "REWE Bochum, Westenfelder Straße",
     "chain": "rewe",
-    "coords": [51.46512823932227, 7.149999005306025]
+    "coords": [
+      51.46512823932227,
+      7.149999005306025
+    ],
+    "gruppe": "Gruppe 27"
   },
   {
     "name": "REWE Bochum, Lothringer Straße",
     "chain": "rewe",
-    "coords": [51.51962596688602, 7.280757578149296]
+    "coords": [
+      51.51962596688602,
+      7.280757578149296
+    ],
+    "gruppe": "Gruppe 8"
   },
   {
     "name": "Kaufland Bochum-Hofstede, Speicherstraße",
     "chain": "kaufland",
-    "coords": [51.50058586261251, 7.204857885932151]
+    "coords": [
+      51.50058586261251,
+      7.204857885932151
+    ],
+    "gruppe": "Gruppe 14"
   },
   {
     "name": "ALDI Bochum-Wattenscheid, Dickebankstraße",
     "chain": "aldi",
-    "coords": [51.48126881623479, 7.159110285931232]
+    "coords": [
+      51.48126881623479,
+      7.159110285931232
+    ],
+    "gruppe": "Gruppe 23"
   },
   {
     "name": "Netto Marken-Discount Bochum, Dorstener Straße",
     "chain": "netto",
-    "coords": [51.49407681158182, 7.190727267613988]
+    "coords": [
+      51.49407681158182,
+      7.190727267613988
+    ],
+    "gruppe": "Gruppe 17"
   },
   {
     "name": "Netto Marken-Discount Bochum, Lothringer Straße",
     "chain": "netto",
-    "coords": [51.52021985852122, 7.281955551545532]
+    "coords": [
+      51.52021985852122,
+      7.281955551545532
+    ],
+    "gruppe": "Gruppe 8"
   },
   {
     "name": "Netto Marken-Discount Bochum, Stensstraße",
     "chain": "netto",
-    "coords": [51.46222326376143, 7.20318388593034]
+    "coords": [
+      51.46222326376143,
+      7.20318388593034
+    ],
+    "gruppe": "Gruppe 3"
   },
   {
     "name": "Netto Marken-Discount Bochum, Wasserstraße",
     "chain": "netto",
-    "coords": [51.46947738864235, 7.244127758945492]
+    "coords": [
+      51.46947738864235,
+      7.244127758945492
+    ],
+    "gruppe": "Gruppe 21"
   },
   {
     "name": "Netto Marken-Discount Bochum, Günnigfelder Straße",
     "chain": "netto",
-    "coords": [51.493804835157974, 7.144605800985196]
+    "coords": [
+      51.493804835157974,
+      7.144605800985196
+    ],
+    "gruppe": "Gruppe 6"
   },
   {
     "name": "Netto Marken-Discount Bochum, Hattinger Straße",
     "chain": "netto",
-    "coords": [51.429158011511966, 7.165761836198229]
+    "coords": [
+      51.429158011511966,
+      7.165761836198229
+    ],
+    "gruppe": "Gruppe 12"
   },
   {
     "name": "ALDI Bochum-Wattenscheid, Hansastraße",
     "chain": "aldi",
-    "coords": [51.48371295625282, 7.147860282230219]
+    "coords": [
+      51.48371295625282,
+      7.147860282230219
+    ],
+    "gruppe": "Gruppe 24"
   },
   {
     "name": "ALDI Bochum-Günnigfeld, Günnigfelder Straße",
     "chain": "aldi",
-    "coords": [51.49587186941756, 7.145805155245555]
+    "coords": [
+      51.49587186941756,
+      7.145805155245555
+    ],
+    "gruppe": "Gruppe 39"
   },
   {
     "name": "ALDI Bochum-Wattenscheid, Krayer Straße",
     "chain": "aldi",
-    "coords": [51.48332291449902, 7.107079983422261]
+    "coords": [
+      51.48332291449902,
+      7.107079983422261
+    ],
+    "gruppe": "Gruppe 34"
   },
   {
     "name": "ALDI Bochum-Werne, Werner Hellweg",
     "chain": "aldi",
-    "coords": [51.49310920442601, 7.309414355245383]
+    "coords": [
+      51.49310920442601,
+      7.309414355245383
+    ],
+    "gruppe": "Gruppe 18"
   },
   {
     "name": "ALDI Bochum, Amtmann-Ibing-Straße",
     "chain": "aldi",
-    "coords": [51.51836000500778, 7.2810026515454584]
+    "coords": [
+      51.51836000500778,
+      7.2810026515454584
+    ],
+    "gruppe": "Gruppe 7"
   },
   {
     "name": "ALDI Bochum, Riemker Straße",
     "chain": "aldi",
-    "coords": [51.50603000378235, 7.194554468252995]
+    "coords": [
+      51.50603000378235,
+      7.194554468252995
+    ],
+    "gruppe": "Gruppe 13"
   },
   {
     "name": "ALDI Bochum-Grumme, Castroper Straße",
     "chain": "aldi",
-    "coords": [51.491224598601235, 7.243317039902148]
+    "coords": [
+      51.491224598601235,
+      7.243317039902148
+    ],
+    "gruppe": "Gruppe 1"
   },
   {
     "name": "ALDI Bochum-Weitmar, An der Landwehr",
     "chain": "aldi",
-    "coords": [51.46669613060043, 7.204034548091569]
+    "coords": [
+      51.46669613060043,
+      7.204034548091569
+    ],
+    "gruppe": "Gruppe 29"
   },
   {
     "name": "REWE Bochum, Querenburger Höhe",
     "chain": "rewe",
-    "coords": [51.44835420632602, 7.257735841041357]
+    "coords": [
+      51.44835420632602,
+      7.257735841041357
+    ],
+    "gruppe": "Gruppe 28"
   },
   {
     "name": "Netto Marken-Discount Bochum, Markstraße",
     "chain": "netto",
-    "coords": [51.44176391104331, 7.213256000848813]
+    "coords": [
+      51.44176391104331,
+      7.213256000848813
+    ],
+    "gruppe": "Gruppe 5"
   },
   {
     "name": "Lidl Bochum-Mitte, Konrad-Adenauer-Platz",
     "chain": "lidl",
-    "coords": [51.476095437066284, 7.2145414858299235]
+    "coords": [
+      51.476095437066284,
+      7.2145414858299235
+    ],
+    "gruppe": "Gruppe 11"
   },
   {
     "name": "Lidl Bochum-Wattenscheid, Heidestraße",
     "chain": "lidl",
-    "coords": [51.48000397158459, 7.165724165656697]
+    "coords": [
+      51.48000397158459,
+      7.165724165656697
+    ],
+    "gruppe": "Gruppe 23"
   },
   {
     "name": "Lidl Bochum-Gerthe, Amtmann-Ibing-Straße",
     "chain": "lidl",
-    "coords": [51.51840764636127, 7.282155200158607]
+    "coords": [
+      51.51840764636127,
+      7.282155200158607
+    ],
+    "gruppe": "Gruppe 7"
   },
   {
     "name": "Lidl Bochum - Linden, Welper Straße",
     "chain": "lidl",
-    "coords": [51.42846227446694, 7.170117451806969]
+    "coords": [
+      51.42846227446694,
+      7.170117451806969
+    ],
+    "gruppe": "Gruppe 33"
   },
   {
     "name": "Lidl Bochum-Grumme, Vierhausstraße",
     "chain": "lidl",
-    "coords": [51.49897967366879, 7.222615647455203]
+    "coords": [
+      51.49897967366879,
+      7.222615647455203
+    ],
+    "gruppe": "Gruppe 36"
   },
   {
     "name": "Lidl Bochum-Hofstede, Poststraße",
     "chain": "lidl",
-    "coords": [51.50296463255708, 7.203745266220245]
+    "coords": [
+      51.50296463255708,
+      7.203745266220245
+    ],
+    "gruppe": "Gruppe 31"
   },
   {
     "name": "Lidl Bochum-Hamme, Freudenbergstraße",
     "chain": "lidl",
-    "coords": [51.49679160315434, 7.190312692022295]
+    "coords": [
+      51.49679160315434,
+      7.190312692022295
+    ],
+    "gruppe": "Gruppe 17"
   },
   {
     "name": "Lidl Bochum-Wattenscheid, Lyrenstraße",
     "chain": "lidl",
-    "coords": [51.482396549122114, 7.128501841752327]
+    "coords": [
+      51.482396549122114,
+      7.128501841752327
+    ],
+    "gruppe": "Gruppe 10"
   },
   {
     "name": "Lidl Bochum-Laer, Sudbeckenpfad",
     "chain": "lidl",
-    "coords": [51.47551940335481, 7.271759511065633]
+    "coords": [
+      51.47551940335481,
+      7.271759511065633
+    ],
+    "gruppe": "Gruppe 35"
   },
   {
     "name": "Lidl Bochum-Dahlhausen, Dr.-C.-Otto-Straße",
     "chain": "lidl",
-    "coords": [51.427195225158144, 7.141273945392116]
+    "coords": [
+      51.427195225158144,
+      7.141273945392116
+    ],
+    "gruppe": "Gruppe 20"
   },
   {
     "name": "ALDI Bochum-Somborn, Lütgendortmunder Hellweg",
     "chain": "aldi",
-    "coords": [51.49490714880941, 7.334502044803997]
+    "coords": [
+      51.49490714880941,
+      7.334502044803997
+    ],
+    "gruppe": "Gruppe 40"
   },
   {
     "name": "Lidl Bochum-Günnigfeld, Günnigfelder Straße",
     "chain": "lidl",
-    "coords": [51.49367975755937, 7.1436130860897675]
+    "coords": [
+      51.49367975755937,
+      7.1436130860897675
+    ],
+    "gruppe": "Gruppe 6"
   },
   {
     "name": "Netto Marken-Discount Bochum, Hasenwinkler Straße",
     "chain": "netto",
-    "coords": [51.43964137510987, 7.158317043600938]
+    "coords": [
+      51.43964137510987,
+      7.158317043600938
+    ],
+    "gruppe": "Gruppe 33"
   },
   {
     "name": "Netto Marken-Discount Bochum, Alte Bahnhofstraße",
     "chain": "netto",
-    "coords": [51.47052384650782, 7.31704918573393]
+    "coords": [
+      51.47052384650782,
+      7.31704918573393
+    ],
+    "gruppe": "Gruppe 19"
   },
   {
     "name": "ALDI Bochum-Weitmar, Markstraße",
     "chain": "aldi",
-    "coords": [51.44136501552486, 7.212585125683469]
+    "coords": [
+      51.44136501552486,
+      7.212585125683469
+    ],
+    "gruppe": "Gruppe 5"
   },
   {
     "name": "Netto Marken-Discount Bochum, Alte Bahnhofstraße",
     "chain": "netto",
-    "coords": [51.477645880691014, 7.302503385931076]
+    "coords": [
+      51.477645880691014,
+      7.302503385931076
+    ],
+    "gruppe": "Gruppe 9"
   },
   {
     "name": "Lidl Bochum-Stahlhausen, Kohlenstraße",
     "chain": "lidl",
-    "coords": [51.475242341898586, 7.192903433811019]
+    "coords": [
+      51.475242341898586,
+      7.192903433811019
+    ],
+    "gruppe": "Gruppe 38"
   },
   {
     "name": "REWE Bochum-Linden, Hattinger Straße",
     "chain": "rewe",
-    "coords": [51.42780005046178, 7.163533281741493]
+    "coords": [
+      51.42780005046178,
+      7.163533281741493
+    ],
+    "gruppe": "Gruppe 12"
   },
   {
     "name": "REWE Bochum, Castroper Hellweg",
     "chain": "rewe",
-    "coords": [51.49747259669318, 7.258077049409127]
+    "coords": [
+      51.49747259669318,
+      7.258077049409127
+    ],
+    "gruppe": "Gruppe 26"
   },
   {
     "name": "Netto City Bochum, Brenscheder Straße",
     "chain": "netto",
-    "coords": [51.452030718909114, 7.231232968079096]
+    "coords": [
+      51.452030718909114,
+      7.231232968079096
+    ],
+    "gruppe": "Gruppe 2"
   },
   {
     "name": "REWE Bochum-Weitmar, Karl-Friedrich-Straße",
     "chain": "rewe",
-    "coords": [51.44034123126837, 7.211647142531921]
+    "coords": [
+      51.44034123126837,
+      7.211647142531921
+    ],
+    "gruppe": "Gruppe 30"
   },
   {
     "name": "Penny Markt Bochum-Harpen, Harpener Hellweg",
     "chain": "penny",
-    "coords": [51.50030169561176, 7.280242022971593]
+    "coords": [
+      51.50030169561176,
+      7.280242022971593
+    ],
+    "gruppe": "Gruppe 37"
   },
   {
     "name": "REWE Bochum-Innenstadt, Kortumstraße",
     "chain": "rewe",
-    "coords": [51.477213960674995, 7.216476771370883]
+    "coords": [
+      51.477213960674995,
+      7.216476771370883
+    ],
+    "gruppe": "Gruppe 11"
   },
   {
     "name": "REWE Bochum-Wiemelhausen, Brenscheder Straße",
     "chain": "rewe",
-    "coords": [51.4516614543095, 7.231275365857577]
+    "coords": [
+      51.4516614543095,
+      7.231275365857577
+    ],
+    "gruppe": "Gruppe 2"
   },
   {
     "name": "Lidl Bochum, Wiescherstraße",
-    "coords": [51.51623635320144, 7.257325125419571]
+    "coords": [
+      51.51623635320144,
+      7.257325125419571
+    ],
+    "gruppe": "Gruppe 4"
   },
   {
     "name": "Penny Markt Bochum-Innenstadt, Castroper Straße",
     "chain": "penny",
-    "coords": [51.49262234573396, 7.251452661711999]
+    "coords": [
+      51.49262234573396,
+      7.251452661711999
+    ],
+    "gruppe": "Gruppe 26"
   },
   {
     "name": "Penny Markt Bochum, Herner Straße",
     "chain": "penny",
-    "coords": [51.49227683558669, 7.212894779839644]
+    "coords": [
+      51.49227683558669,
+      7.212894779839644
+    ],
+    "gruppe": "Gruppe 22"
   },
   {
     "name": "ALDI Bochum-Altenbochum, Lindengraben",
     "chain": "aldi",
-    "coords": [51.473045912060805, 7.244169082229737]
+    "coords": [
+      51.473045912060805,
+      7.244169082229737
+    ],
+    "gruppe": "Gruppe 21"
   },
   {
     "name": "REWE Bochum, Viktoriastraße",
     "chain": "rewe",
-    "coords": [51.48020210647773, 7.215643776290933]
+    "coords": [
+      51.48020210647773,
+      7.215643776290933
+    ],
+    "gruppe": "Gruppe 15"
   }
 ]
