@@ -748,7 +748,7 @@ justify-self:end;
   background:#fff;
 }
 
-.group-modal-content button{
+.group-modal-content > button{
   margin-top:8px;
   width:100%;
 }
@@ -774,13 +774,15 @@ justify-self:end;
   top:0;
   right:0;
   height:100%;
-  width:42px;
+  width:42px !important;
+  margin:0;
   padding:0;
   border-radius:0 8px 8px 0;
   background:#eef3f9;
   color:#0b4a8e;
   border:1px solid #d7ddea;
   border-left:none;
+  z-index:2;
 }
 
 .group-toggle-btn:hover{
