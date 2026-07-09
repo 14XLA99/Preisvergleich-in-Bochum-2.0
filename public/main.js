@@ -466,8 +466,8 @@ function getRoleLabel(pair, produkt) {
   const sizeModalStatus = document.getElementById("sizeModalStatus");
   const sizeModalReset = document.getElementById("sizeModalReset");
   const groupModal = document.getElementById("groupModal");
-  const groupQuickInput = document.getElementById("groupQuickInput");
-  const groupSelect = document.getElementById("groupSelect");
+  const groupInput = document.getElementById("groupInput");
+  const groupOptions = document.getElementById("groupOptions");
   const groupStartBtn = document.getElementById("groupStartBtn");
 
   let pendingSizeSide = null;
@@ -870,17 +870,17 @@ function fuelleGruppenDropdown(supermaerkte) {
     return na - nb;
   });
 
-  groupSelect.innerHTML = `
-    <option value="">Bitte auswählen</option>
-    <option value="Freie Ansicht">Freie Ansicht / alle Supermärkte</option>
-    ${gruppen.map(gruppe => `<option value="${gruppe}">${gruppe}</option>`).join("")}
+  groupOptions.innerHTML = `
+    <option value="Freie Ansicht"></option>
+    ${gruppen.map(gruppe => `<option value="${gruppe}"></option>`).join("")}
   `;
 }
 
 function oeffneGruppenauswahl() {
   if (aktuelleGruppe) {
-    groupQuickInput.value = aktuelleGruppe.match(/\d+/)?.[0] || "";
-    groupSelect.value = aktuelleGruppe;
+    groupInput.value = aktuelleGruppe;
+  } else {
+    groupInput.value = "";
   }
 
   groupModal.classList.remove("hidden");
@@ -894,26 +894,17 @@ function starteMitGruppe(gruppe) {
 }
 
 function initGruppenauswahl() {
-  groupQuickInput.addEventListener("input", () => {
-    const gruppe = normalisiereGruppeAusInput(groupQuickInput.value);
-    if (gruppe) groupSelect.value = gruppe;
-  });
+  groupInput.addEventListener("input", () => {
+    const raw = groupInput.value.trim();
 
-  groupSelect.addEventListener("change", () => {
-    if (groupSelect.value === "Freie Ansicht") {
-      groupQuickInput.value = "";
-      return;
+    // Wenn nur eine Zahl eingegeben wird, direkt in "Gruppe X" umwandeln
+    if (/^\d+$/.test(raw)) {
+      groupInput.value = `Gruppe ${parseInt(raw, 10)}`;
     }
-
-    const nummer = groupSelect.value.match(/\d+/)?.[0] || "";
-    groupQuickInput.value = nummer;
   });
 
   groupStartBtn.onclick = () => {
-    const ausInput = normalisiereGruppeAusInput(groupQuickInput.value);
-    const ausDropdown = groupSelect.value;
-
-    const gruppe = ausDropdown || ausInput;
+    const gruppe = normalisiereGruppeAusInput(groupInput.value);
 
     if (!gruppe) {
       alert("Bitte wähle eine Gruppe aus oder gib eine Gruppennummer ein.");
