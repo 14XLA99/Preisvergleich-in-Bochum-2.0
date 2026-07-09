@@ -848,12 +848,17 @@ function normalisiereGruppeAusInput(value) {
 
   if (!raw) return "";
 
-  if (raw === "Freie Ansicht") {
+  if (raw.toLowerCase() === "freie ansicht") {
     return "Freie Ansicht";
   }
 
   if (/^\d+$/.test(raw)) {
     return `Gruppe ${parseInt(raw, 10)}`;
+  }
+
+  const gruppeMatch = raw.match(/^gruppe\s*(\d+)$/i);
+  if (gruppeMatch) {
+    return `Gruppe ${parseInt(gruppeMatch[1], 10)}`;
   }
 
   return raw;
