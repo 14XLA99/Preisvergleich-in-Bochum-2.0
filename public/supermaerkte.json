@@ -1,7 +1,7 @@
 [
   {
     "name": "EDEKA Driller Bochum, Castroper Straße",
-    "chain": "kaufland",
+    "chain": "edeka",
     "coords": [
       51.491500060320874,
       7.243451928260085
@@ -667,6 +667,7 @@
   },
   {
     "name": "Lidl Bochum, Wiescherstraße",
+    "chain": "lidl",
     "coords": [
       51.51623635320144,
       7.257325125419571
