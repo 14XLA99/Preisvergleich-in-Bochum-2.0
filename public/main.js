@@ -469,6 +469,7 @@ function getRoleLabel(pair, produkt) {
   const groupInput = document.getElementById("groupInput");
   const groupOptions = document.getElementById("groupOptions");
   const groupStartBtn = document.getElementById("groupStartBtn");
+  const changeGroupBtn = document.getElementById("changeGroupBtn");
 
   let pendingSizeSide = null;
   let pendingSizePair = null;
@@ -919,6 +920,10 @@ function initGruppenauswahl() {
     starteMitGruppe(gruppe);
   };
 }
+  changeGroupBtn.onclick = () => {
+  oeffneGruppenauswahl();
+};
+  
  async function ladePreiseAusFirestore() {
   const snapshot = await getDocs(collection(db, "preise"));
   snapshot.forEach(docSnap => {
