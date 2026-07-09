@@ -899,9 +899,11 @@ function starteMitGruppe(gruppe) {
 }
 
 function initGruppenauswahl() {
-  groupToggleBtn.onclick = () => {
-    toggleGroupMenu();
-  };
+ groupToggleBtn.onclick = (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  toggleGroupMenu();
+};
 
   groupInput.addEventListener("input", () => {
     const raw = groupInput.value.trim().toLowerCase();
@@ -972,7 +974,7 @@ function initGruppenauswahl() {
   groupMenu.querySelectorAll(".group-menu-item").forEach(btn => {
     btn.onclick = () => {
       groupInput.value = btn.dataset.gruppe;
-      groupMenu.classList.add("hidden");
+      closeGroupMenu();
     };
   });
 }
