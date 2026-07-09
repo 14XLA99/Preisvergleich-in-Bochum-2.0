@@ -94,17 +94,22 @@
   <div class="modal-content group-modal-content">
     <h2>Gruppe auswählen</h2>
 
-    <label for="groupInput">Gruppe auswählen</label>
-<input
-  id="groupInput"
-  list="groupOptions"
-  placeholder="z. B. 1 oder Gruppe 1"
-  autocomplete="off"
-/>
+<label for="groupInput">Gruppe auswählen</label>
 
-<datalist id="groupOptions">
-  <option value="Freie Ansicht"></option>
-</datalist>
+<div class="group-combo">
+  <input
+    id="groupInput"
+    type="text"
+    placeholder="z. B. 1 oder Gruppe 1"
+    autocomplete="off"
+  />
+
+  <button id="groupToggleBtn" type="button" class="group-toggle-btn" aria-label="Gruppen anzeigen">
+    ▼
+  </button>
+
+  <div id="groupMenu" class="group-menu hidden"></div>
+</div>
 
     <button id="groupStartBtn" type="button">Karte öffnen</button>
   </div>
