@@ -900,15 +900,6 @@ function starteMitGruppe(gruppe) {
 }
 
 function initGruppenauswahl() {
-  groupInput.addEventListener("input", () => {
-    const raw = groupInput.value.trim();
-
-    // Wenn nur eine Zahl eingegeben wird, direkt in "Gruppe X" umwandeln
-    if (/^\d+$/.test(raw)) {
-      groupInput.value = `Gruppe ${parseInt(raw, 10)}`;
-    }
-  });
-
   groupStartBtn.onclick = () => {
     const gruppe = normalisiereGruppeAusInput(groupInput.value);
 
