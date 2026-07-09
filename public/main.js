@@ -880,6 +880,37 @@ function fuelleGruppenDropdown(supermaerkte) {
 
   gruppenOptionen = ["Freie Ansicht", ...gruppen];
 }
+  function renderGroupMenu(optionen = gruppenOptionen) {
+  groupMenu.innerHTML = optionen.map(gruppe => `
+    <button type="button" class="group-menu-item" data-gruppe="${gruppe}">
+      ${gruppe}
+    </button>
+  `).join("");
+
+  groupMenu.querySelectorAll(".group-menu-item").forEach(btn => {
+    btn.onclick = () => {
+      groupInput.value = btn.dataset.gruppe;
+      closeGroupMenu();
+    };
+  });
+}
+
+function openGroupMenuAlle() {
+  renderGroupMenu(gruppenOptionen);
+  groupMenu.classList.remove("hidden");
+}
+
+function closeGroupMenu() {
+  groupMenu.classList.add("hidden");
+}
+
+function toggleGroupMenu() {
+  if (groupMenu.classList.contains("hidden")) {
+    openGroupMenuAlle();
+  } else {
+    closeGroupMenu();
+  }
+}
 
 function oeffneGruppenauswahl() {
   if (aktuelleGruppe) {
@@ -964,37 +995,6 @@ function initGruppenauswahl() {
   alleSupermaerkte = await res.json();
 
   fuelleGruppenDropdown(alleSupermaerkte);
-   function renderGroupMenu(optionen = gruppenOptionen) {
-  groupMenu.innerHTML = optionen.map(gruppe => `
-    <button type="button" class="group-menu-item" data-gruppe="${gruppe}">
-      ${gruppe}
-    </button>
-  `).join("");
-
-  groupMenu.querySelectorAll(".group-menu-item").forEach(btn => {
-    btn.onclick = () => {
-      groupInput.value = btn.dataset.gruppe;
-      closeGroupMenu();
-    };
-  });
-}
-
-function openGroupMenuAlle() {
-  renderGroupMenu(gruppenOptionen);
-  groupMenu.classList.remove("hidden");
-}
-
-function closeGroupMenu() {
-  groupMenu.classList.add("hidden");
-}
-
-function toggleGroupMenu() {
-  if (groupMenu.classList.contains("hidden")) {
-    openGroupMenuAlle();
-  } else {
-    closeGroupMenu();
-  }
-}
   initGruppenauswahl();
 
   if (aktuelleGruppe) {
