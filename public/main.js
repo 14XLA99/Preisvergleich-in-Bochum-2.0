@@ -467,10 +467,12 @@ function getRoleLabel(pair, produkt) {
   const sizeModalReset = document.getElementById("sizeModalReset");
   const groupModal = document.getElementById("groupModal");
   const groupInput = document.getElementById("groupInput");
-  const groupOptions = document.getElementById("groupOptions");
+  const groupToggleBtn = document.getElementById("groupToggleBtn");
+  const groupMenu = document.getElementById("groupMenu");
   const groupStartBtn = document.getElementById("groupStartBtn");
   const changeGroupBtn = document.getElementById("changeGroupBtn");
 
+  let gruppenOptionen = [];
   let pendingSizeSide = null;
   let pendingSizePair = null;
 
@@ -876,10 +878,7 @@ function fuelleGruppenDropdown(supermaerkte) {
     return na - nb;
   });
 
-  groupOptions.innerHTML = `
-    <option value="Freie Ansicht"></option>
-    ${gruppen.map(gruppe => `<option value="${gruppe}"></option>`).join("")}
-  `;
+  gruppenOptionen = ["Freie Ansicht", ...gruppen];
 }
 
 function oeffneGruppenauswahl() {
@@ -900,6 +899,29 @@ function starteMitGruppe(gruppe) {
 }
 
 function initGruppenauswahl() {
+  groupToggleBtn.onclick = () => {
+    toggleGroupMenu();
+  };
+
+  groupInput.addEventListener("input", () => {
+    const raw = groupInput.value.trim().toLowerCase();
+
+    if (!raw) {
+      closeGroupMenu();
+      return;
+    }
+
+    const normalisiert = normalisiereGruppeAusInput(raw).toLowerCase();
+
+    const treffer = gruppenOptionen.filter(gruppe =>
+      gruppe.toLowerCase().includes(raw) ||
+      gruppe.toLowerCase() === normalisiert
+    );
+
+    renderGroupMenu(treffer);
+    groupMenu.classList.remove("hidden");
+  });
+
   groupStartBtn.onclick = () => {
     const gruppe = normalisiereGruppeAusInput(groupInput.value);
 
@@ -910,6 +932,13 @@ function initGruppenauswahl() {
 
     starteMitGruppe(gruppe);
   };
+
+  document.addEventListener("click", (e) => {
+    if (!groupModal.contains(e.target)) return;
+    if (!e.target.closest(".group-combo")) {
+      closeGroupMenu();
+    }
+  });
 }
   changeGroupBtn.onclick = () => {
   oeffneGruppenauswahl();
@@ -933,6 +962,37 @@ function initGruppenauswahl() {
   alleSupermaerkte = await res.json();
 
   fuelleGruppenDropdown(alleSupermaerkte);
+   function renderGroupMenu(optionen = gruppenOptionen) {
+  groupMenu.innerHTML = optionen.map(gruppe => `
+    <button type="button" class="group-menu-item" data-gruppe="${gruppe}">
+      ${gruppe}
+    </button>
+  `).join("");
+
+  groupMenu.querySelectorAll(".group-menu-item").forEach(btn => {
+    btn.onclick = () => {
+      groupInput.value = btn.dataset.gruppe;
+      groupMenu.classList.add("hidden");
+    };
+  });
+}
+
+function openGroupMenuAlle() {
+  renderGroupMenu(gruppenOptionen);
+  groupMenu.classList.remove("hidden");
+}
+
+function closeGroupMenu() {
+  groupMenu.classList.add("hidden");
+}
+
+function toggleGroupMenu() {
+  if (groupMenu.classList.contains("hidden")) {
+    openGroupMenuAlle();
+  } else {
+    closeGroupMenu();
+  }
+}
   initGruppenauswahl();
 
   if (aktuelleGruppe) {
