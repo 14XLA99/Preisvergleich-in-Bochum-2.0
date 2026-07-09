@@ -130,6 +130,8 @@ map.on("popupclose", () => {
 // 5) Lokaler Speicher / App-State
 // ————————————————————
 let preisDaten = {}; // { markt: { preise: {...}, bild: url, groessen: {...} } }
+let aktuelleGruppe = localStorage.getItem("aktuelleGruppe") || "";
+let alleSupermaerkte = [];
 // Popup-Zustand pro Markt
 const popupState = {}; // { [marktName]: { expanded: boolean, showImage: boolean } }}
 // Oberkategorie aus Produktnamen ableiten (oder pair.kategorie nutzen, wenn vorhanden)
@@ -463,6 +465,10 @@ function getRoleLabel(pair, produkt) {
   const sizeModalClose = document.getElementById("sizeModalClose");
   const sizeModalStatus = document.getElementById("sizeModalStatus");
   const sizeModalReset = document.getElementById("sizeModalReset");
+  const groupModal = document.getElementById("groupModal");
+  const groupQuickInput = document.getElementById("groupQuickInput");
+  const groupSelect = document.getElementById("groupSelect");
+  const groupStartBtn = document.getElementById("groupStartBtn");
 
   let pendingSizeSide = null;
   let pendingSizePair = null;
@@ -837,76 +843,171 @@ nextBtn.textContent = "Weiter →";
   // ──────────────────────────────
   // 10) Daten aus Firestore laden
   // ──────────────────────────────
-async function ladePreiseAusFirestore() {
+function normalisiereGruppeAusInput(value) {
+  const raw = (value || "").trim();
+
+  if (!raw) return "";
+
+  if (raw === "Freie Ansicht") {
+    return "Freie Ansicht";
+  }
+
+  if (/^\d+$/.test(raw)) {
+    return `Gruppe ${parseInt(raw, 10)}`;
+  }
+
+  return raw;
+}
+
+function fuelleGruppenDropdown(supermaerkte) {
+  const gruppen = [...new Set(
+    supermaerkte
+      .map(markt => markt.gruppe)
+      .filter(Boolean)
+  )].sort((a, b) => {
+    const na = parseInt((a.match(/\d+/) || ["9999"])[0], 10);
+    const nb = parseInt((b.match(/\d+/) || ["9999"])[0], 10);
+    return na - nb;
+  });
+
+  groupSelect.innerHTML = `
+    <option value="">Bitte auswählen</option>
+    <option value="Freie Ansicht">Freie Ansicht / alle Supermärkte</option>
+    ${gruppen.map(gruppe => `<option value="${gruppe}">${gruppe}</option>`).join("")}
+  `;
+}
+
+function oeffneGruppenauswahl() {
+  if (aktuelleGruppe) {
+    groupQuickInput.value = aktuelleGruppe.match(/\d+/)?.[0] || "";
+    groupSelect.value = aktuelleGruppe;
+  }
+
+  groupModal.classList.remove("hidden");
+}
+
+function starteMitGruppe(gruppe) {
+  aktuelleGruppe = gruppe;
+  localStorage.setItem("aktuelleGruppe", aktuelleGruppe);
+  groupModal.classList.add("hidden");
+  ladeSupermarktMarker();
+}
+
+function initGruppenauswahl() {
+  groupQuickInput.addEventListener("input", () => {
+    const gruppe = normalisiereGruppeAusInput(groupQuickInput.value);
+    if (gruppe) groupSelect.value = gruppe;
+  });
+
+  groupSelect.addEventListener("change", () => {
+    if (groupSelect.value === "Freie Ansicht") {
+      groupQuickInput.value = "";
+      return;
+    }
+
+    const nummer = groupSelect.value.match(/\d+/)?.[0] || "";
+    groupQuickInput.value = nummer;
+  });
+
+  groupStartBtn.onclick = () => {
+    const ausInput = normalisiereGruppeAusInput(groupQuickInput.value);
+    const ausDropdown = groupSelect.value;
+
+    const gruppe = ausDropdown || ausInput;
+
+    if (!gruppe) {
+      alert("Bitte wähle eine Gruppe aus oder gib eine Gruppennummer ein.");
+      return;
+    }
+
+    starteMitGruppe(gruppe);
+  };
+}
+ async function ladePreiseAusFirestore() {
   const snapshot = await getDocs(collection(db, "preise"));
   snapshot.forEach(docSnap => {
     const data = docSnap.data();
     if (data.markt) {
       preisDaten[data.markt] = {
-  preise: data.preise || {},
-  angebote: data.angebote || {},
-  bild: data.bild || null,
-  groessen: data.groessen || {}
-};
+        preise: data.preise || {},
+        angebote: data.angebote || {},
+        bild: data.bild || null,
+        groessen: data.groessen || {}
+      };
     }
   });
-  ladeSupermarktMarker();
+
+  const res = await fetch("/supermaerkte.json");
+  alleSupermaerkte = await res.json();
+
+  fuelleGruppenDropdown(alleSupermaerkte);
+  initGruppenauswahl();
+
+  if (aktuelleGruppe) {
+    ladeSupermarktMarker();
+  } else {
+    oeffneGruppenauswahl();
+  }
 }
 
   // ──────────────────────────────
   // 11) Marker für Supermärkte setzen
   // ──────────────────────────────
-  function ladeSupermarktMarker() {
-    fetch("/supermaerkte.json")
-      .then(res => res.json())
-      .then(supermaerkte => {
- supermaerkte.forEach(markt => {
-  const icon = getMarkerIconForMarkt(markt.name, markt.chain || "");
-  const marker = L.marker(markt.coords, { icon }).addTo(map);
+function ladeSupermarktMarker() {
+  map.eachLayer(layer => {
+    if (layer instanceof L.Marker && !layer.options?.icon?.options?.className) {
+      map.removeLayer(layer);
+    }
+  });
 
-     marker.on("click", () => {
-  currentSupermarkt = markt.name;
-  currentChain      = markt.chain || "";
-  currentMarker     = marker;
+  const sichtbareMaerkte =
+    aktuelleGruppe === "Freie Ansicht"
+      ? alleSupermaerkte
+      : alleSupermaerkte.filter(markt => markt.gruppe === aktuelleGruppe);
 
-  produktPaare = getProduktVergleicheFuerMarkt(currentChain);
+  sichtbareMaerkte.forEach(markt => {
+    const icon = getMarkerIconForMarkt(markt.name, markt.chain || "");
+    const marker = L.marker(markt.coords, { icon }).addTo(map);
 
-          // Werte vorbefüllen
-              const daten = preisDaten[markt.name] || {};
-              zuletztHochgeladenesBildURL = daten.bild || null;
-              zwischenBildFile = null; // Reset für Stepper
-              
-              // Preise aus Firestore in die Paare mappen
-                produktPaare.forEach((pair) => {
-                const key1 = getProduktKey(pair, "p1");
-                const key2 = getProduktKey(pair, "p2");
-              
-                const preis1 = daten.preise?.[key1];
-                const preis2 = daten.preise?.[key2];
-              
-                pair.p1.preisErfasst = typeof preis1 === "number" ? preis1 : (preis1 ?? null);
-                pair.p2.preisErfasst = typeof preis2 === "number" ? preis2 : (preis2 ?? null);
-              
-                pair.p1.angebot = daten.angebote?.[key1] === true;
-                pair.p2.angebot = daten.angebote?.[key2] === true;
-              });
-            // Popup anzeigen
-            popup
-              .setLatLng(markt.coords)
-              .setContent(setPopupContent(markt.name))
-              .openOn(map);
+    marker.on("click", () => {
+      currentSupermarkt = markt.name;
+      currentChain      = markt.chain || "";
+      currentMarker     = marker;
 
-            setPopupEventListeners();
-            // Klicks im Popup nicht an die Karte „durchreichen“
-setTimeout(() => {
-  const el = popup.getElement();
-  if (el) L.DomEvent.disableClickPropagation(el);
-}, 0);
+      produktPaare = getProduktVergleicheFuerMarkt(currentChain);
 
-          });
-        });
+      const daten = preisDaten[markt.name] || {};
+      zuletztHochgeladenesBildURL = daten.bild || null;
+      zwischenBildFile = null;
+
+      produktPaare.forEach((pair) => {
+        const key1 = getProduktKey(pair, "p1");
+        const key2 = getProduktKey(pair, "p2");
+
+        const preis1 = daten.preise?.[key1];
+        const preis2 = daten.preise?.[key2];
+
+        pair.p1.preisErfasst = typeof preis1 === "number" ? preis1 : (preis1 ?? null);
+        pair.p2.preisErfasst = typeof preis2 === "number" ? preis2 : (preis2 ?? null);
+
+        pair.p1.angebot = daten.angebote?.[key1] === true;
+        pair.p2.angebot = daten.angebote?.[key2] === true;
       });
-  }
+
+      popup
+        .setLatLng(markt.coords)
+        .setContent(setPopupContent(markt.name))
+        .openOn(map);
+
+      setPopupEventListeners();
+
+      setTimeout(() => {
+        const el = popup.getElement();
+        if (el) L.DomEvent.disableClickPropagation(el);
+      }, 0);
+    });
+  });
+}
 
   // ──────────────────────────────
   // 12) Popup-HTML generieren
