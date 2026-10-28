@@ -33,13 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
     maxBoundsViscosity: 1.0
   }).setView([51.4718,7.2162], 12);
 
- L.tileLayer(
-  "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-  {
-    attribution: '&copy; OpenStreetMap contributors',
-    maxZoom: 19
-  }
-).addTo(map);
 
   // ──────────────────────────────
   // 3) Bezirksgrenzen (GeoJSON)
