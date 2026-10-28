@@ -818,3 +818,31 @@ justify-self:end;
   background:#eef3f9;
   color:#0b4a8e;
 }
+/* =========================================
+   Ruhige, erdige Hintergrundkarte
+   ========================================= */
+
+#map {
+  background: #F4F0E7;
+}
+
+/* Nur die Kartenkacheln verändern,
+   nicht Marker, Popups oder Bezirkslabels */
+
+#map .leaflet-tile-pane {
+  filter:
+    grayscale(1)
+    sepia(0.35)
+    saturate(0.55)
+    brightness(1.09)
+    contrast(0.75);
+}
+
+/* Bezirksnamen gut lesbar */
+.bezirk-label {
+  color: #5F594F;
+  opacity: 0.85;
+  font-weight: 600;
+  text-shadow:
+    0 1px 3px rgba(255,255,255,0.95);
+}
